@@ -5,6 +5,9 @@ import "gorm.io/gorm"
 type Role struct {
 	gorm.Model
 	Name  string
+
+	Employee []Employee `gorm:"foreignKey:RoleID"`
+
 	Users []User `gorm:"foreignKey:RoleID"`
 }
 type User struct {
@@ -12,6 +15,11 @@ type User struct {
 	UserName string `gorm:"uniqueIndex"`
 	Password string
 
+	Employee []Employee `gorm:"foreignKey:UserID"`
+	
 	RoleID *uint
-	Role   Role `gorm:"foreignKey:RoleID"`
+	Role   Role 
+
+	DepartmentID *uint
+	Department	Department
 }

@@ -46,5 +46,12 @@ type Employee struct {
 	UserID *uint
 	User   User
 
+	RoleID *uint
+	Role   Role
+
+	DepartmentID *uint
+	Department  Department
+
+
 	reportProblem []ReportProblem `gorm:"foreignKey:EmployeeID"`
 }

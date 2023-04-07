@@ -1,4 +1,4 @@
-package entity
+  package entity
 
 import (
 	"time"
@@ -28,53 +28,15 @@ func SetupDatabase() {
 	database.AutoMigrate(
 		&Role{},
 		&User{},
+		&Department{},
+		&Status{},
+		&ReportProblem{},
+		&Employee{},
+
 	)
 
 	db = database
 
-	//ตำแหน่งงาน
-	role1 := Role{
-		Name: "Employee",
-	}
-	db.Model(&Role{}).Create(&role1)
-
-	role2 := Role{
-		Name: "Admin",
-	}
-	db.Model(&Role{}).Create(&role2)
-
-	// User
-	password1, err := bcrypt.GenerateFromPassword([]byte("1234"), 14)
-	password2, err := bcrypt.GenerateFromPassword([]byte("5678"), 14)
-
-	userEmployee := User{
-		UserName: "B111",
-		Password: string(password2),
-		Role:     role1,
-	}
-	db.Model(&User{}).Create(&userEmployee)
-
-	userAdmin := User{
-		UserName: "B222",
-		Password: string(password1),
-		Role:     role2,
-	}
-	db.Model(&User{}).Create(&userAdmin)
-
-	Admin := Employee{
-		EmployeeName: "Jirawat",
-		Email:        "Jirawat@gmail.com",
-		User:         userAdmin,
-	}
-	db.Model(&User{}).Create(&Admin)
-
-	Employee1 := Employee{
-		EmployeeName: "Napakan",
-		Email:        "Napakan@gmail.com",
-		User:         userAdmin,
-	}
-	db.Model(&User{}).Create(&Employee1)
-	//-----------------------------------------------------------ระบบแจ้งปัญหา------------------------------------------
 	//Status
 	Status1 := Status{
 		StatusName: "Send request",
@@ -95,8 +57,7 @@ func SetupDatabase() {
 		StatusName: "End",
 	}
 	db.Model(&Status{}).Create(&Status4)
-
-	//Status
+	//Department
 	Department1 := Department{
 		DepartmentName: "บุคคล",
 	}
@@ -116,13 +77,77 @@ func SetupDatabase() {
 		DepartmentName: "การตลาด",
 	}
 	db.Model(&Department{}).Create(&Department4)
+	Department5 := Department{
+		DepartmentName: "IT",
+	}
+	db.Model(&Department{}).Create(&Department5)
+
+	//ตำแหน่งงาน
+	role1 := Role{
+		Name: "employee",
+	}
+	db.Model(&Role{}).Create(&role1)
+
+	role2 := Role{
+		Name: "admin",
+	}
+	db.Model(&Role{}).Create(&role2)
+
+	// User
+	password1, err := bcrypt.GenerateFromPassword([]byte("1234"), 14)
+	if err != nil {
+		return
+	}
+
+	password2, err := bcrypt.GenerateFromPassword([]byte("5678"), 14)
+	if err != nil {
+		return
+	}
+
+	userEmployee := User{
+		UserName: "B111",
+		Password: string(password2),
+		Role:     role1,
+		Department: Department1,
+	}
+	db.Model(&User{}).Create(&userEmployee)
+
+	userAdmin := User{
+		UserName: "B222",
+		Password: string(password1),
+		Role:     role2,
+		Department: Department5,
+	}
+	db.Model(&User{}).Create(&userAdmin)
+
+	Admin := Employee{
+		EmployeeName: "Jirawat",
+		Email:        "Jirawat@gmail.com",
+		User:         userAdmin,
+		Role: role2,
+		Department: Department5,
+	}
+	db.Model(&Employee{}).Create(&Admin)
+
+	Employee1 := Employee{
+		EmployeeName: "Napakan",
+		Email:        "Napakan@gmail.com",
+		User:         userEmployee,
+		Role: role1,
+		Department: Department1,
+	}
+	db.Model(&Employee{}).Create(&Employee1)
+	//-----------------------------------------------------------ระบบแจ้งปัญหา------------------------------------------
+	
 
 	//ระบบแจ้งปัญหา
 	reportProblem := ReportProblem{
 		Employee:         Employee1,
+		Department:       Department1,
+		Heading: "กรอกหัวข้อ",
+		Description: "กรอกรายละเอียด",
 		Status:           Status1,
 		NotificationDate: time.Now(),
-		Department:       Department1,
 	}
 	db.Model(&ReportProblem{}).Create(&reportProblem)
 
