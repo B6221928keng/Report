@@ -36,7 +36,7 @@ func ListStatus(c *gin.Context) {
 func Getstatus(c *gin.Context) {
 	var status entity.Status
 	id := c.Param("id")
-	if err := entity.DB().Raw("SELECT * FROM statuss WHERE id = ?", id).Find(&status).Error; err != nil {
+	if err := entity.DB().Raw("SELECT * FROM statuses WHERE id = ?", id).Find(&status).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

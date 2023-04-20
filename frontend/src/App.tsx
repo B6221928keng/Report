@@ -13,9 +13,12 @@ import { createTheme, CssBaseline, styled, ThemeProvider } from '@mui/material';
 
 import ReportProblemCreate from './components/ReportProblemCreate';
 import ReportProblem from './components/ReportProblem';
+import ReportProblemComplete from './components/ReportProblemComplete';
 import ReportProblemUpdate from './components/ReportProblemUpdate';
 import AdminReportProblem from './components/AdminReportProblem';
 import AdminReportComplete from './components/AdminReportComplete';
+import Admin_Pending from './components/Admin_Pending';
+
 const drawerWidth = 240;
 
 function App() {
@@ -134,6 +137,7 @@ function App() {
                   <Route path="/ReportProblemUpdate/:id" element={<ReportProblemUpdate />} />
                   <Route path="/reportProblemCreate" element={<ReportProblemCreate />} />
                   <Route path="/reportProblem" element={<ReportProblem />} />
+
                 </>
 
               )}
@@ -142,6 +146,7 @@ function App() {
 
                     <Route path="/" element={<Home />} />
                     <Route path="/adminReportProblem" element={<AdminReportProblem />} />
+                    <Route path="/adminReportPending/:id" element={<Admin_Pending />} />
                     <Route path="/adminReportComplete/:id" element={<AdminReportComplete />} />
 
 

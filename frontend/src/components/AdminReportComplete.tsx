@@ -26,7 +26,7 @@ function AdminReportComplete() {
     const [ErrorMessage, setErrorMessage] = React.useState("");
 
     const getReportProblem = async () => {
-        const apiUrl = "http://localhost:8080/reportProblem";
+        const apiUrl = "http://localhost:8080/reportProblemstatus2";
         const requestOptions = {
             method: "GET",
             headers: {
@@ -66,7 +66,7 @@ function AdminReportComplete() {
     }
     function getEmployee() {
         const UserID = localStorage.getItem("uid")
-        const apiUrl = `http://localhost:8080/employeeId/${UserID}`;
+        const apiUrl = `http://localhost:8080/employeeID/${UserID}`;
         const requestOptions = {
             method: "GET",
             headers: {
@@ -226,13 +226,13 @@ function AdminReportComplete() {
                         <TableBody>
                             {reportProblem.map((reportProblem: ReportProblemInterface) => (
                                 <TableRow key={reportProblem.ID}>
-                                    <TableCell align="left" width="10">             </TableCell>
-                                    <TableCell align="left" width="medium">          </TableCell>
-                                    <TableCell align="left" width="medium">  </TableCell>
-                                    <TableCell align="left" size="medium">       </TableCell>
-                                    <TableCell align="center" size="medium">            </TableCell>
-                                    <TableCell align="center" size="medium">            </TableCell>
-                                    <TableCell align="center" width="42%" >      </TableCell>
+                                    <TableCell align="left" width="10">{reportProblem.ID}    </TableCell>
+                                    <TableCell align="left" width="medium">{emp?.EmployeeName} </TableCell>
+                                    <TableCell align="left" width="medium"> {reportProblem.Department.DepartmentName}  </TableCell>
+                                    <TableCell align="left" size="medium"> {reportProblem.Heading}      </TableCell>
+                                    <TableCell align="center" size="medium">  {reportProblem.Description}  </TableCell>
+                                    <TableCell align="center" size="medium"> {reportProblem.Status.StatusName} </TableCell>
+                                    <TableCell align="center" width="42%" > {moment(reportProblem.NotificationDate).format('HH:mm  DD MMMM yyyy')}</TableCell>
                                     {/* <TableCell align="center">
                                         <IconButton aria-label="delete" vertical-align="middle" onClick={() => DeleteReportProblem(reportProblem.ID)}><DeleteIcon /></IconButton >
                                     </TableCell> */}

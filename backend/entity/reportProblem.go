@@ -1,6 +1,8 @@
 package entity
 
 import (
+
+	_ "image/png"
 	"time"
 
 	"gorm.io/gorm"
@@ -20,6 +22,9 @@ type ReportProblem struct {
 
 	DepartmentID *uint
 	Department   Department `gorm:"references:id" valid:"-"`
+
+	FileID *uint
+	File   File `gorm:"references:id" valid:"-"`
 }
 type Status struct {
 	gorm.Model
@@ -37,6 +42,15 @@ type Department struct {
 	reportProblem []ReportProblem `gorm:"foreignKey:DepartmentID"`
 }
 
+type File struct {
+	gorm.Model
+
+	File string `gorm:"uniqueIndex"`
+	
+
+	reportProblem []ReportProblem `gorm:"foreignKey:FileID"`
+}
+
 type Employee struct {
 	gorm.Model
 
@@ -50,8 +64,7 @@ type Employee struct {
 	Role   Role
 
 	DepartmentID *uint
-	Department  Department
-
+	Department   Department
 
 	reportProblem []ReportProblem `gorm:"foreignKey:EmployeeID"`
 }

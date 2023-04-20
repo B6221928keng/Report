@@ -6,17 +6,18 @@ import Button from '@mui/material/Button'
 import { Link as RouterLink } from "react-router-dom";
 import TableContainer from '@mui/material/TableContainer';
 import moment from 'moment';
-import ClearIcon from '@mui/icons-material/Clear';
+import axios from 'axios';
+import PhotoIcon from '@mui/icons-material/Photo';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import Snackbar from '@mui/material/Snackbar'
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
-
 import { ReportProblemInterface } from "../models/IReportProblem";
 import { EmployeeInterface } from "../models/IEmployee";
 import { set } from "date-fns";
 import { UserInterface } from "../models/IUser";
-
+import { FileInterface } from "../models/IFile";
+import { upload } from "@testing-library/user-event/dist/upload";
 function ReportProblem() {
     const [emp, setEmp] = React.useState<EmployeeInterface>();
     const [user, setUser] = React.useState<UserInterface>();
@@ -24,7 +25,12 @@ function ReportProblem() {
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(false);
     const [ErrorMessage, setErrorMessage] = React.useState("");
-
+    const [currentImage, setCurrentImage] = React.useState<File>();
+    const [previewImage, setPreviewImage] = React.useState<string>("");
+    const [progress, setProgress] = React.useState<number>(0);
+    const [message, setMessage] = React.useState<string>("");
+    const [image, setImage] = useState<File | null>(null);
+    const [imageInfos, setImageInfos] = React.useState<Array<FileInterface>>([]);
     const getReportProblem = async () => {
         const apiUrl = "http://localhost:8080/reportProblem";
         const requestOptions = {
@@ -115,7 +121,38 @@ function ReportProblem() {
                 }
             )
     }
+    //อัพรูป
+    const selectImage = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedFiles = event.target.files as FileList;
+        setCurrentImage(selectedFiles?.[0]);
+        setPreviewImage(URL.createObjectURL(selectedFiles?.[0]));
+        setProgress(0);
+    };
 
+
+    const handleApi = async (id: string | number | undefined) => {
+        const apiUrl = "http://localhost:8080";
+        const requestOptions = {
+            method: "OPEN",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+        };
+
+        fetch(`${apiUrl}/reportProblems/${id}`, requestOptions)
+            .then((response) => response.json())
+            .then(
+                (res) => {
+                    if (image) {
+                        const formData = new FormData();
+                        formData.append("image", image);
+                        axios.post("url", formData).then((res) => {
+                            console.log(res);
+                        });
+                    }
+                })
+    }
 
     useEffect(() => {
         getEmployee();
@@ -253,15 +290,23 @@ function ReportProblem() {
                                     <TableCell align="center" size="medium"> {reportProblem.Status.StatusName}           </TableCell>
                                     <TableCell align="center" width="42%" > {moment(reportProblem.NotificationDate).format('HH:mm  DD MMMM yyyy')}     </TableCell>
                                     <TableCell align="center">
-                                        <IconButton aria-label="delete" vertical-align="middle" onClick={() => DeleteReportProblem(reportProblem.ID)}><DeleteIcon /></IconButton >
+                                        <IconButton aria-label="OPEN"
+                                            vertical-align="middle"
+                                            onClick={() => handleApi(reportProblem.ID)}><PhotoIcon /></IconButton >
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        <IconButton aria-label="delete"
+                                            vertical-align="middle"
+                                            onClick={() => DeleteReportProblem(reportProblem.ID)}><DeleteIcon /></IconButton >
                                     </TableCell>
                                     <TableCell align="center">
                                         <Button
-                                           
+
                                             component={RouterLink}
                                             to={"/ReportProblemUpdate/" + reportProblem.ID}
-                                            variant='outlined'
+                                            variant='contained'
                                             color="primary"
+
                                         >
                                             แก้ไขข้อมูล
                                         </Button>

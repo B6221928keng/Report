@@ -3,7 +3,7 @@ import Container from '@mui/material/Container'
 import TableCell from '@mui/material/TableCell';
 import { Box, Grid, Select, TextField, Typography, Table, TableHead, TableRow, TableBody } from '@mui/material'
 import Button from '@mui/material/Button'
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink , useParams } from "react-router-dom";
 import TableContainer from '@mui/material/TableContainer';
 import moment from 'moment';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -17,17 +17,48 @@ import { ReportProblemInterface } from "../models/IReportProblem";
 import { EmployeeInterface } from "../models/IEmployee";
 import { set } from "date-fns";
 import { UserInterface } from "../models/IUser";
+import { DepartmentInterface } from "../models/IDepartment";
+import { removeListener } from "process";
+import { removeEmitHelper } from "typescript";
+import Admin_Pending from "./Admin_Pending";
 
 function AdminReportProblem() {
     const [emp, setEmp] = React.useState<EmployeeInterface>();
     const [user, setUser] = React.useState<UserInterface>();
-    const [reportProblem, setReportProblem] = React.useState<ReportProblemInterface[]>([]);
+    const [file, setfile] = useState<File | null>(null);
+    const [reportProblem, setReportProblems] = React.useState<ReportProblemInterface[]>([]);
+    const [department, setDepartment] = React.useState<DepartmentInterface>();
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(false);
     const [ErrorMessage, setErrorMessage] = React.useState("");
+    const [loading, setLoading] = React.useState(false);
+    const [ReportProblem, setReportProblem] = React.useState<Partial<ReportProblemInterface>>({
+        NotificationDate: new Date(),
+    });
+     let { id } = useParams();
+    const getreportProblemID = async (id: string | undefined | null) => {
+        const apiUrl = "http://localhost:8080";
+        const requestOptions = {
+            method: "PATCH",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+        };
 
+        fetch(`${apiUrl}/reportProblem/${id}`, requestOptions)
+            .then((response) => response.json())
+            .then((res) => {
+                console.log("ReportProblem", res)
+                if (res.data) {
+                    setReportProblem(res.data);
+                } else {
+                    console.log("else");
+                }
+            });
+    };
     const getReportProblem = async () => {
-        const apiUrl = "http://localhost:8080/reportProblemstatus";
+        const apiUrl = "http://localhost:8080/reportProblemstatus1";
         const requestOptions = {
             method: "GET",
             headers: {
@@ -40,7 +71,7 @@ function AdminReportProblem() {
             .then((res) => {
                 console.log(res.data);
                 if (res.data) {
-                    setReportProblem(res.data);
+                    setReportProblems(res.data);
                 }
             });
     };
@@ -67,7 +98,7 @@ function AdminReportProblem() {
     }
     function getEmployee() {
         const UserID = localStorage.getItem("uid")
-        const apiUrl = `http://localhost:8080/employeeId/${UserID}`;
+        const apiUrl = `http://localhost:8080/employeeID/${UserID}`;
         const requestOptions = {
             method: "GET",
             headers: {
@@ -88,34 +119,40 @@ function AdminReportProblem() {
                 }
             });
     }
-    
-    const DeleteReportProblem = async (id: string | number | undefined) => {
-        const apiUrl = "http://localhost:8080";
+
+    function submit1() {
+        setLoading(true)
+        let data = {
+            EmployeeID: emp?.ID,
+            Heading: ReportProblem.Heading ?? "",
+            Description: ReportProblem.Description ?? "",
+            StatusID: 2,
+            NotificationDate: ReportProblem.NotificationDate,
+            DepartmentID: department?.ID,
+            File: file,
+        };
+        console.log("Data", data)
+        const apiUrl = "http://localhost:8080/reportProblem";
         const requestOptions = {
-            method: "DELETE",
+            method: "PATCH",
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json",
             },
+            body: JSON.stringify(data),
         };
-
-        fetch(`${apiUrl}/reportProblems/${id}`, requestOptions)
+        fetch(apiUrl, requestOptions)
             .then((response) => response.json())
-            .then(
-                (res) => {
-                    if (res.data) {
-                        setSuccess(true)
-                        console.log("ยกเลิกสำเร็จ")
-                        setErrorMessage("")
-                    }
-                    else {
-                        setErrorMessage(res.error)
-                        setError(true)
-                        console.log("ยกเลิกไม่สำเร็จ")
-                    }
-                    getReportProblem();
+            .then((res) => {
+                console.log("Res", res)
+                if (res.data) {
+                    setErrorMessage("")
+                    setSuccess(true);
+                } else {
+                    setErrorMessage(res.error)
+                    setError(true)
                 }
-            )
+            });
     }
 
 
@@ -123,6 +160,7 @@ function AdminReportProblem() {
         getEmployee();
         getReportProblem();
         getUser();
+        getreportProblemID(id);
     }, []);
 
 
@@ -180,7 +218,7 @@ function AdminReportProblem() {
                             ข้อมูลรอตรวจสอบปัญหาSoftware
                         </Typography>
                     </Box>
-            
+
                 </Box>
 
                 <TableContainer >
@@ -242,11 +280,11 @@ function AdminReportProblem() {
                                     <TableCell align="center">
                                         <Button
 
-                                            component={RouterLink}
-                                            to={"/adminReportComplete/" + reportProblem.ID}
+                                            
                                             variant='contained'
                                             color="primary"
-                    
+                                            onClick={()=> Admin_Pending(reportProblem.ID)}
+
                                         >
                                             Pending
                                         </Button>

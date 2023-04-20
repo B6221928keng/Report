@@ -1,6 +1,7 @@
-  package entity
+package entity
 
 import (
+	// "image"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -32,7 +33,7 @@ func SetupDatabase() {
 		&Status{},
 		&ReportProblem{},
 		&Employee{},
-
+		&File{},
 	)
 
 	db = database
@@ -41,45 +42,40 @@ func SetupDatabase() {
 	Status1 := Status{
 		StatusName: "Send request",
 	}
-	db.Model(&Status{}).Create(&Status1)
-
 	Status2 := Status{
 		StatusName: "Pending",
 	}
-	db.Model(&Status{}).Create(&Status2)
-
 	Status3 := Status{
 		StatusName: "Complete",
 	}
-	db.Model(&Status{}).Create(&Status3)
-
 	Status4 := Status{
 		StatusName: "End",
 	}
+	db.Model(&Status{}).Create(&Status1)
+	db.Model(&Status{}).Create(&Status2)
+	db.Model(&Status{}).Create(&Status3)
 	db.Model(&Status{}).Create(&Status4)
+	
 	//Department
 	Department1 := Department{
 		DepartmentName: "บุคคล",
 	}
-	db.Model(&Department{}).Create(&Department1)
-
 	Department2 := Department{
 		DepartmentName: "ลูกค้าสัมพันธ์",
 	}
-	db.Model(&Department{}).Create(&Department2)
-
 	Department3 := Department{
 		DepartmentName: "บัญชี/การเงิน",
 	}
-	db.Model(&Department{}).Create(&Department3)
-
 	Department4 := Department{
 		DepartmentName: "การตลาด",
 	}
-	db.Model(&Department{}).Create(&Department4)
 	Department5 := Department{
 		DepartmentName: "IT",
 	}
+	db.Model(&Department{}).Create(&Department1)
+	db.Model(&Department{}).Create(&Department2)
+	db.Model(&Department{}).Create(&Department3)
+	db.Model(&Department{}).Create(&Department4)
 	db.Model(&Department{}).Create(&Department5)
 
 	//ตำแหน่งงาน
@@ -137,6 +133,12 @@ func SetupDatabase() {
 		Department: Department1,
 	}
 	db.Model(&Employee{}).Create(&Employee1)
+
+	File1 := File{
+		File: "",
+	}
+	db.Model(&File{}).Create(&File1)
+
 	//-----------------------------------------------------------ระบบแจ้งปัญหา------------------------------------------
 	
 
@@ -148,6 +150,7 @@ func SetupDatabase() {
 		Description: "กรอกรายละเอียด",
 		Status:           Status1,
 		NotificationDate: time.Now(),
+		File: File1,
 	}
 	db.Model(&ReportProblem{}).Create(&reportProblem)
 

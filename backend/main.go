@@ -43,7 +43,8 @@ func main() {
 	//-----------------------------------แจ้งปัญหา------------------------------------
 	r.POST("/reportProblems", controller.CreateReportProblem)
 	r.GET("/reportProblem", controller.ListReportProblem)
-	r.GET("/reportProblemstatus", controller.ListReportProblemStatusID)
+	r.GET("/reportProblemstatus1", controller.ListReportProblemStatusID1)
+	r.GET("/reportProblemstatus2", controller.ListReportProblemStatusID2)
 	r.GET("/reportProblem/:id", controller.GetReportProblem)
 	r.PATCH("/reportProblem", controller.UpdateReportProblem)
 	r.DELETE("/reportProblems/:id", controller.DeleteReportProblem)
@@ -56,6 +57,10 @@ func main() {
 	r.GET("/employeeId/:id", controller.GetEmployeeByUserID)
 	r.GET("/employees", controller.ListEmployee)
 	r.GET("/employeeID/:id", controller.GetEmployee)
+	//File
+	r.GET("/fileId/:id", controller.GetFileByUserID)
+	r.GET("/files", controller.ListFile)
+	r.GET("/fileID/:id", controller.GetFile)
 	//role
 	r.GET("/roles", controller.ListRole)
 
@@ -68,5 +73,7 @@ func main() {
 	r.GET("/users/:id", controller.GetUser)
 	r.POST("/signin", controller.Signin)
 	r.GET("/valid", controller.Validation)
+
+	
 	r.Run()
 }

@@ -172,7 +172,7 @@ export default function ReportProblemUpdate() {
         fetch(apiUrl, requestOptions)
             .then((response) => response.json())
             .then((res) => {
-                console.log("Combobox_Userห", res)
+                console.log("Combobox_User", res)
                 if (res.data) {
                     setUser(res.data);
                 } else {
@@ -273,42 +273,24 @@ export default function ReportProblemUpdate() {
                     </Typography>
                 </Box>
                 </Box>
-                <Grid container spacing={4}>
-                    <Grid item xs={4}>
+                <Grid item xs={4}>
+                    <FormControl fullWidth variant="outlined" style={{ width: '105%', float: 'left' }}>
                         <FormControl fullWidth variant="outlined" style={{ width: '100%' }}>
-                            <p>ผู้รายงาน</p>
-
-                            <option>
-                                {emp?.EmployeeName}
-                            </option>
-
-
+                            <Grid item xs={120}>
+                                <Typography>From : {emp?.EmployeeName}
+                                    <option />
+                                </Typography></Grid>
                         </FormControl>
-                    </Grid>
-                    <Grid item xs={4}>
-                        <FormControl fullWidth variant="outlined" style={{ width: '105%', float: 'left' }}>
-                            <p>แผนก</p>
-                            <Select
-                                native
-                                value={ReportProblem.DepartmentID}
-                                onChange={handleChange}
-                                inputProps={{
-                                    name: "DepartmentID",
-                                }}
-                            >
-                                <option aria-label="None" value="">
-                                    เลือกแผนก
-                                </option>
-                                {department.map((item: DepartmentInterface) => (
-                                    <option value={item.ID} key={item.ID}>
-                                        {item.DepartmentName}
-                                    </option>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Grid>
+                    </FormControl>
                 </Grid>
-                <Grid container spacing={4}>
+                <Grid item xs={4}>
+                    <FormControl fullWidth variant="outlined" style={{ width: '105%', float: 'left' }}>
+                        <FormControl fullWidth variant="outlined" style={{ width: '100%' }}>
+                            <Grid item xs={120}><Typography>แผนก :  {localStorage.getItem("dep")}</Typography></Grid>
+                        </FormControl>
+                    </FormControl>
+                </Grid>
+                <Grid container spacing={1}>
                     <Grid item xs={4}>
                         <FormControl fullWidth variant="outlined" style={{ width: '100%' }}>
                             <p>หัวข้อ</p>
@@ -326,7 +308,7 @@ export default function ReportProblemUpdate() {
                         </FormControl>
                     </Grid>
 
-                    <Grid item xs={4}>
+                    <Grid item xs={7}>
                         <FormControl fullWidth variant="outlined" style={{ width: '105%', float: 'left' }}>
                             <p>รายละเอียด</p>
                             <FormControl fullWidth variant="outlined">
@@ -343,30 +325,8 @@ export default function ReportProblemUpdate() {
                         </FormControl>
                     </Grid>
                 </Grid>
-                <Grid container spacing={4}>
-                    {/* <Grid item xs={4}>
-                        <FormControl fullWidth variant="outlined" style={{ width: '100%', float: 'left' }}>
-                            <p>สถานะ </p>
-                            <Select
-                                native
-                                value={ReportProblem.StatusID}
-                                onChange={handleChange}
-                                inputProps={{
-                                    name: "StatusID",
-                                }}
-                            >
-                                <option aria-label="None" value="">
-                                ฉันและเธอจะเดินไปด้วยกัน ไม่ว่าจะทุกหรือว่าสุขสัน
-                                </option>
-                                {status.map((item: StatusInterface) => (
-                                    <option value={item.ID} key={item.ID}>
-                                        {item.StatusName}
-                                    </option>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Grid> */}
 
+{/* 
                     <Grid item xs={4}>
                         <FormControl fullWidth variant="outlined" style={{ width: '105%', float: 'left' }}>
                             <p>วันที่/เวลา</p>
@@ -385,7 +345,8 @@ export default function ReportProblemUpdate() {
                             </LocalizationProvider>
                         </FormControl>
                     </Grid>
-                </Grid>
+                </Grid> */}
+                <Grid item xs={4}></Grid>
                 <Grid item xs={12}>
                     <Stack
                         spacing={2}

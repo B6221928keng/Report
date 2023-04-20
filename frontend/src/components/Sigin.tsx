@@ -4,7 +4,7 @@ import './signin.css';
 import { SigninInterface } from "../models/ISignin";
 import frame from './image/frame.svg';
 // import logo from './../image/logo.png'
-export default function Signin(){
+export default function Signin() {
     const [success, setSuccess] = useState<boolean>(false)
     const [error, setError] = useState<boolean>(false)
 
@@ -28,7 +28,7 @@ export default function Signin(){
 
         setSignin({ ...signin, [id]: value })
     }
-    
+
 
     const login = () => {
         const apiUrl = "http://localhost:8080/signin";
@@ -48,7 +48,7 @@ export default function Signin(){
                     localStorage.setItem("pid", res.data.p_id)
                     localStorage.setItem("role", res.data.role_name)
                     localStorage.setItem("dep", res.data.department_name)
-                    
+
                     window.location.reload()
                 } else {
                     console.log("error")
@@ -80,6 +80,9 @@ export default function Signin(){
 
                 <div id='from-page' className='form-page'>
                     <div id='from-frame' className='from-frame'>
+                        <div style={{ fontSize: '20px', color: '#4a54f1', paddingTop: '10px' }}>
+                            ระบบแจ้งปัญหาการใช้งานSoftware
+                        </div>
                         <div id="logo" className='logo'>
                             {/* <img className="img" alt="logo" src={logo}/> */}
                         </div>
@@ -98,9 +101,9 @@ export default function Signin(){
                                 onChange={handleInputChange}
                                 onKeyPress={(e) => {
                                     if (e.key === "Enter") {
-                                       login();
+                                        login();
                                     }
-                                 }}
+                                }}
                             />
                             <TextField
                                 variant="outlined"
@@ -116,9 +119,9 @@ export default function Signin(){
                                 onChange={handleInputChange}
                                 onKeyPress={(e) => {
                                     if (e.key === "Enter") {
-                                       login();
+                                        login();
                                     }
-                                 }}
+                                }}
                             />
                             <Button
                                 fullWidth
@@ -126,7 +129,7 @@ export default function Signin(){
                                 style={{ backgroundColor: "#7484AD", color: "#F4F6F6" }}
                                 className='submit'
                                 onClick={login}
-                                >
+                            >
                                 Sign In
                             </Button>
 
