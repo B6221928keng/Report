@@ -1,10 +1,12 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/B6221928keng/Report/entity"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 // POST /File
@@ -55,4 +57,28 @@ func GetFileByUserID(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": file})
+}
+func Getmain() {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/upload", GethandleUpload)
+	mux.HandleFunc("/delete", GethandleDelete)
+
+	fmt.Println("Server running on port 8080")
+	http.ListenAndServe(":8080", mux)
+}
+
+func GethandleUpload(w http.ResponseWriter, r *http.Request) {
+	// use modules such as github.com/h2non/filetype, github.com/go-playground/validator, etc.
+	time.Sleep(3 * time.Second)
+	fmt.Println("file uploaded")
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Fprintf(w, `{"result": true, "msg": "file uploaded"}`)
+}
+
+func GethandleDelete(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("file deleted")
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Fprintf(w, `{"result": true, "msg": "file deleted"}`)
 }

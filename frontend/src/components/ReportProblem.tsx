@@ -156,9 +156,9 @@ function ReportProblem() {
 
 
     const handleApi = async (id: string | number | undefined) => {
-        const apiUrl = "http://localhost:8080";
+        const apiUrl = "http://localhost:8080/files";
         const requestOptions = {
-            method: "OPEN",
+            method: "GET",
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json",
@@ -269,36 +269,34 @@ function ReportProblem() {
 
                         <TableHead>
                             <TableRow>
-                                <TableCell align="left" width="10%">
+                                <TableCell align="left" width="5%">
                                     ID
                                 </TableCell>
-                                <TableCell align="left" width="20%">
+                                {/* <TableCell align="left" width="20%">
                                     ผู้รายงาน
                                 </TableCell>
                                 <TableCell align="left" width="25%">
                                     แผนก
-                                </TableCell>
-                                <TableCell align="left" width="5%">
+                                </TableCell> */}
+                                <TableCell align="center" width="20%">
                                     หัวข้อ
                                 </TableCell>
 
-                                <TableCell align="center" width="5%">
+                                <TableCell align="left" width="20%">
                                     รายละเอียด
                                 </TableCell>
-                                <TableCell align="center" width="25%">
-                                    สถานะ
-                                </TableCell>
-                                <TableCell align="center" width="15%">
-                                    วันที่/เวลา
+                                <TableCell align="center" width="5%">
+                                    เวลา/วันที่
                                 </TableCell>
                                 <TableCell align="center" width="10%">
-                                    ไฟล์
-                                </TableCell>
-                                <TableCell align="center" width="6%">
 
                                 </TableCell>
-                                <TableCell align="center" width="6%">
+                                <TableCell align="center" width="10%">
 
+                                </TableCell>
+
+                                <TableCell align="center" width="6%">
+                                    สถานะ
                                 </TableCell>
 
                             </TableRow>
@@ -308,23 +306,23 @@ function ReportProblem() {
                         <TableBody>
                             {reportProblem.map((reportProblem: ReportProblemInterface) => (
                                 <TableRow key={reportProblem.ID}>
-                                    <TableCell align="left" width="10"> {reportProblem.ID}            </TableCell>
-                                    <TableCell align="left" width="medium"> {emp?.EmployeeName}           </TableCell>
-                                    <TableCell align="left" width="medium"> {reportProblem.Department.DepartmentName} </TableCell>
-                                    <TableCell align="left" size="medium"> {reportProblem.Heading}      </TableCell>
-                                    <TableCell align="center" size="medium"> {reportProblem.Description}           </TableCell>
-                                    <TableCell align="center" size="medium"> {reportProblem.Status.StatusName}           </TableCell>
-                                    <TableCell align="center" width="42%" > {moment(reportProblem.NotificationDate).format('HH:mm  DD MMMM yyyy')}     </TableCell>
+                                    <TableCell align="left" width="5"> {reportProblem.ID}            </TableCell>
+                                    {/* <TableCell align="left" width="medium"> {emp?.EmployeeName}           </TableCell>
+                                    <TableCell align="left" width="medium"> {reportProblem.Department.DepartmentName} </TableCell> */}
+                                    <TableCell align="center" width="15%"> {reportProblem.Heading}      </TableCell>
+                                    <TableCell align="left" width="20%"> {reportProblem.Description}           </TableCell>
+                                    <TableCell align="center" width="5%" > {moment(reportProblem.NotificationDate).format('HH:mm  DD MMMM yyyy')}     </TableCell>
                                     <TableCell align="center">
-                                        <IconButton aria-label="OPEN"
+                                        <IconButton aria-label="GET"
                                             vertical-align="middle"
+                                            //ดูไฟล์
                                             onClick={() => handleApi(reportProblem.ID)}><PhotoIcon /></IconButton >
                                     </TableCell>
-                                    <TableCell align="center">
+                                    {/* <TableCell align="center">
                                         <IconButton aria-label="delete"
                                             vertical-align="middle"
                                             onClick={() => DeleteReportProblem(reportProblem.ID)}><DeleteIcon /></IconButton >
-                                    </TableCell>
+                                    </TableCell> */}
                                     <TableCell align="center">
                                         <Button
 
@@ -337,6 +335,7 @@ function ReportProblem() {
                                             แก้ไขข้อมูล
                                         </Button>
                                     </TableCell>
+                                    <TableCell align="center" size="medium"> {reportProblem.Status.StatusName}           </TableCell>
                                 </TableRow>
                             ))}
 

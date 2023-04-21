@@ -194,7 +194,7 @@ export default function ReportProblemUpdate() {
             Description: ReportProblem.Description ?? "",
             StatusID: 1,
             NotificationDate: ReportProblem.NotificationDate,
-            DepartmentID: convertType(ReportProblem.DepartmentID),
+            DepartmentID: convertType(emp?.DepartmentID),
         };
         console.log("Data", data)
         const apiUrl = "http://localhost:8080/reportProblem";
@@ -289,7 +289,7 @@ export default function ReportProblemUpdate() {
                         </FormControl>
                     </FormControl>
                 </Grid>
-                <Grid container spacing={1}>
+                <Grid container spacing={2}>
                     <Grid item xs={4}>
                         <FormControl fullWidth variant="outlined" style={{ width: '100%' }}>
                             <p>หัวข้อ</p>
@@ -306,9 +306,10 @@ export default function ReportProblemUpdate() {
                             </FormControl>
                         </FormControl>
                     </Grid>
-
-                    <Grid item xs={7}>
-                        <FormControl fullWidth variant="outlined" style={{ width: '105%', float: 'left' }}>
+                    </Grid>
+                    <Grid container spacing={1}>
+                    <Grid item xs={5}>
+                        <FormControl fullWidth variant="outlined" style={{ width: '150%', float: 'left' }}>
                             <p>รายละเอียด</p>
                             <FormControl fullWidth variant="outlined">
                                 <TextField
@@ -323,7 +324,8 @@ export default function ReportProblemUpdate() {
                             </FormControl>
                         </FormControl>
                     </Grid>
-                </Grid>
+                    </Grid>
+                <option />
 
 {/* 
                     <Grid item xs={4}>

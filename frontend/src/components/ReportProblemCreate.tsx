@@ -20,6 +20,7 @@ import { StatusInterface } from "../models/IStatus";
 import { ReportProblemInterface } from "../models/IReportProblem";
 import { EmployeeInterface } from "../models/IEmployee";
 import { DepartmentInterface } from "../models/IDepartment";
+import { set } from "date-fns";
 
 
 export default function ReportProblemCreate(this: any) {
@@ -27,7 +28,7 @@ export default function ReportProblemCreate(this: any) {
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);
     const [image, setImage] = useState<File | null>(null);
-    const [file, setfile] =  useState<File | null>(null);
+    const [files, setFile] = useState<File | null>(null);
     const [date, setDate] = React.useState<Date | null>(null);
     const [user, setUser] = React.useState<UserInterface>();
     const [emp, setEmp] = React.useState<EmployeeInterface>();
@@ -44,7 +45,6 @@ export default function ReportProblemCreate(this: any) {
     const [progress, setProgress] = React.useState<number>(0);
     const [message, setMessage] = React.useState<string>("");
 
-    const [imageInfos, setImageInfos] = React.useState<FileInterface[]>([]);
     const handleClose = (res: any) => {
         if (res === "clickaway") {
             return;
@@ -75,6 +75,9 @@ export default function ReportProblemCreate(this: any) {
         });
     };
 
+    const handleChange1 = (event: { target: { file: React.SetStateAction<File | null>; }; }) => {
+        setFile(event.target.file);
+    }
 
     //ดึงพนักงาน
     function getEmployee() {
@@ -172,7 +175,25 @@ export default function ReportProblemCreate(this: any) {
                 }
             });
     }
-    //ดึงรูป
+
+    function handleUpload(): void {
+        const formData: FormData = new FormData();
+
+        // for (let i: number = 0; i < files.length; i++) {
+        //     formData.append(`images[${i}]`, files[i]);
+        // }
+
+        fetch('http://localhost:8080/file/post', {
+            method: 'POST',
+            body: formData,
+        })
+            .then((res) => res.json())
+            .then((data) => console.log(data))
+            .catch((err) => console.log(err));
+    }
+
+
+   // ดึงรูป
     function handleImage(e: React.ChangeEvent<HTMLInputElement>) {
         const apiUrl = "http://localhost:8080/files";
         const requestOptions = {
@@ -189,30 +210,35 @@ export default function ReportProblemCreate(this: any) {
                 console.log("Combobox_files", res)
                  if (e.target.files) {
                  console.log(e.target.files);
-                 setfile(e.target.files[0]);
+                 setFile(e.target.files[0]);
              } else {
                     console.log("else");
                 }
             });
     }
-        //อัพรูป
-        // function handleImage(e: React.ChangeEvent<HTMLInputElement>) {
-        //     if (e.target.files) {
-        //         console.log(e.target.files);
-        //         setImage(e.target.files[0]);
-        //     }
-        // }
-        //อัพรูป
-        function handleApi() {
-            if (image) {
-                const formData = new FormData();
-                formData.append("image", image);
-                axios.post("url", formData).then((res) => {
-                    console.log(res);
-                });
-            }
-        }
-    
+
+
+
+
+      
+    //อัพรูป
+    // function handleImage(e: React.ChangeEvent<HTMLInputElement>) {
+    //     if (e.target.files) {
+    //         console.log(e.target.files);
+    //         setImage(e.target.files[0]);
+    //     }
+    // }
+    //อัพรูป
+    // function handleApi() {
+    //     if (image) {
+    //         const formData = new FormData();
+    //         formData.append("image", image);
+    //         axios.post("url", formData).then((res) => {
+    //             console.log(res);
+    //         });
+    //     }
+    // }
+
     const convertType = (data: string | number | undefined | null) => {
         let val = typeof data === "string" ? parseInt(data) : data;
         return val;
@@ -227,7 +253,7 @@ export default function ReportProblemCreate(this: any) {
             StatusID: 1,
             NotificationDate: ReportProblem.NotificationDate,
             DepartmentID: emp?.DepartmentID,
-            File: file,
+            File: files?.arrayBuffer,
         };
         console.log("Data", data)
         const apiUrl = "http://localhost:8080/reportProblems";
@@ -325,7 +351,7 @@ export default function ReportProblemCreate(this: any) {
                 <Grid container spacing={2}>
                     <Grid item xs={4}>
                         <FormControl fullWidth variant="outlined" style={{ width: '100%' }}>
-                            <p>หัวข้อ</p>
+                            <p>หัวข้อ*</p>
                             <FormControl fullWidth variant="outlined">
                                 <TextField
                                     id="Heading"
@@ -338,11 +364,11 @@ export default function ReportProblemCreate(this: any) {
                             </FormControl>
                         </FormControl>
                     </Grid>
-                    </Grid>
-                    <Grid container spacing={1}>
+                </Grid>
+                <Grid container spacing={1}>
                     <Grid item xs={5}>
                         <FormControl fullWidth variant="outlined" style={{ width: '150%', float: 'left' }}>
-                            <p>รายละเอียด</p>
+                            <p>รายละเอียด*</p>
                             <FormControl fullWidth variant="outlined">
                                 <TextField
                                     id="Description"
@@ -355,7 +381,7 @@ export default function ReportProblemCreate(this: any) {
                             </FormControl>
                         </FormControl>
                     </Grid>
-                    </Grid>
+                </Grid>
                 <option />
 
                 <Grid item xs={4}>
