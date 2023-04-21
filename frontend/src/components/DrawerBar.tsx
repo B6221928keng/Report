@@ -1,7 +1,7 @@
 import { styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
-import { useNavigate } from "react-router-dom";
+import { useNavigate , Link } from "react-router-dom";
 import Typography from '@mui/material/Typography';
 import { ListItem, ListItemButton, ListItemIcon, IconButton, Divider, List, Drawer } from "@mui/material"; 
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
@@ -50,14 +50,14 @@ export default function DrawerBar({ role, drawerWidth, handleDrawerClose, open, 
         //     ]
         // } 
         const menuemployee = [
-            { name: "กรอกข้อมูล", icon: <ReportIcon />, link: "/reportProblemCreate" },
-            { name: "ข้อมูล", icon: <FormatListNumberedIcon />, link: "/reportProblem" },
-            { name: "ใช้งานได้", icon: <ChecklistRtlIcon />, link: "/reportProblem" },
+            { name: "กรอกข้อมูล", icon: <ReportIcon />, path: "/reportProblemCreate" },
+            { name: "ข้อมูล", icon: <FormatListNumberedIcon />, path: "/reportProblem" },
+            { name: "ใช้งานได้", icon: <ChecklistRtlIcon />, path: "/reportProblem" },
           ]
           const menuadmin = [
-            { name: "ข้อมูลรอตรวจสอบ", icon: <ErrorOutlineIcon />, link: "/adminReportProblem" },
-            { name: "ทำการแก้ไข", icon: <FlakyIcon />, link: "/adminReportComplete/:id" },
-            { name: "เสร็จสิ้น", icon: <CheckCircleOutlineIcon />, link: "/adminReportComplete/:id" },
+            { name: "ข้อมูลรอตรวจสอบ", icon: <ErrorOutlineIcon />, path: "/adminReportProblem" },
+            { name: "ทำการแก้ไข", icon: <FlakyIcon />, path: "/adminReportComplete/:id" },
+            { name: "เสร็จสิ้น", icon: <CheckCircleOutlineIcon />, path: "/adminReportComplete/:id" },
           ]
         
           var menu: any[];
@@ -78,7 +78,7 @@ export default function DrawerBar({ role, drawerWidth, handleDrawerClose, open, 
         return (
             menu.map((data, index) => (
                 <ListItem key={data.text} disablePadding>
-                    <ListItemButton onClick={()=>{navigator(data.link)}}>
+                    <ListItemButton onClick={()=>{navigator(data.path)}}>
                         <ListItemIcon>
                             {data.icon}
                         </ListItemIcon>

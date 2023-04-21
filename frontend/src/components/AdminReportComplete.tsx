@@ -3,7 +3,7 @@ import Container from '@mui/material/Container'
 import TableCell from '@mui/material/TableCell';
 import { Box, Grid, Select, TextField, Typography, Table, TableHead, TableRow, TableBody } from '@mui/material'
 import Button from '@mui/material/Button'
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink , useParams} from "react-router-dom";
 import TableContainer from '@mui/material/TableContainer';
 import moment from 'moment';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -25,6 +25,28 @@ function AdminReportComplete() {
     const [error, setError] = useState(false);
     const [ErrorMessage, setErrorMessage] = React.useState("");
 
+    let { id } = useParams();
+    const getreportProblemID = async (id: string | undefined | null) => {
+        const apiUrl = "http://localhost:8080";
+        const requestOptions = {
+            method: "PATCH",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+        };
+
+        fetch(`${apiUrl}/reportProblem/${id}`, requestOptions)
+            .then((response) => response.json())
+            .then((res) => {
+                console.log("ReportProblem", res)
+                if (res.data) {
+                    setReportProblem(res.data);
+                } else {
+                    console.log("else");
+                }
+            });
+    };
     const getReportProblem = async () => {
         const apiUrl = "http://localhost:8080/reportProblemstatus2";
         const requestOptions = {
@@ -116,13 +138,12 @@ function AdminReportComplete() {
             )
     }
 
-
     useEffect(() => {
         getEmployee();
         getReportProblem();
         getUser();
+        getreportProblemID(id);
     }, []);
-
 
     const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
         props,

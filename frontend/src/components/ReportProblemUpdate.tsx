@@ -16,7 +16,6 @@ import { ReportProblemInterface } from "../models/IReportProblem";
 import { EmployeeInterface } from "../models/IEmployee";
 import { DepartmentInterface } from "../models/IDepartment";
 
-
 export default function ReportProblemUpdate() {
 
     const [success, setSuccess] = React.useState(false);
