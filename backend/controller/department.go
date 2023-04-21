@@ -50,7 +50,7 @@ func GetDepartment(c *gin.Context) {
 func GetDepartmentByUserID(c *gin.Context) {
 	var department entity.Department
 	id := c.Param("id")
-	if err := entity.DB().Preload("Department").Raw("SELECT * FROM departments WHERE user_id = ?", id).Scan(&department).Error; err != nil {
+	if err := entity.DB().Preload("Department").Preload("User").Preload("Role").Raw("SELECT * FROM departments WHERE user_id = ?", id).Scan(&department).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

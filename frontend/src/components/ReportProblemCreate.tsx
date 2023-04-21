@@ -226,7 +226,7 @@ export default function ReportProblemCreate(this: any) {
             Description: ReportProblem.Description ?? "",
             StatusID: 1,
             NotificationDate: ReportProblem.NotificationDate,
-            DepartmentID: department?.ID,
+            DepartmentID: emp?.DepartmentID,
             File: file,
         };
         console.log("Data", data)

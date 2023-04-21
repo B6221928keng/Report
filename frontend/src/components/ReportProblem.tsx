@@ -14,12 +14,14 @@ import Snackbar from '@mui/material/Snackbar'
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { ReportProblemInterface } from "../models/IReportProblem";
 import { EmployeeInterface } from "../models/IEmployee";
+import { DepartmentInterface } from "../models/IDepartment";
 import { set } from "date-fns";
 import { UserInterface } from "../models/IUser";
 import { FileInterface } from "../models/IFile";
 import { upload } from "@testing-library/user-event/dist/upload";
 function ReportProblem() {
     const [emp, setEmp] = React.useState<EmployeeInterface>();
+    const [Department, setDepartment] = React.useState<DepartmentInterface>();
     const [user, setUser] = React.useState<UserInterface>();
     const [reportProblem, setReportProblem] = React.useState<ReportProblemInterface[]>([]);
     const [success, setSuccess] = useState(false);
@@ -65,6 +67,29 @@ function ReportProblem() {
                 console.log("Combobox_User", res)
                 if (res.data) {
                     setUser(res.data);
+                } else {
+                    console.log("else");
+                }
+            });
+    }
+    function getDepartment() {
+        const UserID = localStorage.getItem("uid")
+        const apiUrl = `http://localhost:8080/employeeUId/${UserID}`;
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+        };
+        fetch(apiUrl, requestOptions)
+            .then((response) => response.json())
+            .then((res) => {
+
+                console.log("Combobox_Department", res)
+                if (res.data) {
+                    console.log(res.data)
+                    setDepartment(res.data);
                 } else {
                     console.log("else");
                 }
@@ -158,6 +183,7 @@ function ReportProblem() {
         getEmployee();
         getReportProblem();
         getUser();
+        getDepartment();
     }, []);
 
 

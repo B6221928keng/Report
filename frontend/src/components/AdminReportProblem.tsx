@@ -35,28 +35,7 @@ function AdminReportProblem() {
     const [ReportProblem, setReportProblem] = React.useState<Partial<ReportProblemInterface>>({
         NotificationDate: new Date(),
     });
-     let { id } = useParams();
-    const getreportProblemID = async (id: string | undefined | null) => {
-        const apiUrl = "http://localhost:8080";
-        const requestOptions = {
-            method: "PATCH",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },
-        };
-
-        fetch(`${apiUrl}/reportProblem/${id}`, requestOptions)
-            .then((response) => response.json())
-            .then((res) => {
-                console.log("ReportProblem", res)
-                if (res.data) {
-                    setReportProblem(res.data);
-                } else {
-                    console.log("else");
-                }
-            });
-    };
+    
     const getReportProblem = async () => {
         const apiUrl = "http://localhost:8080/reportProblemstatus1";
         const requestOptions = {
@@ -160,7 +139,7 @@ function AdminReportProblem() {
         getEmployee();
         getReportProblem();
         getUser();
-        getreportProblemID(id);
+       
     }, []);
 
 
@@ -279,8 +258,6 @@ function AdminReportProblem() {
                                     <TableCell align="center" size="medium">    </TableCell>
                                     <TableCell align="center">
                                         <Button
-
-                                            
                                             variant='contained'
                                             color="primary"
                                             onClick={()=> Admin_Pending(reportProblem.ID)}
