@@ -3,7 +3,7 @@ import Container from '@mui/material/Container'
 import TableCell from '@mui/material/TableCell';
 import { Box, Grid, Select, TextField, Typography, Table, TableHead, TableRow, TableBody } from '@mui/material'
 import Button from '@mui/material/Button'
-import { Link as RouterLink , useParams } from "react-router-dom";
+import { Link as RouterLink, useParams } from "react-router-dom";
 import TableContainer from '@mui/material/TableContainer';
 import moment from 'moment';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -11,7 +11,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import Snackbar from '@mui/material/Snackbar'
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
-
 
 import { ReportProblemInterface } from "../models/IReportProblem";
 import { EmployeeInterface } from "../models/IEmployee";
@@ -35,7 +34,7 @@ function AdminReportProblem() {
     const [ReportProblem, setReportProblem] = React.useState<Partial<ReportProblemInterface>>({
         NotificationDate: new Date(),
     });
-    
+
     const getReportProblem = async () => {
         const apiUrl = "http://localhost:8080/reportProblemstatus1";
         const requestOptions = {
@@ -139,7 +138,7 @@ function AdminReportProblem() {
         getEmployee();
         getReportProblem();
         getUser();
-       
+
     }, []);
 
 
@@ -258,10 +257,10 @@ function AdminReportProblem() {
                                     <TableCell align="center" size="medium">    </TableCell>
                                     <TableCell align="center">
                                         <Button
+                                            aria-label="OPEN"
                                             variant='contained'
                                             color="primary"
-                                            onClick={()=> Admin_Pending(reportProblem.ID)}
-
+                                            onClick={() => Admin_Pending(reportProblem.ID)}
                                         >
                                             Pending
                                         </Button>

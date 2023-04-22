@@ -33,7 +33,7 @@ func SetupDatabase() {
 		&Status{},
 		&ReportProblem{},
 		&Employee{},
-		&File{},
+		&FileUpload{},
 	)
 
 	db = database
@@ -55,7 +55,7 @@ func SetupDatabase() {
 	db.Model(&Status{}).Create(&Status2)
 	db.Model(&Status{}).Create(&Status3)
 	db.Model(&Status{}).Create(&Status4)
-	
+
 	//Department
 	Department1 := Department{
 		DepartmentName: "บุคคล",
@@ -101,17 +101,17 @@ func SetupDatabase() {
 	}
 
 	userEmployee := User{
-		UserName: "B111",
-		Password: string(password2),
-		Role:     role1,
+		UserName:   "B111",
+		Password:   string(password2),
+		Role:       role1,
 		Department: Department1,
 	}
 	db.Model(&User{}).Create(&userEmployee)
 
 	userAdmin := User{
-		UserName: "B222",
-		Password: string(password1),
-		Role:     role2,
+		UserName:   "B222",
+		Password:   string(password1),
+		Role:       role2,
 		Department: Department5,
 	}
 	db.Model(&User{}).Create(&userAdmin)
@@ -120,8 +120,8 @@ func SetupDatabase() {
 		EmployeeName: "Jirawat",
 		Email:        "Jirawat@gmail.com",
 		User:         userAdmin,
-		Role: role2,
-		Department: Department5,
+		Role:         role2,
+		Department:   Department5,
 	}
 	db.Model(&Employee{}).Create(&Admin)
 
@@ -129,28 +129,29 @@ func SetupDatabase() {
 		EmployeeName: "Napakan",
 		Email:        "Napakan@gmail.com",
 		User:         userEmployee,
-		Role: role1,
-		Department: Department1,
+		Role:         role1,
+		Department:   Department1,
 	}
 	db.Model(&Employee{}).Create(&Employee1)
 
-	File1 := File{
-		File: "",
+	FileUpload1 := FileUpload{
+		Filename: "geese-ga56c79f73_1920",
+		Mimetype: "JPG File",
+		Path:     "C:Users/keng-/Downloads",
 	}
-	db.Model(&File{}).Create(&File1)
+	db.Model(&FileUpload{}).Create(&FileUpload1)
 
 	//-----------------------------------------------------------ระบบแจ้งปัญหา------------------------------------------
-	
 
 	//ระบบแจ้งปัญหา
 	reportProblem := ReportProblem{
 		Employee:         Employee1,
 		Department:       Department1,
-		Heading: "กรอกหัวข้อ",
-		Description: "กรอกรายละเอียด",
+		Heading:          "กรอกหัวข้อ",
+		Description:      "กรอกรายละเอียด",
 		Status:           Status1,
 		NotificationDate: time.Now(),
-		File: File1,
+		FileUpload:       FileUpload1,
 	}
 	db.Model(&ReportProblem{}).Create(&reportProblem)
 

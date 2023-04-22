@@ -58,9 +58,9 @@ func main() {
 	r.GET("/employees", controller.ListEmployee)
 	r.GET("/employeeID/:id", controller.GetEmployee)
 	//File
-	r.GET("/fileId/:id", controller.GetFileByUserID)
-	r.GET("/files", controller.ListFile)
-	r.GET("/fileID/:id", controller.GetFile)
+	r.GET("/upload/:id", controller.GetFileUpload )
+	r.GET("/uploads", controller.ListFileUpload)
+	r.POST("/upload", controller.GetFileUploadmain)
 	//role
 	r.GET("/roles", controller.ListRole)
 

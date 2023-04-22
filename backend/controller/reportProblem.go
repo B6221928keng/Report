@@ -15,6 +15,7 @@ func CreateReportProblem(c *gin.Context) {
 	var Employee entity.Employee
 	var status entity.Status
 	var department entity.Department
+	var fileUpload entity.FileUpload
 
 	//เช็คว่าตรงกันมั้ย
 	if err := c.ShouldBindJSON(&reportProblem); err != nil {
@@ -40,6 +41,11 @@ func CreateReportProblem(c *gin.Context) {
 		return
 	}
 
+	//  : ค้นหา file ด้วย id
+	if tx := entity.DB().Where("id = ?", reportProblem.FileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "fileUpload not found"})
+		return
+	}
 	// 12: สร้าง ReportProblem
 	wv := entity.ReportProblem{
 		NotificationDate: reportProblem.NotificationDate,
@@ -48,6 +54,7 @@ func CreateReportProblem(c *gin.Context) {
 		Employee:         Employee,
 		Status:           status,
 		Department:       department,
+		FileUpload:       reportProblem.FileUpload,
 	}
 	if _, err := govalidator.ValidateStruct(wv); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -75,7 +82,7 @@ func GetReportProblem(c *gin.Context) {
 // GET /reportProblem
 func ListReportProblem(c *gin.Context) {
 	var reportProblem []entity.ReportProblem
-	if err := entity.DB().Preload("Employee").Preload("Status").Preload("Department").Raw("SELECT * FROM report_Problems").Find(&reportProblem).Error; err != nil {
+	if err := entity.DB().Preload("Employee").Preload("Status").Preload("Department").Preload("FileUpload").Raw("SELECT * FROM report_Problems").Find(&reportProblem).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -84,7 +91,7 @@ func ListReportProblem(c *gin.Context) {
 
 func ListReportProblemStatusID1(c *gin.Context) {
 	var reportProblem []entity.ReportProblem
-	if err := entity.DB().Preload("Employee").Preload("Status").Preload("Department").Raw("SELECT * FROM report_Problems where status_id = 1").Find(&reportProblem).Error; err != nil {
+	if err := entity.DB().Preload("Employee").Preload("Status").Preload("Department").Preload("FileUpload").Raw("SELECT * FROM report_Problems where status_id = 1").Find(&reportProblem).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -92,12 +99,13 @@ func ListReportProblemStatusID1(c *gin.Context) {
 }
 func ListReportProblemStatusID2(c *gin.Context) {
 	var reportProblem []entity.ReportProblem
-	if err := entity.DB().Preload("Employee").Preload("Status").Preload("Department").Raw("SELECT * FROM report_Problems where status_id = 2").Find(&reportProblem).Error; err != nil {
+	if err := entity.DB().Preload("Employee").Preload("Status").Preload("Department").Preload("FileUpload").Raw("SELECT * FROM report_Problems where status_id = 2").Find(&reportProblem).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": reportProblem})
 }
+
 // DELETE /reportProblems/:id
 func DeleteReportProblem(c *gin.Context) {
 	id := c.Param("id")
@@ -116,6 +124,7 @@ func UpdateReportProblem(c *gin.Context) {
 	var Employee entity.Employee
 	var status entity.Status
 	var department entity.Department
+	var fileUpload entity.FileUpload
 
 	if err := c.ShouldBindJSON(&newreportProblem); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -135,7 +144,7 @@ func UpdateReportProblem(c *gin.Context) {
 		}
 		fmt.Print("NOT NULL")
 		newreportProblem.Employee = Employee
-	}else {
+	} else {
 		if tx := entity.DB().Where("id = ?", newreportProblem.EmployeeID).First(&Employee); tx.RowsAffected == 0 {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "not found employee"})
 			return
@@ -150,7 +159,7 @@ func UpdateReportProblem(c *gin.Context) {
 			return
 		}
 		newreportProblem.Status = status
-	}else {
+	} else {
 		if tx := entity.DB().Where("id = ?", newreportProblem.StatusID).First(&status); tx.RowsAffected == 0 {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "not found statuses"})
 			return
@@ -171,9 +180,22 @@ func UpdateReportProblem(c *gin.Context) {
 		}
 		newreportProblem.Department = department
 	}
+	// ค้นหา file ด้วย id
+	if newreportProblem.FileUploadID != nil {
+		if tx := entity.DB().Where("id = ?", newreportProblem.FileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "fileUploads not found"})
+			return
+		}
+		newreportProblem.FileUpload = fileUpload
+	} else {
+		if tx := entity.DB().Where("id = ?", newreportProblem.FileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "fileUploads not found"})
+			return
+		}
+		newreportProblem.FileUpload = fileUpload
+	}
 
 	reportProblem.Status = newreportProblem.Status
-	
 
 	update := entity.ReportProblem{
 		NotificationDate: reportProblem.NotificationDate,
@@ -182,6 +204,7 @@ func UpdateReportProblem(c *gin.Context) {
 		Status:           reportProblem.Status,
 		Heading:          reportProblem.Heading,
 		Description:      reportProblem.Description,
+		FileUpload:       reportProblem.FileUpload,
 	}
 	// ขั้นตอนการ validate
 	if _, err := govalidator.ValidateStruct(update); err != nil {

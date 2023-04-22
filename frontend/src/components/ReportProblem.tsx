@@ -17,7 +17,6 @@ import { EmployeeInterface } from "../models/IEmployee";
 import { DepartmentInterface } from "../models/IDepartment";
 import { set } from "date-fns";
 import { UserInterface } from "../models/IUser";
-import { FileInterface } from "../models/IFile";
 import { upload } from "@testing-library/user-event/dist/upload";
 function ReportProblem() {
     const [emp, setEmp] = React.useState<EmployeeInterface>();
@@ -32,7 +31,6 @@ function ReportProblem() {
     const [progress, setProgress] = React.useState<number>(0);
     const [message, setMessage] = React.useState<string>("");
     const [image, setImage] = useState<File | null>(null);
-    const [imageInfos, setImageInfos] = React.useState<Array<FileInterface>>([]);
     const getReportProblem = async () => {
         const apiUrl = "http://localhost:8080/reportProblem";
         const requestOptions = {
@@ -146,6 +144,8 @@ function ReportProblem() {
                 }
             )
     }
+
+    
     //อัพรูป
     const selectImage = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFiles = event.target.files as FileList;
@@ -154,30 +154,6 @@ function ReportProblem() {
         setProgress(0);
     };
 
-
-    const handleApi = async (id: string | number | undefined) => {
-        const apiUrl = "http://localhost:8080/files";
-        const requestOptions = {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },
-        };
-
-        fetch(`${apiUrl}/reportProblems/${id}`, requestOptions)
-            .then((response) => response.json())
-            .then(
-                (res) => {
-                    if (image) {
-                        const formData = new FormData();
-                        formData.append("image", image);
-                        axios.post("url", formData).then((res) => {
-                            console.log(res);
-                        });
-                    }
-                })
-    }
 
     useEffect(() => {
         getEmployee();
@@ -312,12 +288,14 @@ function ReportProblem() {
                                     <TableCell align="center" width="15%"> {reportProblem.Heading}      </TableCell>
                                     <TableCell align="left" width="20%"> {reportProblem.Description}           </TableCell>
                                     <TableCell align="center" width="5%" > {moment(reportProblem.NotificationDate).format('HH:mm  DD MMMM yyyy')}     </TableCell>
-                                    <TableCell align="center">
+                                    
+                                    {/* <TableCell align="center">
                                         <IconButton aria-label="GET"
                                             vertical-align="middle"
                                             //ดูไฟล์
                                             onClick={() => handleApi(reportProblem.ID)}><PhotoIcon /></IconButton >
-                                    </TableCell>
+                                    </TableCell> */}
+                                    
                                     {/* <TableCell align="center">
                                         <IconButton aria-label="delete"
                                             vertical-align="middle"

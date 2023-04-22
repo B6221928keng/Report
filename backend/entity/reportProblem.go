@@ -23,8 +23,8 @@ type ReportProblem struct {
 	DepartmentID *uint
 	Department   Department `gorm:"references:id" valid:"-"`
 
-	FileID *uint
-	File   File `gorm:"references:id" valid:"-"`
+	FileUploadID *uint
+	FileUpload   FileUpload `gorm:"references:id" valid:"-"`
 }
 type Status struct {
 	gorm.Model
@@ -40,15 +40,6 @@ type Department struct {
 	DepartmentName string `gorm:"uniqueIndex"`
 
 	reportProblem []ReportProblem `gorm:"foreignKey:DepartmentID"`
-}
-
-type File struct {
-	gorm.Model
-
-	File string `gorm:"uniqueIndex"`
-	
-
-	reportProblem []ReportProblem `gorm:"foreignKey:FileID"`
 }
 
 type Employee struct {
@@ -68,3 +59,11 @@ type Employee struct {
 
 	reportProblem []ReportProblem `gorm:"foreignKey:EmployeeID"`
 }
+type FileUpload struct {
+	gorm.Model
+	Filename string
+	Mimetype string
+	Path     string
+
+	reportProblem []ReportProblem `gorm:"foreignKey:FileUploadID"`
+  }
