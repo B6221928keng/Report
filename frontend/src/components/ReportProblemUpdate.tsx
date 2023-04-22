@@ -223,7 +223,6 @@ export default function ReportProblemUpdate() {
 
     //ดึงข้อมูล ใส่ combobox
     React.useEffect(() => {
-
         getDepartment();
         getStatus();
         getUser();
