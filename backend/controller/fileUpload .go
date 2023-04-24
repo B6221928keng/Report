@@ -1,12 +1,15 @@
 package controller
 
 import (
-	"net/http"
 	"fmt"
+	"io/ioutil"
+	"net/http"
+	"os"
 
 	"github.com/B6221928keng/Report/entity"
 	"github.com/gin-gonic/gin"
-	"gorm.io/driver/mysql"
+	// "gorm.io/driver/mysql"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
     type FileUpload struct {
@@ -18,8 +21,7 @@ import (
   
   func GetFileUploadmain(c *gin.Context) {
 	var fileUpload entity.FileUpload
-	dsn := "user:password@tcp(127.0.0.1:3306)/database?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
 	if err != nil {
 	  panic("failed to connect database")
 	}
@@ -82,4 +84,47 @@ func ListFileUpload(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": fileUploads})
+}
+
+func UploadFile(w http.ResponseWriter, r *http.Request) {
+	// Parse multipart form data
+	err := r.ParseMultipartForm(10 << 20) // 10 MB max file size
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Retrieve uploaded file
+	file, _, err := r.FormFile("file")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	defer file.Close()
+
+	// Read file contents
+	content, err := ioutil.ReadAll(file)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Create file on disk
+	f, err := os.Create(fmt.Sprintf("./uploads/%s", file))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer f.Close()
+
+	// Write file contents to disk
+	_, err = f.Write(content)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Return success response
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("File uploaded successfully"))
 }

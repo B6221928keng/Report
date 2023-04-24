@@ -14,7 +14,8 @@ import moment from 'moment';
 import { useState } from 'react';
 import axios from 'axios';
 
-import { FileUploadtInterface } from "../models/IFileUpload";
+import UploadService from "../service/FileUploadService";
+import { FileUploadtInterface } from "../models/IFiles";
 import { UserInterface } from "../models/IUser";
 import { StatusInterface } from "../models/IStatus";
 import { ReportProblemInterface } from "../models/IReportProblem";
@@ -25,7 +26,7 @@ import { set } from "date-fns";
 
 export default function ReportProblemCreate(this: any) {
 
-    const [FileUpload, setfileUpload] = React.useState<FileUploadtInterface>();
+    const [fileUpload, setFileUpload] = useState<Array<FileUploadtInterface>>([]);
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);
     const [date, setDate] = React.useState<Date | null>(null);
@@ -41,6 +42,12 @@ export default function ReportProblemCreate(this: any) {
     const [loading, setLoading] = React.useState(false);
     const [ErrorMessage, setErrorMessage] = React.useState<String>();
     const [message, setMessage] = React.useState<string>("");
+    const [progress, setProgress] = useState<number>(0);
+    const [currentFile, setCurrentFile] = useState<File>();
+    const [fileData, setFileData] = useState<string>("");
+
+
+
 
     const handleClose = (res: any) => {
         if (res === "clickaway") {
@@ -72,40 +79,105 @@ export default function ReportProblemCreate(this: any) {
         });
     };
 
+    // const getFile = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    //     setFileData(e.target.files![0]);
+    // };
+    // const handleChange1 = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    //     setFileUpload(event.target.fileUpload ? event.target.fileUpload[0] : undefined);
+    //   };
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const apiUrl = "http://localhost:8080/uploads";
-        const requestOptions = {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },
-        };
-        fetch(apiUrl, requestOptions)
-            .then((response) => response.json())
-            .then((res) => {
 
-                console.log("Combobox_fileupload", res)
-                if (res.data) {
-                    console.log(res.data)
-                    setFiles(event.target.files);
+    // const uploadFile = (e: React.FormEvent<HTMLFormElement>): void => {
+    //     e.preventDefault();
+    //     const data = new FormData();
+    //     data.append("file", fileData!);
+    //     axios({
+    //         method: "POST",
+    //         url: "http://localhost:8080/upload",
+    //         data: data,
+    //     }).then((res) => {
+    //         alert(res.data.message);
+    //     });
+    // };
+
+    const selectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { files } = event.target;
+        const selectedFiles = files as FileList;
+        setCurrentFile(selectedFiles?.[0]);
+        setProgress(0);
+        
+    };
+
+    const upload = () => {
+        setProgress(0);
+        if (!currentFile) return;
+
+        UploadService.upload(currentFile, (event: any) => {
+            setProgress(Math.round((100 * event.loaded) / event.total));
+        })
+            .then((response) => {
+                setMessage(response.data.message);
+                return UploadService.getFiles();
+            })
+            .then((fileUpload) => {
+                setFileUpload(fileUpload.data);
+            })
+            .catch((err) => {
+                setProgress(0);
+
+                if (err.response && err.response.data && err.response.data.message) {
+                    setMessage(err.response.data.message);
                 } else {
-                    console.log("else");
+                    setMessage("Could not upload the File!");
                 }
+
+                setCurrentFile(undefined);
             });
     };
-    const handleUpload = async () => {
-        if (files) {
-            const formData = new FormData();
-            for (let i = 0; i < files.length; i++) {
-                formData.append('files', files[i]);
-            }
-            await axios.post('/upload', formData);
-        }
-    };
 
-    
+
+    // const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     const apiUrl = "http://localhost:8080/uploads";
+    //     const requestOptions = {
+    //         method: "GET",
+    //         headers: {
+    //             Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //                "Content-type": "application/json",
+    //         },
+    //     };
+    //     fetch(apiUrl, requestOptions)
+    //         .then((response) => response.json())
+    //         .then((res) => {
+
+    //             console.log("fileupload", event.target.files)
+    //             if (event.target.files) {
+    //                 console.log(event.target.files)
+    //                 setFileUpload(res.data);
+    //             } else {
+    //                 console.log("else");
+    //             }
+    //         });
+    // };
+    // const handleUpload = async () => {
+    //     const apiUrl = "http://localhost:8080/uploads";
+    //     const requestOptions = {
+    //         method: "POST",
+    //         headers: {
+    //             Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //             "Content-Type": "application/json",
+    //         },
+    //     };
+    //     fetch(apiUrl, requestOptions)
+    //         .then((response) => response.json())
+
+    //     if (files) {
+    //         const formData = new FormData();
+    //         for (let i = 0; i < files.length; i++) {
+    //             formData.append('files', files[i]);
+    //         }
+    //         await axios.post('/upload', formData);
+    //     }
+    // };
 
 
     //ดึงพนักงาน
@@ -221,7 +293,7 @@ export default function ReportProblemCreate(this: any) {
             StatusID: 1,
             NotificationDate: ReportProblem.NotificationDate,
             DepartmentID: emp?.DepartmentID,
-            FileUpload: ReportProblem?.FileUpload,
+            FileUpload: ReportProblem.FileUpload,
         };
         console.log("Data", data)
         const apiUrl = "http://localhost:8080/reportProblems";
@@ -254,8 +326,10 @@ export default function ReportProblemCreate(this: any) {
         getStatus();
         getUser();
         getEmployee();
-        // handleFileChange();
 
+        UploadService.getFiles().then((response) => {
+            setFileUpload(response.data);
+        });
         console.log(localStorage.getItem("dep"))
 
     }, []);
@@ -355,8 +429,51 @@ export default function ReportProblemCreate(this: any) {
                 <option />
 
                 <div>
-                    <input type="file" name="files" multiple onChange={handleFileChange} />
-                    {/* <button onClick={handleUpload}>Upload</button> */}
+                    <input type="file" name="files"  onChange={selectFile} />
+                    {/* <button onSubmit={handleUpload}>Upload</button> */}
+                </div>
+                <div className="col-4">
+                    <button
+                        className="btn btn-success btn-sm"
+                        disabled={!currentFile}
+                        onClick={upload}
+                    >
+                        Upload
+                    </button>
+                </div>
+
+
+                {currentFile && (
+                    <div className="progress my-3">
+                        <div
+                            className="progress-bar progress-bar-info"
+                            role="progressbar"
+                            aria-valuenow={progress}
+                            aria-valuemin={0}
+                            aria-valuemax={100}
+                            style={{ width: progress + "%" }}
+                        >
+                            {progress}%
+                        </div>
+                    </div>
+                )}
+
+                {message && (
+                    <div className="alert alert-secondary mt-3" role="alert">
+                        {message}
+                    </div>
+                )}
+
+                <div className="card mt-3">
+                    <div className="card-header">List of Files</div>
+                    <ul className="list-group list-group-flush">
+                        {fileUpload &&
+                            fileUpload.map((fileUpload, index) => (
+                                <li className="list-group-item" key={index}>
+                                    <a href={fileUpload.Filename}>{fileUpload.ID}{fileUpload.Mimetype}</a>
+                                </li>
+                            ))}
+                    </ul>
                 </div>
 
                 {/* <Grid item xs={4}>

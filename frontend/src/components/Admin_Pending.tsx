@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { Button, Dialog, DialogActions, DialogTitle, IconButton, Snackbar } from "@mui/material";
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
-import { GetReportproblemByID, UpdateReportproblem } from "../service/FileUploadService";
+import { GetReportproblemByID, UpdateReportproblem } from "../service/Servics";
 import { ReportProblemInterface } from "../models/IReportProblem";
 import React from "react";
 
