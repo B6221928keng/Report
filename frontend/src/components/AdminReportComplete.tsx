@@ -20,11 +20,13 @@ import { UserInterface } from "../models/IUser";
 function AdminReportComplete() {
     const [emp, setEmp] = React.useState<EmployeeInterface>();
     const [user, setUser] = React.useState<UserInterface>();
-    const [reportProblem, setReportProblem] = React.useState<ReportProblemInterface[]>([]);
+    const [reportProblem, setReportProblems] = React.useState<ReportProblemInterface[]>([]);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(false);
     const [ErrorMessage, setErrorMessage] = React.useState("");
-
+    const [ReportProblem, setReportProblem] = React.useState<Partial<ReportProblemInterface>>({
+        NotificationDate: new Date(),
+    });
     let { id } = useParams();
     const getreportProblemID = async (id: string | undefined | null) => {
         const apiUrl = "http://localhost:8080";
@@ -61,10 +63,11 @@ function AdminReportComplete() {
             .then((res) => {
                 console.log(res.data);
                 if (res.data) {
-                    setReportProblem(res.data);
+                    setReportProblems(res.data);
                 }
             });
     };
+    
     function getUser() {
         const UserID = localStorage.getItem("uid")
         const apiUrl = `http://localhost:8080/users/${UserID}`;

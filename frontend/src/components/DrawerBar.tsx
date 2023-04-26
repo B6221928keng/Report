@@ -52,14 +52,14 @@ export default function DrawerBar({ role, drawerWidth, handleDrawerClose, open, 
 
         
         const menuemployee = [
-            { name: "กรอกข้อมูล", icon: <ReportIcon />, path: "/reportProblemCreate" },
-            { name: "ข้อมูล", icon: <FormatListNumberedIcon />, path: "/reportProblem" },
-            { name: "ใช้งานได้", icon: <ChecklistRtlIcon />, path: "/reportProblem" },
+            { name: " กรอกข้อมูล", icon: <ReportIcon />, path: "/reportProblemCreate" },
+            { name: " ข้อมูล", icon: <FormatListNumberedIcon />, path: "/reportProblem" },
+            { name: " ตรวจสอบการใช้งาน", icon: <ChecklistRtlIcon />, path: "/reportProblem" },
           ]
           const menuadmin = [
-            { name: "ข้อมูลรอตรวจสอบ", icon: <ErrorOutlineIcon />, path: "/adminReportProblem" },
-            { name: "ทำการแก้ไข", icon: <FlakyIcon />, path: "/adminReportComplete/:id" },
-            { name: "เสร็จสิ้น", icon: <CheckCircleOutlineIcon />, path: "/adminReportComplete/:id" },
+            { name: " ข้อมูลรอตรวจสอบ" , icon: < ErrorOutlineIcon  />, path: "/adminReportProblem" },
+            { name: " ทำการแก้ไข", icon: <FlakyIcon  />, path: "/adminReportComplete/:id" },
+            { name: " เสร็จสิ้น", icon: < CheckCircleOutlineIcon  />, path: "/adminReportEnd/:id" },
           ]
         
           var menu: any[];
@@ -83,6 +83,7 @@ export default function DrawerBar({ role, drawerWidth, handleDrawerClose, open, 
                     <ListItemButton onClick={()=>{navigator(data.path)}}>
                         <ListItemIcon>
                             {data.icon}
+                            {data.name}
                         </ListItemIcon>
                     </ListItemButton>
                 </ListItem>

@@ -3,6 +3,7 @@ import Container from '@mui/material/Container'
 import TableCell from '@mui/material/TableCell';
 import { Box, Grid, Select, TextField, Typography, Table, TableHead, TableRow, TableBody } from '@mui/material'
 import Button from '@mui/material/Button'
+import { useNavigate } from "react-router-dom";
 import { Link as RouterLink, useParams } from "react-router-dom";
 import TableContainer from '@mui/material/TableContainer';
 import moment from 'moment';
@@ -35,6 +36,29 @@ function AdminReportProblem() {
         NotificationDate: new Date(),
     });
 
+
+    let { id } = useParams();
+    const getreportProblemID = async (id: string | undefined | null) => {
+        const apiUrl = "http://localhost:8080";
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+        };
+
+        fetch(`${apiUrl}/reportProblem/${id}`, requestOptions)
+            .then((response) => response.json())
+            .then((res) => {
+                console.log("ReportProblem", res)
+                if (res.data) {
+                    setReportProblem(res.data);
+                } else {
+                    console.log("else");
+                }
+            });
+    };
     const getReportProblem = async () => {
         const apiUrl = "http://localhost:8080/reportProblemstatus1";
         const requestOptions = {
@@ -53,6 +77,7 @@ function AdminReportProblem() {
                 }
             });
     };
+
     function getUser() {
         const UserID = localStorage.getItem("uid")
         const apiUrl = `http://localhost:8080/users/${UserID}`;
@@ -97,22 +122,27 @@ function AdminReportProblem() {
                 }
             });
     }
+    const navigate = useNavigate();
+    const convertType = (data: string | number | undefined | null) => {
+        let val = typeof data === "string" ? parseInt(data) : data;
+        return val;
+    };
 
-    function submit1() {
+    function submit2() {
         setLoading(true)
         let data = {
+            ID: convertType(ReportProblem.ID),
             EmployeeID: emp?.ID,
-            Heading: ReportProblem.Heading ?? "",
-            Description: ReportProblem.Description ?? "",
+            Heading: ReportProblem.Heading,
+            Description: ReportProblem.Description,
             StatusID: 2,
-            NotificationDate: ReportProblem.NotificationDate,
-            DepartmentID: department?.ID,
-            File: file,
+            DepartmentID: convertType(emp?.DepartmentID),
+            NotificationDate: new Date().toISOString(),
         };
-        console.log("Data", data)
-        const apiUrl = "http://localhost:8080/reportProblem";
+        console.log("Data", data);
+        const apiUrl = "http://localhost:8080/reportProblems";
         const requestOptions = {
-            method: "PATCH",
+            method: "POST",
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json",
@@ -122,22 +152,25 @@ function AdminReportProblem() {
         fetch(apiUrl, requestOptions)
             .then((response) => response.json())
             .then((res) => {
-                console.log("Res", res)
+                console.log("Res", res);
                 if (res.data) {
-                    setErrorMessage("")
+                    setErrorMessage("");
                     setSuccess(true);
+                    navigate(`/adminReportComplete/${res.data.ID}`); // use the new ID returned from the server
                 } else {
-                    setErrorMessage(res.error)
-                    setError(true)
+                    setErrorMessage(res.error);
+                    setError(true);
                 }
             });
-    }
+    };
 
 
-    useEffect(() => {
+    React.useEffect(() => {
         getEmployee();
         getReportProblem();
         getUser();
+        getEmployee();
+        getreportProblemID(id);
 
     }, []);
 
@@ -148,7 +181,6 @@ function AdminReportProblem() {
     ) {
         return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
     });
-
     const handleClose = (res: any) => {
         if (res === "clickaway") {
             return;
@@ -164,12 +196,12 @@ function AdminReportProblem() {
             <Container maxWidth="md">
                 <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
                     <Alert onClose={handleClose} severity="success">
-                        ลบข้อมูลสำเร็จ
+                        บันทึกข้อมูลสำเร็จ
                     </Alert>
                 </Snackbar>
                 <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
                     <Alert onClose={handleClose} severity="error">
-                        ลบข้อมูลไม่สำเร็จ: {ErrorMessage}
+                        บันทึกลบข้อมูลไม่สำเร็จ: {ErrorMessage}
                     </Alert>
                 </Snackbar>
 
@@ -256,14 +288,29 @@ function AdminReportProblem() {
                                     </TableCell> */}
                                     <TableCell align="center" size="medium">    </TableCell>
                                     <TableCell align="center">
-                                        <Button
-                                            aria-label="OPEN"
+                                        <div>
+                                            {success && <p>Form submitted successfully!</p>}
+                                            <TableBody>
+                                                {/* ... */}
+                                            </TableBody>
+                                            <Button
+                                                variant="contained"
+                                                color="warning"
+                                                onClick={submit2}
+                                                disabled={loading}
+                                            >
+                                                {loading ? "Loading..." : "Pending"}
+                                            </Button>
+                                        </div>
+                                        {/* <IconButton vertical-align="middle" onClick={() => {Admin_Pending(reportProblem.ID)}}></IconButton> */}
+                                        {/* <Button
+                                            aria-label="delete"
                                             variant='contained'
                                             color="primary"
                                             onClick={() => Admin_Pending(reportProblem.ID)}
                                         >
                                             Pending
-                                        </Button>
+                                        </Button> */}
                                     </TableCell>
                                 </TableRow>
                             ))}

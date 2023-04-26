@@ -119,7 +119,7 @@ export default function ReportProblemCreate(this: any) {
           if (files) {
             const formData = new FormData();
             for (let i = 0; i < files.length; i++) {
-              formData.append("files", files[i]);
+              formData.append("fileupload", files[i]);
             }
             const response = await fetch(apiUrl, {
               ...requestOptions,
@@ -243,7 +243,7 @@ export default function ReportProblemCreate(this: any) {
             StatusID: 1,
             NotificationDate: ReportProblem.NotificationDate,
             DepartmentID: emp?.DepartmentID,
-            FileUpload: ReportProblem.FileUpload?.Mimetype,
+            // FileUpload: fileUpload,
         };
         console.log("Data", data)
         const apiUrl = "http://localhost:8080/reportProblems";
@@ -276,7 +276,7 @@ export default function ReportProblemCreate(this: any) {
         getStatus();
         getUser();
         getEmployee();
-        
+        handleUpload();
         console.log(localStorage.getItem("dep"))
 
     }, []);
@@ -375,10 +375,10 @@ export default function ReportProblemCreate(this: any) {
                 </Grid>
                 <option />
 
-                <div>
+                {/* <div>
                     <input type="file" name="files" multiple onChange={handleFileChange} />
                     <button onSubmit={handleUpload}>Upload</button>
-                </div>
+                </div> */}
 
                 <Grid item xs={4}></Grid>
                 <Grid item xs={12}>
@@ -401,6 +401,8 @@ export default function ReportProblemCreate(this: any) {
                             variant="contained"
                             color="primary"
                             onClick={submit}
+                            component={RouterLink}
+                            to="/reportProblem"
                         >
                             บันทึกข้อมูล
                         </Button>

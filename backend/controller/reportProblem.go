@@ -15,7 +15,7 @@ func CreateReportProblem(c *gin.Context) {
 	var Employee entity.Employee
 	var status entity.Status
 	var department entity.Department
-	var fileUpload entity.FileUpload
+	// var fileUpload entity.FileUpload
 
 	//เช็คว่าตรงกันมั้ย
 	if err := c.ShouldBindJSON(&reportProblem); err != nil {
@@ -42,10 +42,10 @@ func CreateReportProblem(c *gin.Context) {
 	}
 
 	//  : ค้นหา file ด้วย id
-	if tx := entity.DB().Where("id = ?", reportProblem.FileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "fileUpload not found"})
-		return
-	}
+	// if tx := entity.DB().Where("id = ?", reportProblem.FileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "fileUpload not found"})
+	// 	return
+	// }
 	// 12: สร้าง ReportProblem
 	wv := entity.ReportProblem{
 		NotificationDate: reportProblem.NotificationDate,
@@ -124,7 +124,7 @@ func UpdateReportProblem(c *gin.Context) {
 	var Employee entity.Employee
 	var status entity.Status
 	var department entity.Department
-	var fileUpload entity.FileUpload
+	// var fileUpload entity.FileUpload
 
 	if err := c.ShouldBindJSON(&newreportProblem); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -175,25 +175,25 @@ func UpdateReportProblem(c *gin.Context) {
 		newreportProblem.Department = department
 	} else {
 		if tx := entity.DB().Where("id = ?", newreportProblem.DepartmentID).First(&department); tx.RowsAffected == 0 {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "departments not found"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": " not found departments"})
 			return
 		}
 		newreportProblem.Department = department
 	}
 	// ค้นหา file ด้วย id
-	if newreportProblem.FileUploadID != nil {
-		if tx := entity.DB().Where("id = ?", newreportProblem.FileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "fileUploads not found"})
-			return
-		}
-		newreportProblem.FileUpload = fileUpload
-	} else {
-		if tx := entity.DB().Where("id = ?", newreportProblem.FileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "fileUploads not found"})
-			return
-		}
-		newreportProblem.FileUpload = fileUpload
-	}
+	// if newreportProblem.FileUploadID != nil {
+	// 	if tx := entity.DB().Where("id = ?", newreportProblem.FileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
+	// 		c.JSON(http.StatusBadRequest, gin.H{"error": "fileUploads not found"})
+	// 		return
+	// 	}
+	// 	newreportProblem.FileUpload = fileUpload
+	// } else {
+	// 	if tx := entity.DB().Where("id = ?", newreportProblem.FileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
+	// 		c.JSON(http.StatusBadRequest, gin.H{"error": " not found fileUploads"})
+	// 		return
+	// 	}
+	// 	newreportProblem.FileUpload = fileUpload
+	// }
 
 	reportProblem.Status = newreportProblem.Status
 
