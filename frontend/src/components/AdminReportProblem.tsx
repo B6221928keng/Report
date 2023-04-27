@@ -59,6 +59,7 @@ function AdminReportProblem() {
                 }
             });
     };
+    
     const getReportProblem = async () => {
         const apiUrl = "http://localhost:8080/reportProblemstatus1";
         const requestOptions = {
@@ -128,10 +129,10 @@ function AdminReportProblem() {
         return val;
     };
 
-    function submit2() {
+    function submit2() : void {
         setLoading(true)
         let data = {
-            ID: convertType(ReportProblem.ID),
+            ID:  ReportProblem.ID,
             EmployeeID: emp?.ID,
             Heading: ReportProblem.Heading,
             Description: ReportProblem.Description,
@@ -161,7 +162,7 @@ function AdminReportProblem() {
                     setErrorMessage(res.error);
                     setError(true);
                 }
-            });
+            })
     };
 
 
@@ -169,7 +170,6 @@ function AdminReportProblem() {
         getEmployee();
         getReportProblem();
         getUser();
-        getEmployee();
         getreportProblemID(id);
 
     }, []);

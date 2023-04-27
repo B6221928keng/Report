@@ -15,7 +15,7 @@ func CreateReportProblem(c *gin.Context) {
 	var Employee entity.Employee
 	var status entity.Status
 	var department entity.Department
-	// var fileUpload entity.FileUpload
+	//  var fileUpload entity.FileUpload
 
 	//เช็คว่าตรงกันมั้ย
 	if err := c.ShouldBindJSON(&reportProblem); err != nil {
@@ -51,7 +51,7 @@ func CreateReportProblem(c *gin.Context) {
 		NotificationDate: reportProblem.NotificationDate,
 		Heading:          reportProblem.Heading,
 		Description:      reportProblem.Description,
-		Employee:         Employee,
+		Employee:         reportProblem.Employee,
 		Status:           status,
 		Department:       department,
 		FileUpload:       reportProblem.FileUpload,

@@ -6,7 +6,7 @@ export interface EmployeeInterface {
     ID: number,
     EmployeeName: string,
     Email: string,
-
+    
     UserID: number,
     User: UserInterface,
 
