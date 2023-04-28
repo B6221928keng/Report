@@ -250,7 +250,7 @@ function AdminReportComplete() {
                         <TableBody>
                             {reportProblem.map((reportProblem: ReportProblemInterface) => (
                                 <TableRow key={reportProblem.ID}>
-                                    <TableCell align="left" width="10">{reportProblem.ID}    </TableCell>
+                                    <TableCell align="left" width="10">{reportProblem.ID-0-(1)}    </TableCell>
                                     <TableCell align="left" width="medium">{emp?.EmployeeName} </TableCell>
                                     <TableCell align="left" width="medium"> {reportProblem.Department.DepartmentName}  </TableCell>
                                     <TableCell align="left" size="medium"> {reportProblem.Heading}      </TableCell>

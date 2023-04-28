@@ -94,15 +94,16 @@ func SetupDatabase() {
 	if err != nil {
 		return
 	}
-
 	password2, err := bcrypt.GenerateFromPassword([]byte("5678"), 14)
 	if err != nil {
 		return
 	}
 
+	
+
 	userEmployee := User{
 		UserName:   "B111",
-		Password:   string(password2),
+		Password:   string(password1),
 		Role:       role1,
 		Department: Department1,
 	}
@@ -110,7 +111,7 @@ func SetupDatabase() {
 
 	userAdmin := User{
 		UserName:   "B222",
-		Password:   string(password1),
+		Password:   string(password2),
 		Role:       role2,
 		Department: Department5,
 	}

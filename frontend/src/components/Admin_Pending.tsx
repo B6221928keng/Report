@@ -36,7 +36,7 @@ export default function Admin_Pending(props: any) {
     };
 
     const [ReportProblem, setReportProblem] = useState<ReportProblemInterface>();
-    const getreportProblemID = async (id: any) => {
+    const getreportProblemByID = async (id: any) => {
         let res = await GetReportproblemByID(id);
         if (res) {
             setReportProblem(res);
@@ -44,7 +44,7 @@ export default function Admin_Pending(props: any) {
         }
     }
     const navigator = useNavigate();
-    async function reportProblem1() {
+    async function approvereport() {
         try {
             let data = {
                 ID: params,
@@ -67,7 +67,7 @@ export default function Admin_Pending(props: any) {
             console.log(err);
         }
     }
-    async function notreportProblem1() {
+    async function notapprovereport() {
         try {
             let data = {
                 ID: params,
@@ -90,7 +90,7 @@ export default function Admin_Pending(props: any) {
         }
     }
     useEffect(() => {
-        getreportProblemID(params);
+        getreportProblemByID(params);
     }, []);
     return (
         <div>
@@ -113,10 +113,10 @@ export default function Admin_Pending(props: any) {
                 </DialogTitle>
                 <DialogActions>
                     <Button color="inherit" onClick={handleClose1}>ยกเลิก</Button>
-                    <Button color="success" onClick={reportProblem1} autoFocus>
+                    <Button color="success" onClick={approvereport} autoFocus>
                         ตรวจสอบ
                     </Button>
-                    <Button color="error" onClick={notreportProblem1} autoFocus>
+                    <Button color="error" onClick={notapprovereport} autoFocus>
                         ไม่ตรวจสอบ
                     </Button>
                 </DialogActions>

@@ -1,6 +1,6 @@
-export interface FileUploadtInterface {
-    ID: number,
-    Filename: string,
-	Mimetype: string,
-	Path:     string,
+export interface Report {
+    id: number;
+    name: string;
+    date: string;
+    files: string[]; // array of file paths
 }

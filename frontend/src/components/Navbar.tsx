@@ -12,7 +12,7 @@ import { UserInterface } from "../models/IUser";
 
 const drawerWidth= 240;
 export default function Navbar({ open, onClick}: any) {
-    const [employee, setEmployee] = React.useState<Partial<EmployeeInterface>>({})
+    const [emp, setEmployee] = React.useState<Partial<EmployeeInterface>>({})
     const [user, setUser] = React.useState<Partial<UserInterface>>({});
     interface AppBarProps extends MuiAppBarProps {
         open?: boolean;
@@ -85,7 +85,6 @@ export default function Navbar({ open, onClick}: any) {
                     >
                     Reporting Software Problems
                     </Button>
-                    
                 </Typography>
                 
                 <Box sx={{ flexGrow: 1}}/>

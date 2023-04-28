@@ -1,31 +1,24 @@
 import { Link as RouterLink } from "react-router-dom";
 import * as React from 'react';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
-import { Container, sizeHeight } from '@mui/system'
+import { Container } from '@mui/system'
 import Snackbar from '@mui/material/Snackbar'
 import Box from '@mui/material/Box';
 import SourceIcon from '@mui/icons-material/Source';
 import Paper from '@mui/material/Paper'
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { Button, CssBaseline, FormControl, Grid, Select, MenuItem, SelectChangeEvent, Stack, TextField, Typography } from '@mui/material'
-import moment from 'moment';
+import { Button, FormControl, Grid, Stack, TextField, Typography } from '@mui/material'
 import { useState } from 'react';
 import axios from 'axios';
-
-import UploadService from "../service/FileUploadService";
-import { FileUploadtInterface } from "../models/IFiles";
+// import { FileUploadtInterface } from "../models/IFiles";
 import { UserInterface } from "../models/IUser";
 import { StatusInterface } from "../models/IStatus";
 import { ReportProblemInterface } from "../models/IReportProblem";
 import { EmployeeInterface } from "../models/IEmployee";
 import { DepartmentInterface } from "../models/IDepartment";
-import { set } from "date-fns";
 
 export default function ReportProblemCreate(this: any) {
 
-    const [fileUpload, setFileUpload] = useState<FileUploadtInterface[]>([]);
+    // const [fileUpload, setFileUpload] = useState<FileUploadtInterface[]>([]);
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);
     const [date, setDate] = React.useState<Date | null>(null);
@@ -75,63 +68,90 @@ export default function ReportProblemCreate(this: any) {
         });
     };
 
-    const selectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { files } = event.target;
-        const selectedFiles = files as FileList;
-        setCurrentFile(selectedFiles?.[0]);
-        setProgress(0);
-        
-    };
+    // interface Report {
+    //     id: number;
+    //     name: string;
+    //     date: string;
+    //     files: string[];
+    //   }
+      
+    //   interface FileUploadProps {
+    //     onUploadComplete: () => void;
+    //   }
+      
+    //   const FileUploadComponent: React.FC<FileUploadProps> = ({ onUploadComplete }) => {
+    //     const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
+      
+    //     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //       setSelectedFiles(e.target.files);
+    //     };
+      
+    //     const handleUpload = async () => {
+    //       if (!selectedFiles) return;
+      
+    //       const formData = new FormData();
+    //       for (let i = 0; i < selectedFiles.length; i++) {
+    //         formData.append('files', selectedFiles[i]);
+    //       }
+      
+    //       try {
+    //         await axios.post('/api/upload', formData);
+    //         console.log('Files uploaded successfully');
+    //         onUploadComplete();
+    //       } catch (err) {
+    //         console.error(err);
+    //       }
+    //     };
+    // }
+    // const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     const apiUrl = "http://localhost:8080/uploads";
+    //     const requestOptions = {
+    //         method: "GET",
+    //         headers: {
+    //             Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //             "Content-type": "application/json",
+    //         },
+    //     };
+    //     try {
+    //         const response = await fetch(apiUrl, requestOptions);
+    //         const data = await response.json();
+    //         console.log("fileupload", event.target.files);
+    //         if (event.target.files) {
+    //             console.log(event.target.files);
+    //             setFileUpload(data);
+    //         } else {
+    //             console.log("else");
+    //         }
+    //     } catch (error) {
+    //         console.error("Error:", error);
+    //     }
+    // };
 
-    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const apiUrl = "http://localhost:8080/uploads";
-        const requestOptions = {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-type": "application/json",
-            },
-        };
-        try {
-            const response = await fetch(apiUrl, requestOptions);
-            const data = await response.json();
-            console.log("fileupload", event.target.files);
-            if (event.target.files) {
-                console.log(event.target.files);
-                setFileUpload(data);
-            } else {
-                console.log("else");
-            }
-        } catch (error) {
-            console.error("Error:", error);
-        }
-    };
-
-    const handleUpload = async () => {
-        const apiUrl = "http://localhost:8080/upload";
-        const requestOptions = {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        };
-        try {
-          if (files) {
-            const formData = new FormData();
-            for (let i = 0; i < files.length; i++) {
-              formData.append("fileupload", files[i]);
-            }
-            const response = await fetch(apiUrl, {
-              ...requestOptions,
-              body: formData,
-            });
-            const data = await response.json();
-            console.log(data);
-          }
-        } catch (error) {
-          console.error("Error:", error);
-        }
-      };
+    // const handleUpload = async () => {
+    //     const apiUrl = "http://localhost:8080/upload";
+    //     const requestOptions = {
+    //       method: "POST",
+    //       headers: {
+    //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //       },
+    //     };
+    //     try {
+    //       if (files) {
+    //         const formData = new FormData();
+    //         for (let i = 0; i < files.length; i++) {
+    //           formData.append("fileupload", files[i]);
+    //         }
+    //         const response = await fetch(apiUrl, {
+    //           ...requestOptions,
+    //           body: formData,
+    //         });
+    //         const data = await response.json();
+    //         console.log(data);
+    //       }
+    //     } catch (error) {
+    //       console.error("Error:", error);
+    //     }
+    //   };
 
     //ดึงพนักงาน
     function getEmployee() {
@@ -276,7 +296,7 @@ export default function ReportProblemCreate(this: any) {
         getStatus();
         getUser();
         getEmployee();
-        handleUpload();
+        // handleUpload();
         console.log(localStorage.getItem("dep"))
 
     }, []);

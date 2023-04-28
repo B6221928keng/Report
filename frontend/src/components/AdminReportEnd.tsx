@@ -11,3 +11,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import Snackbar from '@mui/material/Snackbar'
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
+
+function AdminReportEnd (){
+
+}
+export default AdminReportEnd;

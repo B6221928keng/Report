@@ -60,6 +60,27 @@ async function GetReportproblemByID(id: any) {
 
   return res;
 }
+
+async function ListAdminReportProblem(id:any) {
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "application/json",
+    },
+  };
+
+  let res = await fetch(`${apiUrl}/adminReportProblem/${id}`, requestOptions)
+    .then((response) => response.json())
+    .then((res) => {
+      if (res) {
+        return res;
+      } 
+    });
+
+  return res;
+}
+
 async function UpdateReportproblem(data: Partial<ReportProblemInterface>) {
    
   const requestOptions = {
@@ -85,5 +106,5 @@ export {
   ListLeaveType,
   GetReportproblemByID,
   UpdateReportproblem,
-  
+  ListAdminReportProblem,
 }

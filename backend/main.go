@@ -46,6 +46,7 @@ func main() {
 	r.GET("/reportProblemstatus1", controller.ListReportProblemStatusID1)
 	r.GET("/reportProblemstatus2", controller.ListReportProblemStatusID2)
 	r.GET("/reportProblem/:id", controller.GetReportProblem)
+	r.GET("/adminReportProblem/:id", controller.ListAdminReportProblem)
 	r.PATCH("/reportProblem", controller.UpdateReportProblem)
 	r.DELETE("/reportProblems/:id", controller.DeleteReportProblem)
 	//Status
@@ -58,9 +59,9 @@ func main() {
 	r.GET("/employees", controller.ListEmployee)
 	r.GET("/employeeID/:id", controller.GetEmployee)
 	//File
-	r.GET("/upload/:id", controller.GetFileUpload )
-	r.GET("/uploads", controller.ListFileUpload)
-	r.POST("/upload", controller.GetFileUploadmain)
+	// r.GET("/upload/:id", controller.GetFileUpload )
+	// r.GET("/uploads", controller.ListFileUpload)
+	// r.POST("/upload", controller.GetFileUploadmain)
 	//role
 	r.GET("/roles", controller.ListRole)
 

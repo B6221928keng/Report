@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/B6221928keng/Report/entity"
 	"github.com/asaskevich/govalidator"
@@ -115,6 +116,35 @@ func DeleteReportProblem(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": id})
+}
+
+type output struct {
+	ID int
+	id int
+	NotiDate time.Time
+	Heading          string
+	Description      string
+	Empname   string
+	Status   string
+	Department    string
+	// FileUpload   string
+}
+
+func ListAdminReportProblem(c *gin.Context) {
+    var output []output
+    StaID := c.Param("id")
+    if err := entity.DB().Table("report_problems").
+        Select("report_problems.id, departments.id, statuses.id, employees.emp_name, statuses.name, departments.name, report_problems.heading, report_problems.description, report_problems.notification_date").
+        Joins("INNER JOIN report_problems ON report_problems.id = report_problems.report_type_id").
+        Joins("INNER JOIN employees ON employees.id = report_problems.employee_id").
+        Joins("INNER JOIN departments ON departments.id = report_problems.department_id").
+        Joins("INNER JOIN statuses ON statuses.id = report_problems.status_id").
+        Where("statuses.id = ? AND report_problems.status = 'pending approval'", StaID).
+        Find(&output).Error; err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+    c.JSON(http.StatusOK, gin.H{"data": output})
 }
 
 // PATCH /reportProblem

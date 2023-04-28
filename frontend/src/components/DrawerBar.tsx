@@ -60,6 +60,7 @@ export default function DrawerBar({ role, drawerWidth, handleDrawerClose, open, 
             { name: " ข้อมูลรอตรวจสอบ" , icon: < ErrorOutlineIcon  />, path: "/adminReportProblem" },
             { name: " ทำการแก้ไข", icon: <FlakyIcon  />, path: "/adminReportComplete/:id" },
             { name: " เสร็จสิ้น", icon: < CheckCircleOutlineIcon  />, path: "/adminReportEnd/:id" },
+            { name: " ทดลอง", icon: < CheckCircleOutlineIcon  />, path: "/adminReportProblem/:id" },
           ]
         
           var menu: any[];

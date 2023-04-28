@@ -32,14 +32,13 @@ function AdminReportProblem() {
     const [error, setError] = useState(false);
     const [ErrorMessage, setErrorMessage] = React.useState("");
     const [loading, setLoading] = React.useState(false);
-    const [ReportProblem, setReportProblem] = React.useState<Partial<ReportProblemInterface>>({
-        NotificationDate: new Date(),
+    const [ReportProblem, setReportProblem] = React.useState<Partial<ReportProblemInterface>>({ 
     });
 
 
     let { id } = useParams();
     const getreportProblemID = async (id: string | undefined | null) => {
-        const apiUrl = "http://localhost:8080";
+        const apiUrl = "http://localhost:8080/";
         const requestOptions = {
             method: "GET",
             headers: {
@@ -283,9 +282,7 @@ function AdminReportProblem() {
                                     <TableCell align="center" size="medium"> {reportProblem.Description}           </TableCell>
                                     <TableCell align="center" size="medium"> {reportProblem.Status.StatusName}           </TableCell>
                                     <TableCell align="center" width="42%" > {moment(reportProblem.NotificationDate).format('HH:mm  DD MMMM yyyy')}     </TableCell>
-                                    {/* <TableCell align="center">
-                                        <IconButton aria-label="delete" vertical-align="middle" onClick={() => DeleteReportProblem(reportProblem.ID)}><DeleteIcon /></IconButton >
-                                    </TableCell> */}
+                                    
                                     <TableCell align="center" size="medium">    </TableCell>
                                     <TableCell align="center">
                                         <div>
@@ -302,27 +299,13 @@ function AdminReportProblem() {
                                                 {loading ? "Loading..." : "Pending"}
                                             </Button>
                                         </div>
-                                        {/* <IconButton vertical-align="middle" onClick={() => {Admin_Pending(reportProblem.ID)}}></IconButton> */}
-                                        {/* <Button
-                                            aria-label="delete"
-                                            variant='contained'
-                                            color="primary"
-                                            onClick={() => Admin_Pending(reportProblem.ID)}
-                                        >
-                                            Pending
-                                        </Button> */}
                                     </TableCell>
                                 </TableRow>
                             ))}
-
                         </TableBody>
-
                     </Table>
-
                 </TableContainer>
-
-            </Container>
-
+            </Container> 
         </div>
     );
 }
