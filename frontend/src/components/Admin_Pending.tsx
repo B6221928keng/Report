@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { Button, Dialog, DialogActions, DialogTitle, IconButton, Snackbar } from "@mui/material";
-import PendingActionsIcon from '@mui/icons-material/PendingActions';
+import FmdBadIcon from '@mui/icons-material/FmdBad';
 import { GetReportproblemByID, UpdateReportproblem } from "../service/Servics";
 import { ReportProblemInterface } from "../models/IReportProblem";
 import React from "react";
@@ -35,7 +35,7 @@ export default function Admin_Pending(props: any) {
         setError(false)
     };
 
-    const [ReportProblem, setReportProblem] = useState<ReportProblemInterface>();
+    const [reportProblem, setReportProblem] = useState<ReportProblemInterface>();
     const getreportProblemByID = async (id: any) => {
         let res = await GetReportproblemByID(id);
         if (res) {
@@ -48,20 +48,21 @@ export default function Admin_Pending(props: any) {
         try {
             let data = {
                 ID: params,
-                EmployeeID: ReportProblem?.EmployeeID,
-                StatusID: ReportProblem?.StatusID,
-                DepartmentID: ReportProblem?.DepartmentID,
-                Heading: ReportProblem?.Heading,
-                Description: ReportProblem?.Description,
-                NotificationDate: ReportProblem?.NotificationDate
-                
+                EmployeeID: reportProblem?.EmployeeID,
+                StatusID: 2,
+                DepartmentID: reportProblem?.DepartmentID,
+                Heading: reportProblem?.Heading,
+                Description: reportProblem?.Description,
+                NotificationDate: reportProblem?.NotificationDate
+
             };
             console.log(data)
             let res = await UpdateReportproblem(data);
             setSuccess(true);
-            setTimeout(() => {
-                window.location.reload();
-            }, 800);
+            // setTimeout(() => {
+            //     window.location.reload();
+            // }, 800);
+
         } catch (err) {
             setError(true);
             console.log(err);
@@ -71,19 +72,20 @@ export default function Admin_Pending(props: any) {
         try {
             let data = {
                 ID: params,
-                EmployeeID: ReportProblem?.EmployeeID,
-                StatusID: ReportProblem?.StatusID,
-                DepartmentID: ReportProblem?.DepartmentID,
-                Heading: ReportProblem?.Heading,
-                Description: ReportProblem?.Description,
-                NotificationDate: ReportProblem?.NotificationDate
+                EmployeeID: reportProblem?.EmployeeID,
+                StatusID: 2,
+                DepartmentID: reportProblem?.DepartmentID,
+                Heading: reportProblem?.Heading,
+                Description: reportProblem?.Description,
+                NotificationDate: reportProblem?.NotificationDate
             };
             console.log(data)
             let res = await UpdateReportproblem(data);
             setSuccess(true);
-            setTimeout(() => {
-                window.location.reload();
-            }, 800);
+            // setTimeout(() => {
+            //     window.location.reload();
+            // }, 800);
+
         } catch (err) {
             setError(true);
             console.log(err);
@@ -94,14 +96,15 @@ export default function Admin_Pending(props: any) {
     }, []);
     return (
         <div>
-            <IconButton
-                color="inherit"
+            <Button
+                variant="contained"
+                color="warning"
                 size="small"
                 aria-label="delete"
                 onClick={handleClickOpen}
-            >
-                <PendingActionsIcon />
-            </IconButton>
+            > Pending
+                < FmdBadIcon />
+            </Button>
             <Dialog
                 open={open}
                 onClose={handleClose1}

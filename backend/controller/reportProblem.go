@@ -42,17 +42,13 @@ func CreateReportProblem(c *gin.Context) {
 		return
 	}
 
-	//  : ค้นหา file ด้วย id
-	// if tx := entity.DB().Where("id = ?", reportProblem.FileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "fileUpload not found"})
-	// 	return
-	// }
+
 	// 12: สร้าง ReportProblem
 	wv := entity.ReportProblem{
 		NotificationDate: reportProblem.NotificationDate,
 		Heading:          reportProblem.Heading,
 		Description:      reportProblem.Description,
-		Employee:         reportProblem.Employee,
+		Employee:         Employee,
 		Status:           status,
 		Department:       department,
 		FileUpload:       reportProblem.FileUpload,
@@ -139,7 +135,7 @@ func ListAdminReportProblem(c *gin.Context) {
         Joins("INNER JOIN employees ON employees.id = report_problems.employee_id").
         Joins("INNER JOIN departments ON departments.id = report_problems.department_id").
         Joins("INNER JOIN statuses ON statuses.id = report_problems.status_id").
-        Where("statuses.id = ? AND report_problems.status = 'pending approval'", StaID).
+        Where("status_id = ?", StaID).
         Find(&output).Error; err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
         return
@@ -154,6 +150,7 @@ func UpdateReportProblem(c *gin.Context) {
 	var Employee entity.Employee
 	var status entity.Status
 	var department entity.Department
+	
 	// var fileUpload entity.FileUpload
 
 	if err := c.ShouldBindJSON(&newreportProblem); err != nil {
@@ -210,6 +207,7 @@ func UpdateReportProblem(c *gin.Context) {
 		}
 		newreportProblem.Department = department
 	}
+	
 	// ค้นหา file ด้วย id
 	// if newreportProblem.FileUploadID != nil {
 	// 	if tx := entity.DB().Where("id = ?", newreportProblem.FileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
@@ -229,7 +227,7 @@ func UpdateReportProblem(c *gin.Context) {
 
 	update := entity.ReportProblem{
 		NotificationDate: reportProblem.NotificationDate,
-		Employee:         reportProblem.Employee,
+		Employee:         Employee,
 		Department:       reportProblem.Department,
 		Status:           reportProblem.Status,
 		Heading:          reportProblem.Heading,

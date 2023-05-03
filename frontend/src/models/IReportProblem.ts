@@ -1,6 +1,7 @@
 import { DepartmentInterface } from "./IDepartment"
 import { StatusInterface } from "./IStatus"
 import { UserInterface } from "./IUser"
+
 // import  {FileUploadtInterface} from "./IFiles"
 
 export interface ReportProblemInterface {
@@ -9,7 +10,7 @@ export interface ReportProblemInterface {
     Heading:         string,
 	Description:     string,
     NotificationDate: Date | null,
-
+    
     EmployeeID: number,
     Employee: UserInterface,
 
@@ -24,7 +25,7 @@ export interface ReportProblemInterface {
 
 }
 export interface ReportProblem1Interface{
-    ID?: number;
+    id?: number;
     EmployeeName?: number;
 	NotificationDate?:    Date | null;
     Heading?: string;

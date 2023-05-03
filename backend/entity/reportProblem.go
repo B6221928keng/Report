@@ -1,15 +1,16 @@
 package entity
 
 import (
-
 	_ "image/png"
 	"time"
 
+	// "github.com/asaskevich/govalidator"
 	"gorm.io/gorm"
 )
 
 type ReportProblem struct {
 	gorm.Model
+	ID int
 	NotificationDate time.Time
 	Heading          string
 	Description      string
@@ -25,6 +26,23 @@ type ReportProblem struct {
 
 	FileUploadID *uint
 	FileUpload   FileUpload `gorm:"references:id" valid:"-"`
+}
+type ReportProblem1 struct {
+	gorm.Model
+	ID int
+	NotificationDate time.Time
+	Heading          string
+	Description      string
+
+	EmployeeID *uint
+	Employee   Employee `gorm:"references:id" valid:"-"`
+
+	StatusID *uint
+	Status   Status `gorm:"references:id" valid:"-"`
+
+	DepartmentID *uint
+	Department   Department `gorm:"references:id" valid:"-"`
+
 }
 type Status struct {
 	gorm.Model
@@ -67,3 +85,29 @@ type FileUpload struct {
 
 	reportProblem []ReportProblem `gorm:"foreignKey:FileUploadID"`
   }
+
+//   func (rp *ReportProblem) BeforeCreate(tx *gorm.DB) (err error) {
+// 	// Get current date in UTC
+// 	now := time.Now().UTC()
+// 	// Get start of day in UTC
+// 	startOfDay := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC).UTC()
+// 	// Get end of day in UTC
+// 	endOfDay := time.Date(now.Year(), now.Month(), now.Day(), 23, 59, 59, 999999999, time.UTC).UTC()
+
+// 	// Count the number of ReportProblems with IDs created between start and end of day
+// 	var count int64
+// 	if err := tx.Model(&ReportProblem{}).Where("created_at BETWEEN ? AND ?", startOfDay, endOfDay).Count(&count).Error; err != nil {
+// 		return err
+// 	}
+
+// 	// Set ID to count + 1
+// 	rp.ID = uint(count + 1)
+// 	return nil
+// }
+
+// // Validate validates the fields of the ReportProblem struct
+// func (rp *ReportProblem) Validate() error {
+// 	_, err := govalidator.ValidateStruct(rp)
+// 	return err
+// }
+

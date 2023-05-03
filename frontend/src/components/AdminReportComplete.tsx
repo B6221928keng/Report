@@ -1,292 +1,127 @@
+import { Link as RouterLink } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import Container from '@mui/material/Container'
-import TableCell from '@mui/material/TableCell';
-import { Box, Grid, Select, TextField, Typography, Table, TableHead, TableRow, TableBody } from '@mui/material'
-import Button from '@mui/material/Button'
-import { Link as RouterLink , useParams} from "react-router-dom";
-import TableContainer from '@mui/material/TableContainer';
-import moment from 'moment';
-import ClearIcon from '@mui/icons-material/Clear';
-import DeleteIcon from '@mui/icons-material/Delete';
-import IconButton from '@mui/material/IconButton';
-import Snackbar from '@mui/material/Snackbar'
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
-
-import { ReportProblemInterface } from "../models/IReportProblem";
-import { EmployeeInterface } from "../models/IEmployee";
-import { set } from "date-fns";
-import { UserInterface } from "../models/IUser";
+import { Box, Button, Container, IconButton, Paper, Typography } from '@mui/material';
+import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarColumnsButton, GridToolbarFilterButton } from '@mui/x-data-grid';
+import EditIcon from '@mui/icons-material/Edit';
+import {  ReportProblem1Interface, ReportProblemInterface } from '../models/IReportProblem';
+import {  ListAdminReportProblem2 } from '../service/Servics';
+import Admin_Pending from './Admin_Pending';
+import moment from 'moment';
 
 function AdminReportComplete() {
-    const [emp, setEmp] = React.useState<EmployeeInterface>();
-    const [user, setUser] = React.useState<UserInterface>();
-    const [reportProblem, setReportProblems] = React.useState<ReportProblemInterface[]>([]);
-    const [success, setSuccess] = useState(false);
-    const [error, setError] = useState(false);
-    const [ErrorMessage, setErrorMessage] = React.useState("");
-    const [ReportProblem, setReportProblem] = React.useState<Partial<ReportProblemInterface>>({
-        NotificationDate: new Date(),
-    });
-    let { id } = useParams();
-    const getreportProblemID = async (id: string | undefined | null) => {
-        const apiUrl = "http://localhost:8080";
-        const requestOptions = {
-            method: "PATCH",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },
-        };
-
-        fetch(`${apiUrl}/reportProblem/${id}`, requestOptions)
-            .then((response) => response.json())
-            .then((res) => {
-                console.log("ReportProblem", res)
-                if (res.data) {
-                    setReportProblem(res.data);
-                } else {
-                    console.log("else");
-                }
-            });
+    const [reportlistCpt, setReportlist] = useState<ReportProblem1Interface[]>([])
+    const getreportListComplete = async () => {
+        let res = await ListAdminReportProblem2();
+        if (res.data) {
+            setReportlist(res.data);
+            console.log(res.data)
+        }
     };
-    const getReportProblem = async () => {
-        const apiUrl = "http://localhost:8080/reportProblemstatus2";
-        const requestOptions = {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },
-        };
-        fetch(apiUrl, requestOptions)
-            .then((response) => response.json())
-            .then((res) => {
-                console.log(res.data);
-                if (res.data) {
-                    setReportProblems(res.data);
-                }
-            });
-    };
-    
-    function getUser() {
-        const UserID = localStorage.getItem("uid")
-        const apiUrl = `http://localhost:8080/users/${UserID}`;
-        const requestOptions = {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },
-        };
-        fetch(apiUrl, requestOptions)
-            .then((response) => response.json())
-            .then((res) => {
-                console.log("Combobox_User", res)
-                if (res.data) {
-                    setUser(res.data);
-                } else {
-                    console.log("else");
-                }
-            });
-    }
-    function getEmployee() {
-        const UserID = localStorage.getItem("uid")
-        const apiUrl = `http://localhost:8080/employeeID/${UserID}`;
-        const requestOptions = {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },
-        };
-        fetch(apiUrl, requestOptions)
-            .then((response) => response.json())
-            .then((res) => {
-
-                console.log("Combobox_Employee", res)
-                if (res.data) {
-                    console.log(res.data)
-                    setEmp(res.data);
-                } else {
-                    console.log("else");
-                }
-            });
-    }
-    const DeleteReportProblem = async (id: string | number | undefined) => {
-        const apiUrl = "http://localhost:8080";
-        const requestOptions = {
-            method: "DELETE",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },
-        };
-
-        fetch(`${apiUrl}/reportProblems/${id}`, requestOptions)
-            .then((response) => response.json())
-            .then(
-                (res) => {
-                    if (res.data) {
-                        setSuccess(true)
-                        console.log("ยกเลิกสำเร็จ")
-                        setErrorMessage("")
-                    }
-                    else {
-                        setErrorMessage(res.error)
-                        setError(true)
-                        console.log("ยกเลิกไม่สำเร็จ")
-                    }
-                    getReportProblem();
-                }
-            )
-    }
 
     useEffect(() => {
-        getEmployee();
-        getReportProblem();
-        getUser();
-        getreportProblemID(id);
+        getreportListComplete()
     }, []);
 
-    const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-        props,
-        ref,
-    ) {
-        return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-    });
+    const columns: GridColDef[] = [
+        {
+            field: "id", headerName: "ID", type: "number", width: 120, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+                return <>{moment(params.row.NotificationDate).format('DDMMYY')}|{params.row.ID}</>
+            },
+        },
+        {
+            field: "Employee", headerName: "ผู้รายงาน", type: "string", width: 120, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+                return <>{params.row.Employee?.EmployeeName}</>
+            },
+        },
+        {
+            field: "Department", headerName: "แผนก", type: "string", width: 150, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+                return <>{params.row.Department.DepartmentName}</>;
+            },
+        },
+        {
+            field: "Heading", headerName: "หัวข้อ", type: "string", width: 150, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+                return <>{params.row.Heading}</>;
+            },
+        },
+        {
+            field: "Description", headerName: "รายละเอียด", type: "string", width: 150, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+                return <>{params.row.Description}</>;
+            },
+        },
+        {
+            field: "Status", headerName: "สถานะ", type: "string", width: 150, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+                return <>{params.row.Status.StatusName}</>;
+            },
+        },
+        { field: "NotificationDate", headerName: "เวลา", type: "date", width: 100, headerAlign: "center", align: "center", valueFormatter: (params) => moment(params?.value).format("HH:mm") },
 
-    const handleClose = (res: any) => {
-        if (res === "clickaway") {
-            return;
-        }
-        setSuccess(false);
-        setError(false);
-    };
+        {
+            field: "Complete",
+            align: "center",
+            headerAlign: "center",
+            width: 100,
+            renderCell: (params: GridRenderCellParams<any>) => {
+                <EditIcon />
+                return <Admin_Pending params={params.row.ID} />;
+            },
+            sortable: false,
+            description: "Status",
+        },
+
+    ];
 
     return (
-
         <div>
-
-            <Container maxWidth="md">
-                <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
-                    <Alert onClose={handleClose} severity="success">
-                        ลบข้อมูลสำเร็จ
-                    </Alert>
-                </Snackbar>
-                <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
-                    <Alert onClose={handleClose} severity="error">
-                        ลบข้อมูลไม่สำเร็จ: {ErrorMessage}
-                    </Alert>
-                </Snackbar>
-
-                <Box
-
-                    display="flex"
-
+            <Container className="container" maxWidth="lg">
+                <Paper
+                    className="paper"
+                    elevation={6}
                     sx={{
-
-                        marginTop: 2,
-
+                        padding: 2.5,
+                        borderRadius: 3,
                     }}
-
                 >
-
-                    <Box flexGrow={1}>
-
-                        <Typography
-                            component="h2"
-                            variant="h6"
-                            color="error"
-                            gutterBottom
+                    <Box
+                        display="flex"
+                    >
+                        <Box flexGrow={1}>
+                            <Typography
+                                component="h2"
+                                variant="h5"
+                                color="IndianRed"
+                                sx={{ fontWeight: 'bold' }}
+                                gutterBottom
+                            >
+                                รายการแจ้งปัญหาSoftware
+                            </Typography>
+                        </Box>
+                        {/* <Box>
+                        <Button
+                            component={RouterLink}
+                            to="/history"
+                            variant="contained"
+                            color="primary"
+                            sx={{ borderRadius: 20, '&:hover': { color: '#065D95', backgroundColor: '#e3f2fd' } }}
                         >
-                            ข้อมูลรายงานปัญหา Software ที่กำลังแก้ไข
-                        </Typography>
+                            ประวัติอนุมัติ
+                        </Button>
+                    </Box> */}
                     </Box>
 
-                </Box>
-
-                <TableContainer >
-
-                    <Table aria-label="simple table">
-
-                        <TableHead>
-                            <TableRow>
-                                <TableCell align="left" width="10%">
-                                    ID
-                                </TableCell>
-                                <TableCell align="left" width="20%">
-                                    ผู้รายงาน
-                                </TableCell>
-                                <TableCell align="left" width="25%">
-                                    แผนก
-                                </TableCell>
-                                <TableCell align="left" width="5%">
-                                    หัวข้อ
-                                </TableCell>
-
-                                <TableCell align="center" width="5%">
-                                    รายละเอียด
-                                </TableCell>
-                                <TableCell align="center" width="25%">
-                                    สถานะ
-                                </TableCell>
-                                <TableCell align="center" width="15%">
-                                    วันที่/เวลา
-                                </TableCell>
-                                <TableCell align="center" width="10%">
-                                    ไฟล์
-                                </TableCell>
-                                <TableCell align="center" width="6%">
-
-                                </TableCell>
-                                <TableCell align="center" width="6%">
-
-                                </TableCell>
-
-                            </TableRow>
-
-                        </TableHead>
-
-                        <TableBody>
-                            {reportProblem.map((reportProblem: ReportProblemInterface) => (
-                                <TableRow key={reportProblem.ID}>
-                                    <TableCell align="left" width="10">{reportProblem.ID-0-(1)}    </TableCell>
-                                    <TableCell align="left" width="medium">{emp?.EmployeeName} </TableCell>
-                                    <TableCell align="left" width="medium"> {reportProblem.Department.DepartmentName}  </TableCell>
-                                    <TableCell align="left" size="medium"> {reportProblem.Heading}      </TableCell>
-                                    <TableCell align="center" size="medium">  {reportProblem.Description}  </TableCell>
-                                    <TableCell align="center" size="medium"> {reportProblem.Status.StatusName} </TableCell>
-                                    <TableCell align="center" width="42%" > {moment(reportProblem.NotificationDate).format('HH:mm  DD MMMM yyyy')}</TableCell>
-                                    {/* <TableCell align="center">
-                                        <IconButton aria-label="delete" vertical-align="middle" onClick={() => DeleteReportProblem(reportProblem.ID)}><DeleteIcon /></IconButton >
-                                    </TableCell> */}
-                                    <TableCell align="center" size="medium">    </TableCell>
-                                    <TableCell align="center">
-                                        <Button
-
-                                            component={RouterLink}
-                                            to={"/AdminReportComplete/" + reportProblem.ID}
-                                            variant='outlined'
-                                            color="success"
-                                        >
-                                            Complete
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-
-                        </TableBody>
-
-                    </Table>
-
-                </TableContainer>
-
+                    <Box sx={{ borderRadius: 20 }}>
+                        <DataGrid
+                            rows={reportlistCpt}
+                            getRowId={(row) => row.ID}
+                            columns={columns}
+                            autoHeight={true}
+                            density={'comfortable'}
+                            sx={{ mt: 2, backgroundColor: '#FADBD8' }}
+                        />
+                    </Box>
+                </Paper>
             </Container>
-
         </div>
-    );
+    )
 }
-
-
-
-export default AdminReportComplete;
+export default AdminReportComplete

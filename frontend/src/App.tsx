@@ -150,7 +150,7 @@ function App() {
                     <Route path="/adminReportProblem" element={<AdminReportProblem />} />
                     <Route path="/adminReportPending/:id" element={<Admin_Pending />} />
                     <Route path="/adminReportComplete/:id" element={<AdminReportComplete />} />
-                    <Route path="/adminReportProblem/:id"  element={<ProblemShow /> } />     
+                    <Route path="/adminReportProblems"  element={<ProblemShow /> } />     
 
 
                   </>

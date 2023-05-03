@@ -49,50 +49,50 @@ function ReportProblem() {
                 }
             });
     };
-    function getUser() {
-        const UserID = localStorage.getItem("uid")
-        const apiUrl = `http://localhost:8080/users/${UserID}`;
-        const requestOptions = {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },
-        };
-        fetch(apiUrl, requestOptions)
-            .then((response) => response.json())
-            .then((res) => {
-                console.log("Combobox_User", res)
-                if (res.data) {
-                    setUser(res.data);
-                } else {
-                    console.log("else");
-                }
-            });
-    }
-    function getDepartment() {
-        const UserID = localStorage.getItem("uid")
-        const apiUrl = `http://localhost:8080/employeeUId/${UserID}`;
-        const requestOptions = {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },
-        };
-        fetch(apiUrl, requestOptions)
-            .then((response) => response.json())
-            .then((res) => {
+    // function getUser() {
+    //     const UserID = localStorage.getItem("uid")
+    //     const apiUrl = `http://localhost:8080/users/${UserID}`;
+    //     const requestOptions = {
+    //         method: "GET",
+    //         headers: {
+    //             Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //             "Content-Type": "application/json",
+    //         },
+    //     };
+    //     fetch(apiUrl, requestOptions)
+    //         .then((response) => response.json())
+    //         .then((res) => {
+    //             console.log("Combobox_User", res)
+    //             if (res.data) {
+    //                 setUser(res.data);
+    //             } else {
+    //                 console.log("else");
+    //             }
+    //         });
+    // }
+    // function getDepartment() {
+    //     const UserID = localStorage.getItem("uid")
+    //     const apiUrl = `http://localhost:8080/employeeUId/${UserID}`;
+    //     const requestOptions = {
+    //         method: "GET",
+    //         headers: {
+    //             Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //             "Content-Type": "application/json",
+    //         },
+    //     };
+    //     fetch(apiUrl, requestOptions)
+    //         .then((response) => response.json())
+    //         .then((res) => {
 
-                console.log("Combobox_Department", res)
-                if (res.data) {
-                    console.log(res.data)
-                    setDepartment(res.data);
-                } else {
-                    console.log("else");
-                }
-            });
-    }
+    //             console.log("Combobox_Department", res)
+    //             if (res.data) {
+    //                 console.log(res.data)
+    //                 setDepartment(res.data);
+    //             } else {
+    //                 console.log("else");
+    //             }
+    //         });
+    // }
     function getEmployee() {
         const UserID = localStorage.getItem("uid")
         const apiUrl = `http://localhost:8080/employeeId/${UserID}`;
@@ -116,50 +116,50 @@ function ReportProblem() {
                 }
             });
     }
-    const DeleteReportProblem = async (id: string | number | undefined) => {
-        const apiUrl = "http://localhost:8080";
-        const requestOptions = {
-            method: "DELETE",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },
-        };
+    // const DeleteReportProblem = async (id: string | number | undefined) => {
+    //     const apiUrl = "http://localhost:8080";
+    //     const requestOptions = {
+    //         method: "DELETE",
+    //         headers: {
+    //             Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //             "Content-Type": "application/json",
+    //         },
+    //     };
 
-        fetch(`${apiUrl}/reportProblems/${id}`, requestOptions)
-            .then((response) => response.json())
-            .then(
-                (res) => {
-                    if (res.data) {
-                        setSuccess(true)
-                        console.log("ยกเลิกสำเร็จ")
-                        setErrorMessage("")
-                    }
-                    else {
-                        setErrorMessage(res.error)
-                        setError(true)
-                        console.log("ยกเลิกไม่สำเร็จ")
-                    }
-                    getReportProblem();
-                }
-            )
-    }
+    //     fetch(`${apiUrl}/reportProblems/${id}`, requestOptions)
+    //         .then((response) => response.json())
+    //         .then(
+    //             (res) => {
+    //                 if (res.data) {
+    //                     setSuccess(true)
+    //                     console.log("ยกเลิกสำเร็จ")
+    //                     setErrorMessage("")
+    //                 }
+    //                 else {
+    //                     setErrorMessage(res.error)
+    //                     setError(true)
+    //                     console.log("ยกเลิกไม่สำเร็จ")
+    //                 }
+    //                 getReportProblem();
+    //             }
+    //         )
+    // }
 
-    
-    //อัพรูป
-    const selectImage = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const selectedFiles = event.target.files as FileList;
-        setCurrentImage(selectedFiles?.[0]);
-        setPreviewImage(URL.createObjectURL(selectedFiles?.[0]));
-        setProgress(0);
-    };
+
+    // //อัพรูป
+    // const selectImage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     const selectedFiles = event.target.files as FileList;
+    //     setCurrentImage(selectedFiles?.[0]);
+    //     setPreviewImage(URL.createObjectURL(selectedFiles?.[0]));
+    //     setProgress(0);
+    // };
 
 
     useEffect(() => {
         getEmployee();
         getReportProblem();
-        getUser();
-        getDepartment();
+       // getUser();
+        // getDepartment();
     }, []);
 
 
@@ -245,13 +245,13 @@ function ReportProblem() {
 
                         <TableHead>
                             <TableRow>
-                                <TableCell align="left" width="5%">
+                                <TableCell align="center" width="5%">
                                     ID
                                 </TableCell>
-                                {/* <TableCell align="left" width="20%">
+                                <TableCell align="left" width="20%">
                                     ผู้รายงาน
                                 </TableCell>
-                                <TableCell align="left" width="25%">
+                                {/* <TableCell align="left" width="25%">
                                     แผนก
                                 </TableCell> */}
                                 <TableCell align="center" width="20%">
@@ -262,10 +262,7 @@ function ReportProblem() {
                                     รายละเอียด
                                 </TableCell>
                                 <TableCell align="center" width="5%">
-                                    เวลา/วันที่
-                                </TableCell>
-                                <TableCell align="center" width="10%">
-
+                                    เวลา
                                 </TableCell>
                                 <TableCell align="center" width="10%">
 
@@ -282,20 +279,20 @@ function ReportProblem() {
                         <TableBody>
                             {reportProblem.map((reportProblem: ReportProblemInterface) => (
                                 <TableRow key={reportProblem.ID}>
-                                    <TableCell align="left" width="5"> {reportProblem.ID}            </TableCell>
-                                    {/* <TableCell align="left" width="medium"> {emp?.EmployeeName}           </TableCell>
-                                    <TableCell align="left" width="medium"> {reportProblem.Department.DepartmentName} </TableCell> */}
+                                    <TableCell align="center" width="15">  {moment(reportProblem.NotificationDate).format('DD/MM/yyyy')}|{reportProblem.ID}            </TableCell>
+                                    <TableCell align="left" width="medium"> {emp?.EmployeeName}           </TableCell> 
+                                    {/* <TableCell align="left" width="medium"> {reportProblem.Department.DepartmentName} </TableCell>  */}
                                     <TableCell align="center" width="15%"> {reportProblem.Heading}      </TableCell>
                                     <TableCell align="left" width="20%"> {reportProblem.Description}           </TableCell>
-                                    <TableCell align="center" width="5%" > {moment(reportProblem.NotificationDate).format('HH:mm  DD MMMM yyyy')}     </TableCell>
-                                    
+                                    <TableCell align="center" width="5%" > {moment(reportProblem.NotificationDate).format('HH:mm ')}     </TableCell>
+
                                     {/* <TableCell align="center">
                                         <IconButton aria-label="GET"
                                             vertical-align="middle"
                                             //ดูไฟล์
                                             onClick={() => handleApi(reportProblem.ID)}><PhotoIcon /></IconButton >
                                     </TableCell> */}
-                                    
+
                                     {/* <TableCell align="center">
                                         <IconButton aria-label="delete"
                                             vertical-align="middle"

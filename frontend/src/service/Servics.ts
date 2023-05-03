@@ -1,5 +1,5 @@
 import { ReportProblemInterface } from "../models/IReportProblem";
-import http from "../http-common";
+
 const apiUrl = "http://localhost:8080";
 async function reportProblem() {
   const requestOptions = {
@@ -80,7 +80,44 @@ async function ListAdminReportProblem(id:any) {
 
   return res;
 }
+async function ListAdminReportProblem1() {
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "application/json",
+    },
+  };
 
+  let res = await fetch(`${apiUrl}/reportProblemstatus1`, requestOptions)
+    .then((response) => response.json())
+    .then((res) => {
+      if (res) {
+        return res;
+      } 
+    });
+
+  return res;
+}
+async function ListAdminReportProblem2() {
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "application/json",
+    },
+  };
+
+  let res = await fetch(`${apiUrl}/reportProblemstatus2`, requestOptions)
+    .then((response) => response.json())
+    .then((res) => {
+      if (res) {
+        return res;
+      } 
+    });
+
+  return res;
+}
 async function UpdateReportproblem(data: Partial<ReportProblemInterface>) {
    
   const requestOptions = {
@@ -92,7 +129,7 @@ async function UpdateReportproblem(data: Partial<ReportProblemInterface>) {
       body: JSON.stringify(data)
   }
 
-  let res = await fetch(`${apiUrl}/reportProblems`, requestOptions)
+  let res = await fetch(`${apiUrl}/reportProblem`, requestOptions)
       .then((response) => response.json())
       .then((res) => {
         return res
@@ -107,4 +144,6 @@ export {
   GetReportproblemByID,
   UpdateReportproblem,
   ListAdminReportProblem,
+  ListAdminReportProblem1,
+  ListAdminReportProblem2,
 }

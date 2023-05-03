@@ -26,7 +26,8 @@ export default function ReportProblemUpdate() {
     const [status, setStatus] = React.useState<StatusInterface[]>([]);
 
     const [department, setDepartment] = React.useState<DepartmentInterface[]>([]);
-    const [ReportProblem, setReportProblem] = React.useState<Partial<ReportProblemInterface>>({ 
+    const [ReportProblem, setReportProblem] =React.useState<Partial<ReportProblemInterface>>({
+        NotificationDate: new Date(),
     });
     const [loading, setLoading] = React.useState(false);
     const [ErrorMessage, setErrorMessage] = React.useState<String>();
@@ -133,9 +134,10 @@ export default function ReportProblemUpdate() {
             });
     }
 
-    //ดึงข้อมูลแผนก
-    function getDepartment() {
-        const apiUrl = "http://localhost:8080/departments";
+     //ดึงข้อมูลแผนก
+     function getDepartment() {
+        const UserID = localStorage.getItem("uid")
+        const apiUrl = `http://localhost:8080/employeeUId/${UserID}`;
         const requestOptions = {
             method: "GET",
             headers: {
@@ -284,7 +286,7 @@ export default function ReportProblemUpdate() {
                 <Grid item xs={4}>
                     <FormControl fullWidth variant="outlined" style={{ width: '105%', float: 'left' }}>
                         <FormControl fullWidth variant="outlined" style={{ width: '100%' }}>
-                            <Grid item xs={120}><Typography>แผนก :  {localStorage.getItem("dep")}</Typography></Grid>
+                            <Grid item xs={120}><Typography>แผนก :  {localStorage.getItem("did")}</Typography></Grid>
                         </FormControl>
                     </FormControl>
                 </Grid>
