@@ -33,3 +33,21 @@ export interface ReportProblem1Interface{
     Status?: string;
     DepartmentName?: number;
 }
+export interface ReportProblem2Interface{
+    id?: number;
+    EmployeeName?: number;
+	NotificationDate?:    Date | null;
+    Heading?: string;
+    Description?: string;
+    Status?: string;
+    DepartmentName?: number;
+}
+export interface ReportProblem3Interface{
+    id?: number;
+    EmployeeName?: number;
+	NotificationDate?:    Date | null;
+    Heading?: string;
+    Description?: string;
+    Status?: string;
+    DepartmentName?: number;
+}

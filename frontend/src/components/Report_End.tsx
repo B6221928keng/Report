@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { Button, Dialog, DialogActions, DialogTitle, IconButton, Snackbar } from "@mui/material";
-import FmdBadIcon from '@mui/icons-material/FmdBad';
+import DomainVerificationIcon from '@mui/icons-material/DomainVerification';
 import { GetReportproblemByID, UpdateReportproblem } from "../service/Servics";
 import { ReportProblemInterface } from "../models/IReportProblem";
 import React from "react";
-import moment from "moment";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -14,7 +13,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 ) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
-export default function Admin_Pending(props: any) {
+export default function Report_End(props: any) {
     const { params } = props;
     const [open, setOpen] = useState(false);
     const [alertmessage, setAlertMessage] = useState("");
@@ -47,16 +46,17 @@ export default function Admin_Pending(props: any) {
         }
     }
     const navigator = useNavigate();
-    async function approvereport() {
+    async function approveEnd() {
         try {
             let data = {
                 ID: params,
                 EmployeeID: reportProblem?.EmployeeID,
-                StatusID: 2,
+                StatusID: 4,
                 DepartmentID: reportProblem?.DepartmentID,
                 Heading: reportProblem?.Heading,
                 Description: reportProblem?.Description,
-                NotificationDate: moment(reportProblem?.NotificationDate).toDate(),
+                NotificationDate: reportProblem?.NotificationDate
+
             };
             console.log(data)
             let res = await UpdateReportproblem(data);
@@ -70,12 +70,12 @@ export default function Admin_Pending(props: any) {
             console.log(err);
         }
     }
-    async function notapprovereport() {
+    async function notapproveEnd() {
         try {
             let data = {
                 ID: params,
                 EmployeeID: reportProblem?.EmployeeID,
-                StatusID: 2,
+                StatusID: 4,
                 DepartmentID: reportProblem?.DepartmentID,
                 Heading: reportProblem?.Heading,
                 Description: reportProblem?.Description,
@@ -100,12 +100,12 @@ export default function Admin_Pending(props: any) {
         <div>
             <Button
                 variant="contained"
-                color="warning"
+                style={{ backgroundColor: '#93C47D' }}
                 size="small"
                 aria-label="delete"
                 onClick={handleClickOpen}
-            > Pending
-                < FmdBadIcon />
+            >  End
+                <   DomainVerificationIcon />
             </Button>
             <Dialog
                 open={open}
@@ -118,10 +118,10 @@ export default function Admin_Pending(props: any) {
                 </DialogTitle>
                 <DialogActions>
                     <Button color="inherit" onClick={handleClose1}>ยกเลิก</Button>
-                    <Button color="success" onClick={approvereport} autoFocus>
+                    <Button color="success" onClick={approveEnd} autoFocus>
                         ตรวจสอบ
                     </Button>
-                    {/* <Button color="error" onClick={notapprovereport} autoFocus>
+                    {/* <Button color="error" onClick={notapproveEnd} autoFocus>
                         ไม่ตรวจสอบ
                     </Button> */}
                 </DialogActions>

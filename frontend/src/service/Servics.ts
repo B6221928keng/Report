@@ -118,6 +118,44 @@ async function ListAdminReportProblem2() {
 
   return res;
 }
+async function ListAdminReportProblem3() {
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "application/json",
+    },
+  };
+
+  let res = await fetch(`${apiUrl}/reportProblemstatus3`, requestOptions)
+    .then((response) => response.json())
+    .then((res) => {
+      if (res) {
+        return res;
+      } 
+    });
+
+  return res;
+}
+async function ListAdminReportProblem4() {
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "application/json",
+    },
+  };
+
+  let res = await fetch(`${apiUrl}/reportProblemstatus4`, requestOptions)
+    .then((response) => response.json())
+    .then((res) => {
+      if (res) {
+        return res;
+      } 
+    });
+
+  return res;
+}
 async function UpdateReportproblem(data: Partial<ReportProblemInterface>) {
    
   const requestOptions = {
@@ -146,4 +184,6 @@ export {
   ListAdminReportProblem,
   ListAdminReportProblem1,
   ListAdminReportProblem2,
+  ListAdminReportProblem3,
+  ListAdminReportProblem4,
 }

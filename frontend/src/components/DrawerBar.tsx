@@ -54,13 +54,13 @@ export default function DrawerBar({ role, drawerWidth, handleDrawerClose, open, 
         const menuemployee = [
             { name: " กรอกข้อมูล", icon: <ReportIcon />, path: "/reportProblemCreate" },
             { name: " ข้อมูล", icon: <FormatListNumberedIcon />, path: "/reportProblem" },
-            { name: " ตรวจสอบการใช้งาน", icon: <ChecklistRtlIcon />, path: "/reportProblem" },
+            { name: " ตรวจสอบการใช้งาน", icon: <ChecklistRtlIcon />, path: "/reportProblemComplete" },
           ]
           const menuadmin = [
             { name: " ข้อมูลรอตรวจสอบ" , icon: < ErrorOutlineIcon  />, path: "/adminReportProblems" },
             { name: " ทำการแก้ไข", icon: <FlakyIcon  />, path: "/adminReportComplete/:id" },
             { name: " เสร็จสิ้น", icon: < CheckCircleOutlineIcon  />, path: "/adminReportEnd/:id" },
-            { name: " ทดลอง", icon: < CheckCircleOutlineIcon  />, path: "/adminReportProblem" },
+            // { name: " ทดลอง", icon: < CheckCircleOutlineIcon  />, path: "/adminReportProblem" },
           ]
         
           var menu: any[];

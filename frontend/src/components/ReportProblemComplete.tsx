@@ -1,80 +1,127 @@
-import React, { useEffect, useState } from "react";
-import Container from '@mui/material/Container'
-import TableCell from '@mui/material/TableCell';
-import { Box, Grid, Select, TextField, Typography, Table, TableHead, TableRow, TableBody } from '@mui/material'
-import Button from '@mui/material/Button'
 import { Link as RouterLink } from "react-router-dom";
-import TableContainer from '@mui/material/TableContainer';
-import moment from 'moment';
-import axios from 'axios';
-import PhotoIcon from '@mui/icons-material/Photo';
-import DeleteIcon from '@mui/icons-material/Delete';
-import IconButton from '@mui/material/IconButton';
-import Snackbar from '@mui/material/Snackbar'
+import React, { useEffect, useState } from "react";
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
-import { ReportProblemInterface } from "../models/IReportProblem";
+import { Box, Button, Container, IconButton, Paper, Typography } from '@mui/material';
+import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarColumnsButton, GridToolbarFilterButton } from '@mui/x-data-grid';
+import EditIcon from '@mui/icons-material/Edit';
+import {  ReportProblem2Interface, ReportProblemInterface } from '../models/IReportProblem';
+import {  ListAdminReportProblem3 } from '../service/Servics';
+import moment from 'moment';
+import Report_End from "./Report_End";
 
 function ReportProblemComplete() {
-    const [reportProblem, setReportProblem] = React.useState<ReportProblemInterface[]>([]);
-    const [success, setSuccess] = useState(false);
-    const [error, setError] = useState(false);
-    const [ErrorMessage, setErrorMessage] = React.useState("");
-    const [currentImage, setCurrentImage] = React.useState<File>();
-    const [previewImage, setPreviewImage] = React.useState<string>("");
-    const [progress, setProgress] = React.useState<number>(0);
-    const [message, setMessage] = React.useState<string>("");
-    const [image, setImage] = useState<File | null>(null);
-    const getReportProblem = async () => {
-        const apiUrl = "http://localhost:8080/reportProblem";
-        const requestOptions = {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },
-        };
-        fetch(apiUrl, requestOptions)
-            .then((response) => response.json())
-            .then((res) => {
-                console.log(res.data);
-                if (res.data) {
-                    setReportProblem(res.data);
-                }
-            });
+    const [reportlistRcom, setReportlist] = useState<ReportProblem2Interface[]>([])
+    const getreportListReportComplete = async () => {
+        let res = await ListAdminReportProblem3();
+        if (res.data) {
+            setReportlist(res.data);
+            console.log(res.data)
+        }
     };
 
+    useEffect(() => {
+        getreportListReportComplete()
+    }, []);
 
+    const columns: GridColDef[] = [
+        {
+            field: "id", headerName: "ID", type: "number", width: 120, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+                return <>{moment(params.row.NotificationDate).format('DDMMYY')}|{params.row.ID}</>
+            },
+        },
+        {
+            field: "Employee", headerName: "ผู้รายงาน", type: "string", width: 120, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+                return <>{params.row.Employee?.EmployeeName}</>
+            },
+        },
+        {
+            field: "Department", headerName: "แผนก", type: "string", width: 150, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+                return <>{params.row.Department.DepartmentName}</>;
+            },
+        },
+        {
+            field: "Heading", headerName: "หัวข้อ", type: "string", width: 150, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+                return <>{params.row.Heading}</>;
+            },
+        },
+        {
+            field: "Description", headerName: "รายละเอียด", type: "string", width: 150, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+                return <>{params.row.Description}</>;
+            },
+        },
+        {
+            field: "Status", headerName: "สถานะ", type: "string", width: 150, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+                return <>{params.row.Status.StatusName}</>;
+            },
+        },
+        { field: "NotificationDate", headerName: "เวลา", type: "date", width: 100, headerAlign: "center", align: "center", valueFormatter: (params) => moment(params?.value).format("HH:mm") },
 
+        {
+            field: "Complete",
+            align: "center",
+            headerAlign: "center",
+            width: 120,
+            renderCell: (params: GridRenderCellParams<any>) => {
+                <EditIcon />
+                return <Report_End params={params.row.ID} />;
+            },
+            sortable: false,
+            description: "Status",
+        },
 
+    ];
 
+    return (
+        <div>
+            <Container className="container" maxWidth="lg">
+                <Paper
+                    className="paper"
+                    elevation={6}
+                    sx={{
+                        padding: 2.5,
+                        borderRadius: 3,
+                    }}
+                >
+                    <Box
+                        display="flex"
+                    >
+                        <Box flexGrow={1}>
+                            <Typography
+                                component="h2"
+                                variant="h5"
+                                color="IndianRed"
+                                sx={{ fontWeight: 'bold' }}
+                                gutterBottom
+                            >
+                                รายการแจ้งปัญหาSoftware
+                            </Typography>
+                        </Box>
+                        {/* <Box>
+                        <Button
+                            component={RouterLink}
+                            to="/history"
+                            variant="contained"
+                            color="primary"
+                            sx={{ borderRadius: 20, '&:hover': { color: '#065D95', backgroundColor: '#e3f2fd' } }}
+                        >
+                            ประวัติอนุมัติ
+                        </Button>
+                    </Box> */}
+                    </Box>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
+                    <Box sx={{ borderRadius: 30 }}>
+                        <DataGrid
+                            rows={reportlistRcom}
+                            getRowId={(row) => row.ID}
+                            columns={columns}
+                            autoHeight={true}
+                            density={'comfortable'}
+                            sx={{ mt: 2, backgroundColor: '#eeeeee' }}
+                        />
+                    </Box>
+                </Paper>
+            </Container>
+        </div>
+    )
 }
-export default ReportProblemComplete;
+export default ReportProblemComplete

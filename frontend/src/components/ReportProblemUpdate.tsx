@@ -100,7 +100,7 @@ export default function ReportProblemUpdate() {
             .then((response) => response.json())
             .then((res) => {
 
-                console.log("Combobox_Employee", res)
+                console.log("Combobox_employee", res)
                 if (res.data) {
                     console.log(res.data)
                     setEmp(res.data);

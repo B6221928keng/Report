@@ -56,7 +56,7 @@ function ProblemShow() {
         { field: "NotificationDate", headerName: "เวลา", type: "date", width: 100, headerAlign: "center", align: "center", valueFormatter: (params) => moment(params?.value).format("HH:mm") },
 
         {
-            field: "Pending",
+            field: "...",
             align: "center",
             headerAlign: "center",
             width: 110,

@@ -6,8 +6,8 @@ import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarColumnsButton, G
 import EditIcon from '@mui/icons-material/Edit';
 import {  ReportProblem1Interface, ReportProblemInterface } from '../models/IReportProblem';
 import {  ListAdminReportProblem2 } from '../service/Servics';
-import Admin_Pending from './Admin_Pending';
 import moment from 'moment';
+import Admin_Complete from "./Admin_Complete";
 
 function AdminReportComplete() {
     const [reportlistCpt, setReportlist] = useState<ReportProblem1Interface[]>([])
@@ -57,13 +57,13 @@ function AdminReportComplete() {
         { field: "NotificationDate", headerName: "เวลา", type: "date", width: 100, headerAlign: "center", align: "center", valueFormatter: (params) => moment(params?.value).format("HH:mm") },
 
         {
-            field: "Complete",
+            field: "...",
             align: "center",
             headerAlign: "center",
-            width: 100,
+            width: 120,
             renderCell: (params: GridRenderCellParams<any>) => {
                 <EditIcon />
-                return <Admin_Pending params={params.row.ID} />;
+                return <Admin_Complete params={params.row.ID} />;
             },
             sortable: false,
             description: "Status",
@@ -109,14 +109,14 @@ function AdminReportComplete() {
                     </Box> */}
                     </Box>
 
-                    <Box sx={{ borderRadius: 20 }}>
+                    <Box sx={{ borderRadius: 30 }}>
                         <DataGrid
                             rows={reportlistCpt}
                             getRowId={(row) => row.ID}
                             columns={columns}
                             autoHeight={true}
                             density={'comfortable'}
-                            sx={{ mt: 2, backgroundColor: '#FADBD8' }}
+                            sx={{ mt: 2, backgroundColor: '#fce5cd' }}
                         />
                     </Box>
                 </Paper>

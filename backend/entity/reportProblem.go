@@ -44,6 +44,40 @@ type ReportProblem1 struct {
 	Department   Department `gorm:"references:id" valid:"-"`
 
 }
+type ReportProblem2 struct {
+	gorm.Model
+	ID int
+	NotificationDate time.Time
+	Heading          string
+	Description      string
+
+	EmployeeID *uint
+	Employee   Employee `gorm:"references:id" valid:"-"`
+
+	StatusID *uint
+	Status   Status `gorm:"references:id" valid:"-"`
+
+	DepartmentID *uint
+	Department   Department `gorm:"references:id" valid:"-"`
+
+}
+type ReportProblem3 struct {
+	gorm.Model
+	ID int
+	NotificationDate time.Time
+	Heading          string
+	Description      string
+
+	EmployeeID *uint
+	Employee   Employee `gorm:"references:id" valid:"-"`
+
+	StatusID *uint
+	Status   Status `gorm:"references:id" valid:"-"`
+
+	DepartmentID *uint
+	Department   Department `gorm:"references:id" valid:"-"`
+
+}
 type Status struct {
 	gorm.Model
 

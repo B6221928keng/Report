@@ -461,6 +461,8 @@ export default function ReportProblemCreate(this: any) {
                             variant="contained"
                             color="primary"
                             onClick={submit}
+                            component={RouterLink}
+                            to="/reportProblem"
                         >
                             บันทึกข้อมูล
                         </Button>
