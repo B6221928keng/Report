@@ -14,13 +14,13 @@ import moment from 'moment';
 import { useState } from 'react';
 import axios from 'axios';
 
-import UploadService from "../service/FileUploadService";
+import UploadService from "../../service/FileUploadService";
 
-import { UserInterface } from "../models/IUser";
-import { StatusInterface } from "../models/IStatus";
-import { ReportProblemInterface } from "../models/IReportProblem";
-import { EmployeeInterface } from "../models/IEmployee";
-import { DepartmentInterface } from "../models/IDepartment";
+import { UserInterface } from "../../models/IUser";
+import { StatusInterface } from "../../models/IStatus";
+import { ReportProblemInterface } from "../../models/IReportProblem";
+import { EmployeeInterface } from "../../models/IEmployee";
+import { DepartmentInterface } from "../../models/IDepartment";
 import { set } from "date-fns";
 
 

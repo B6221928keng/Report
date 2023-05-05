@@ -10,11 +10,11 @@ import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper'
 import SourceIcon from '@mui/icons-material/Source';
 import moment from 'moment';
-import { UserInterface } from "../models/IUser";
-import { StatusInterface } from "../models/IStatus";
-import { ReportProblemInterface } from "../models/IReportProblem";
-import { EmployeeInterface } from "../models/IEmployee";
-import { DepartmentInterface } from "../models/IDepartment";
+import { UserInterface } from "../../models/IUser";
+import { StatusInterface } from "../../models/IStatus";
+import { ReportProblemInterface } from "../../models/IReportProblem";
+import { EmployeeInterface } from "../../models/IEmployee";
+import { DepartmentInterface } from "../../models/IDepartment";
 
 export default function ReportProblemUpdate() {
 

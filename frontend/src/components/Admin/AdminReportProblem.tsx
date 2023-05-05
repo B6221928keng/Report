@@ -13,11 +13,11 @@ import IconButton from '@mui/material/IconButton';
 import Snackbar from '@mui/material/Snackbar'
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
-import { ReportProblemInterface } from "../models/IReportProblem";
-import { EmployeeInterface } from "../models/IEmployee";
+import { ReportProblemInterface } from "../../models/IReportProblem";
+import { EmployeeInterface } from "../../models/IEmployee";
 import { set } from "date-fns";
-import { UserInterface } from "../models/IUser";
-import { DepartmentInterface } from "../models/IDepartment";
+import { UserInterface } from "../../models/IUser";
+import { DepartmentInterface } from "../../models/IDepartment";
 import { removeListener } from "process";
 import { removeEmitHelper } from "typescript";
 import Admin_Pending from "./Admin_Pending";

@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { Button, Dialog, DialogActions, DialogTitle, IconButton, Snackbar } from "@mui/material";
 import DomainVerificationIcon from '@mui/icons-material/DomainVerification';
-import { GetReportproblemByID, UpdateReportproblem } from "../service/Servics";
-import { ReportProblemInterface } from "../models/IReportProblem";
+import { GetReportproblemByID, UpdateReportproblem } from "../../service/Servics";
+import { ReportProblemInterface } from "../../models/IReportProblem";
 import React from "react";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -53,7 +53,7 @@ export default function Admin_Complete(props: any) {
                 DepartmentID: reportProblem?.DepartmentID,
                 Heading: reportProblem?.Heading,
                 Description: reportProblem?.Description,
-                NotificationDate: reportProblem?.NotificationDate
+                NotificationDate: new Date(),
 
             };
             console.log(data)
@@ -112,12 +112,12 @@ export default function Admin_Complete(props: any) {
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">
-                    ต้องการตรวจสอบรายการนี้ ?
+                    แก้ไขรายการนี้เสร็จแล้ว ?
                 </DialogTitle>
                 <DialogActions>
                     <Button color="inherit" onClick={handleClose1}>ยกเลิก</Button>
                     <Button color="success" onClick={approveComplete} autoFocus>
-                        ตรวจสอบ
+                        ใช่
                     </Button>
                     {/* <Button color="error" onClick={notapproveComplete} autoFocus>
                         ไม่ตรวจสอบ

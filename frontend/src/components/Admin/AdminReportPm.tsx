@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { Box, Button, Container, IconButton, Paper, Typography } from '@mui/material';
 import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarColumnsButton, GridToolbarFilterButton } from '@mui/x-data-grid';
-import {  ReportProblemInterface } from '../models/IReportProblem';
-import {  ListAdminReportProblem1 } from '../service/Servics';
+import {  ReportProblemInterface } from '../../models/IReportProblem';
+import {  ListAdminReportProblem1 } from '../../service/Servics';
 import Admin_Pending from './Admin_Pending';
 import moment from 'moment';
 

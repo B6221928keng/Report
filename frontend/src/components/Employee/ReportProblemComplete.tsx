@@ -4,15 +4,15 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { Box, Button, Container, IconButton, Paper, Typography } from '@mui/material';
 import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarColumnsButton, GridToolbarFilterButton } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
-import {  ReportProblem3Interface, ReportProblemInterface } from '../models/IReportProblem';
-import {  ListAdminReportProblem4 } from '../service/Servics';
+import {  ReportProblem2Interface, ReportProblemInterface } from '../../models/IReportProblem';
+import {  ListAdminReportProblem3 } from '../../service/Servics';
 import moment from 'moment';
 import Report_End from "./Report_End";
 
-function AdminReportEnd() {
-    const [reportlistRcom, setReportlist] = useState<ReportProblem3Interface[]>([])
-    const getreportListAdminEnd = async () => {
-        let res = await ListAdminReportProblem4();
+function ReportProblemComplete() {
+    const [reportlistRcom, setReportlist] = useState<ReportProblem2Interface[]>([])
+    const getreportListReportComplete = async () => {
+        let res = await ListAdminReportProblem3();
         if (res.data) {
             setReportlist(res.data);
             console.log(res.data)
@@ -20,7 +20,7 @@ function AdminReportEnd() {
     };
 
     useEffect(() => {
-        getreportListAdminEnd()
+        getreportListReportComplete()
     }, []);
 
     const columns: GridColDef[] = [
@@ -57,16 +57,17 @@ function AdminReportEnd() {
         { field: "NotificationDate", headerName: "เวลา", type: "date", width: 100, headerAlign: "center", align: "center", valueFormatter: (params) => moment(params?.value).format("HH:mm") },
 
         {
-            field: "...",
+            field: "Complete",
             align: "center",
             headerAlign: "center",
             width: 120,
             renderCell: (params: GridRenderCellParams<any>) => {
-              return "เสร็จสมบูรณ์";
+                <EditIcon />
+                return <Report_End params={params.row.ID} />;
             },
             sortable: false,
             description: "Status",
-          },
+        },
 
     ];
 
@@ -123,4 +124,4 @@ function AdminReportEnd() {
         </div>
     )
 }
-export default AdminReportEnd
+export default ReportProblemComplete

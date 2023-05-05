@@ -11,16 +11,16 @@ import DrawerBar from './components/DrawerBar';
 import { createTheme, CssBaseline, styled, ThemeProvider } from '@mui/material';
 
 
-import ReportProblemCreate from './components/ReportProblemCreate';
-import ReportProblem from './components/ReportProblem';
-import ReportProblemComplete from './components/ReportProblemComplete';
-import ReportProblemUpdate from './components/ReportProblemUpdate';
-import AdminReportProblem from './components/AdminReportProblem';
-import AdminReportComplete from './components/AdminReportComplete';
-import Admin_Pending from './components/Admin_Pending';
-import AdminReportEnd from './components/AdminReportEnd';
-import ProblemShow from './components/AdminReportPm';
-import Admin_Complete from './components/Admin_Complete';
+import ReportProblemCreate from './components/Employee/ReportProblemCreate';
+import ReportProblem from './components/Employee/ReportProblem';
+import ReportProblemComplete from './components/Employee/ReportProblemComplete';
+import ReportProblemUpdate from './components/Employee/ReportProblemUpdate';
+import AdminReportProblem from './components/Admin/AdminReportProblem';
+import AdminReportComplete from './components/Admin/AdminReportComplete';
+import Admin_Pending from './components/Admin/Admin_Pending';
+import AdminReportEnd from './components/Admin/AdminReportEnd';
+import ProblemShow from './components/Admin/AdminReportPm';
+import Admin_Complete from './components/Admin/Admin_Complete';
 
 const drawerWidth = 240;
 

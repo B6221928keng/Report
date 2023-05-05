@@ -4,15 +4,15 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { Box, Button, Container, IconButton, Paper, Typography } from '@mui/material';
 import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarColumnsButton, GridToolbarFilterButton } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
-import {  ReportProblem2Interface, ReportProblemInterface } from '../models/IReportProblem';
-import {  ListAdminReportProblem3 } from '../service/Servics';
+import {  ReportProblem3Interface, ReportProblemInterface } from '../../models/IReportProblem';
+import {  ListAdminReportProblem4 } from '../../service/Servics';
 import moment from 'moment';
-import Report_End from "./Report_End";
+import Report_End from "../Employee/Report_End";
 
-function ReportProblemComplete() {
-    const [reportlistRcom, setReportlist] = useState<ReportProblem2Interface[]>([])
-    const getreportListReportComplete = async () => {
-        let res = await ListAdminReportProblem3();
+function AdminReportEnd() {
+    const [reportlistRcom, setReportlist] = useState<ReportProblem3Interface[]>([])
+    const getreportListAdminEnd = async () => {
+        let res = await ListAdminReportProblem4();
         if (res.data) {
             setReportlist(res.data);
             console.log(res.data)
@@ -20,7 +20,7 @@ function ReportProblemComplete() {
     };
 
     useEffect(() => {
-        getreportListReportComplete()
+        getreportListAdminEnd()
     }, []);
 
     const columns: GridColDef[] = [
@@ -57,18 +57,17 @@ function ReportProblemComplete() {
         { field: "NotificationDate", headerName: "เวลา", type: "date", width: 100, headerAlign: "center", align: "center", valueFormatter: (params) => moment(params?.value).format("HH:mm") },
 
         {
-            field: "Complete",
+            field: "...",
             align: "center",
             headerAlign: "center",
             width: 120,
             renderCell: (params: GridRenderCellParams<any>) => {
-                <EditIcon />
-                return <Report_End params={params.row.ID} />;
+              return <span style={{ color: "green" }}>เสร็จสมบูรณ์</span>;
             },
             sortable: false,
             description: "Status",
-        },
-
+          },
+          
     ];
 
     return (
@@ -124,4 +123,4 @@ function ReportProblemComplete() {
         </div>
     )
 }
-export default ReportProblemComplete
+export default AdminReportEnd

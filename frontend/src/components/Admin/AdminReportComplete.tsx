@@ -4,8 +4,8 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { Box, Button, Container, IconButton, Paper, Typography } from '@mui/material';
 import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarColumnsButton, GridToolbarFilterButton } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
-import {  ReportProblem1Interface, ReportProblemInterface } from '../models/IReportProblem';
-import {  ListAdminReportProblem2 } from '../service/Servics';
+import {  ReportProblem1Interface, ReportProblemInterface } from '../../models/IReportProblem';
+import {  ListAdminReportProblem2 } from '../../service/Servics';
 import moment from 'moment';
 import Admin_Complete from "./Admin_Complete";
 

@@ -12,11 +12,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import Snackbar from '@mui/material/Snackbar'
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
-import { ReportProblemInterface } from "../models/IReportProblem";
-import { EmployeeInterface } from "../models/IEmployee";
-import { DepartmentInterface } from "../models/IDepartment";
+import { ReportProblemInterface } from "../../models/IReportProblem";
+import { EmployeeInterface } from "../../models/IEmployee";
+import { DepartmentInterface } from "../../models/IDepartment";
 import { set } from "date-fns";
-import { UserInterface } from "../models/IUser";
+import { UserInterface } from "../../models/IUser";
 import { upload } from "@testing-library/user-event/dist/upload";
 function ReportProblem() {
     const [emp, setEmp] = React.useState<EmployeeInterface>();

@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { Button, Dialog, DialogActions, DialogTitle, IconButton, Snackbar } from "@mui/material";
 import FmdBadIcon from '@mui/icons-material/FmdBad';
-import { GetReportproblemByID, UpdateReportproblem } from "../service/Servics";
-import { ReportProblemInterface } from "../models/IReportProblem";
+import { GetReportproblemByID, UpdateReportproblem } from "../../service/Servics";
+import { ReportProblemInterface } from "../../models/IReportProblem";
 import React from "react";
 import moment from "moment";
 
@@ -56,7 +56,7 @@ export default function Admin_Pending(props: any) {
                 DepartmentID: reportProblem?.DepartmentID,
                 Heading: reportProblem?.Heading,
                 Description: reportProblem?.Description,
-                NotificationDate: moment(reportProblem?.NotificationDate).toDate(),
+                NotificationDate: new Date(),
             };
             console.log(data)
             let res = await UpdateReportproblem(data);
@@ -114,12 +114,12 @@ export default function Admin_Pending(props: any) {
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">
-                    ต้องการตรวจสอบรายการนี้ ?
+                    ตรวจสอบรายการนี้ ?
                 </DialogTitle>
                 <DialogActions>
                     <Button color="inherit" onClick={handleClose1}>ยกเลิก</Button>
                     <Button color="success" onClick={approvereport} autoFocus>
-                        ตรวจสอบ
+                        ใช่
                     </Button>
                     {/* <Button color="error" onClick={notapprovereport} autoFocus>
                         ไม่ตรวจสอบ
