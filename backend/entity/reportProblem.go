@@ -113,9 +113,10 @@ type Employee struct {
 }
 type FileUpload struct {
 	gorm.Model
-	Filename string
-	Mimetype string
-	Path     string
+	Name    string `json:"name"`
+	Size    int64  `json:"size"`
+	Type    string `json:"type"`
+	Content []byte `json:"content"`
 
 	reportProblem []ReportProblem `gorm:"foreignKey:FileUploadID"`
   }

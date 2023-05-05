@@ -1,6 +1,7 @@
-export interface Report {
-    id: number;
-    name: string;
-    date: string;
-    files: string[]; // array of file paths
+export interface FilesInterface {
+  ID: number,
+  name: string;
+  size: number;
+  type: string;
+  content: File;
 }

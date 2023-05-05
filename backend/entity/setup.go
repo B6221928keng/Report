@@ -136,9 +136,10 @@ func SetupDatabase() {
 	db.Model(&Employee{}).Create(&Employee1)
 
 	FileUpload1 := FileUpload{
-		Filename: "geese-ga56c79f73_1920",
-		Mimetype: "JPG File",
-		Path:     "C:Users/keng-/Downloads",
+		Name:    "file1.txt",
+		Size:    1000,
+		Type:    "text/plain",
+		Content: []byte("This is a test file"),
 	}
 	db.Model(&FileUpload{}).Create(&FileUpload1)
 

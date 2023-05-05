@@ -1,4 +1,5 @@
 import { DepartmentInterface } from "./IDepartment"
+import { FilesInterface } from "./IFiles"
 import { StatusInterface } from "./IStatus"
 import { UserInterface } from "./IUser"
 
@@ -20,8 +21,8 @@ export interface ReportProblemInterface {
     DepartmentID: number,
 	Department: DepartmentInterface
 
-    // FileUploadID: number,
-    // FileUpload: FileUploadtInterface
+    FileUploadID: number,
+    FileUpload: FilesInterface
 
 }
 export interface ReportProblem1Interface{

@@ -10,7 +10,6 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { Button, CssBaseline, FormControl, Grid, Select, MenuItem, SelectChangeEvent, Stack, TextField, Typography } from '@mui/material'
-import moment from 'moment';
 import { useState } from 'react';
 import axios from 'axios';
 
@@ -22,6 +21,7 @@ import { ReportProblemInterface } from "../../models/IReportProblem";
 import { EmployeeInterface } from "../../models/IEmployee";
 import { DepartmentInterface } from "../../models/IDepartment";
 import { set } from "date-fns";
+import { FilesInterface } from "../../models/IFiles";
 
 
 export default function ReportProblemCreate(this: any) {
@@ -108,9 +108,9 @@ export default function ReportProblemCreate(this: any) {
 
     };
 
-    
 
-   ;
+
+    ;
     // const handleUpload = async () => {
     //     const apiUrl = "http://localhost:8080/uploads";
     //     const requestOptions = {
@@ -206,6 +206,42 @@ export default function ReportProblemCreate(this: any) {
             });
     }
 
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files) {
+            setFiles(event.target.files);
+        }
+    };
+
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const apiUrl = "http://localhost:8080/uploadfile";
+
+        if (files) {
+            const formData = new FormData();
+            for (let i = 0; i < files.length; i++) {
+                formData.append("files", files[i]);
+            }
+
+            fetch(apiUrl, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: formData,
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
+    };
+
+
+
+
 
     // function getUser() {
     //     const UserID = localStorage.getItem("uid")
@@ -246,6 +282,7 @@ export default function ReportProblemCreate(this: any) {
             StatusID: 1,
             NotificationDate: ReportProblem.NotificationDate,
             DepartmentID: emp?.DepartmentID,
+            FileUpload: files,
         };
         console.log("Data", data)
         const apiUrl = "http://localhost:8080/reportProblems";
@@ -278,7 +315,7 @@ export default function ReportProblemCreate(this: any) {
         // getUser();
         getEmployee();
 
-       
+
         console.log(localStorage.getItem("did"))
 
     }, []);
@@ -375,6 +412,17 @@ export default function ReportProblemCreate(this: any) {
                         </FormControl>
                     </Grid>
                 </Grid>
+
+
+                <div>
+                    <form onSubmit={handleSubmit}>
+                        <input type="file" name="files" multiple onChange={handleFileChange} />
+                        <Button type="submit" variant="contained" color="primary">
+                            Upload
+                        </Button>
+                    </form>
+                </div>
+
 
 
                 {/* <div className="col-4">
