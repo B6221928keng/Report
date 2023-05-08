@@ -15,7 +15,9 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { ReportProblemInterface } from "../../models/IReportProblem";
 import { EmployeeInterface } from "../../models/IEmployee";
 import { DepartmentInterface } from "../../models/IDepartment";
+import { FilesInterface } from "../../models/IFiles";
 import { set } from "date-fns";
+import GetAppRoundedIcon from '@mui/icons-material/GetAppRounded';
 import { UserInterface } from "../../models/IUser";
 import { upload } from "@testing-library/user-event/dist/upload";
 function ReportProblem() {
@@ -23,6 +25,7 @@ function ReportProblem() {
     const [Department, setDepartment] = React.useState<DepartmentInterface>();
     const [user, setUser] = React.useState<UserInterface>();
     const [reportProblem, setReportProblem] = React.useState<ReportProblemInterface[]>([]);
+    const [uploadfile, setuploadfile] = React.useState<FilesInterface[]>([]);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(false);
     const [ErrorMessage, setErrorMessage] = React.useState("");
@@ -116,6 +119,7 @@ function ReportProblem() {
                 }
             });
     }
+
     // const DeleteReportProblem = async (id: string | number | undefined) => {
     //     const apiUrl = "http://localhost:8080";
     //     const requestOptions = {
@@ -144,7 +148,30 @@ function ReportProblem() {
     //             }
     //         )
     // }
-
+    const apiUrl = "http://localhost:8080";
+    function handleDownloadFile(id: number, filename: string) {
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+        };
+        fetch(`${apiUrl}/downloadFile/${id}`, requestOptions)
+            .then((response) => response.blob())
+            .then((blob) => {
+                const url = window.URL.createObjectURL(
+                    new Blob([blob], { type: "application/octet-stream" })
+                );
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", filename);
+                link.innerHTML = filename; // เพิ่มคำสั่งนี้เพื่อแสดงชื่อไฟล์
+                document.body.appendChild(link);
+                link.click();
+            })
+            .catch((error) => console.log(error));
+    }
 
     // //อัพรูป
     // const selectImage = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -158,7 +185,7 @@ function ReportProblem() {
     useEffect(() => {
         getEmployee();
         getReportProblem();
-       // getUser();
+        // getUser();
         // getDepartment();
     }, []);
 
@@ -265,9 +292,11 @@ function ReportProblem() {
                                     เวลา
                                 </TableCell>
                                 <TableCell align="center" width="10%">
+                                    ดาวน์โหลด
+                                </TableCell>
+                                <TableCell align="center" width="10%">
 
                                 </TableCell>
-
                                 <TableCell align="center" width="6%">
                                     สถานะ
                                 </TableCell>
@@ -279,25 +308,30 @@ function ReportProblem() {
                         <TableBody>
                             {reportProblem.map((reportProblem: ReportProblemInterface) => (
                                 <TableRow key={reportProblem.ID}>
-                                    <TableCell align="center" width="15">  {moment(reportProblem.NotificationDate).format('DD/MM/yyyy')}|{reportProblem.ID}            </TableCell>
-                                    <TableCell align="left" width="medium"> {emp?.EmployeeName}           </TableCell> 
+                                    <TableCell align="center" width="15">  {moment(reportProblem.NotificationDate).format('DDMMYY')}|{reportProblem.ID}            </TableCell>
+                                    <TableCell align="left" width="medium"> {emp?.EmployeeName}           </TableCell>
                                     {/* <TableCell align="left" width="medium"> {reportProblem.Department.DepartmentName} </TableCell>  */}
                                     <TableCell align="center" width="15%"> {reportProblem.Heading}      </TableCell>
                                     <TableCell align="left" width="20%"> {reportProblem.Description}           </TableCell>
                                     <TableCell align="center" width="5%" > {moment(reportProblem.NotificationDate).format('HH:mm ')}     </TableCell>
 
-                                    {/* <TableCell align="center">
-                                        <IconButton aria-label="GET"
-                                            vertical-align="middle"
-                                            //ดูไฟล์
-                                            onClick={() => handleApi(reportProblem.ID)}><PhotoIcon /></IconButton >
+                                    {/* <TableCell align="center" width="medium">
+                                        {reportProblem.FileUpload?.name ? (
+                                            <a href={`http://localhost:8080/downloadFile/${reportProblem.FileUpload.ID}`} download>
+                                                <IconButton size="small">
+                                                    <GetAppRoundedIcon />
+                                                </IconButton>
+                                                {reportProblem.FileUpload.name}
+                                            </a>
+                                        ) : "-"}
                                     </TableCell> */}
+                                    <TableCell align="left">
+                                        <IconButton onClick={() => handleDownloadFile(reportProblem.ID, reportProblem.FileUpload.name)}>
+                                            <GetAppRoundedIcon />
+                                        </IconButton>
+                                        {reportProblem.FileUpload.name} {/* เพิ่มคำสั่งนี้เพื่อแสดงชื่อไฟล์ */}
+                                    </TableCell>
 
-                                    {/* <TableCell align="center">
-                                        <IconButton aria-label="delete"
-                                            vertical-align="middle"
-                                            onClick={() => DeleteReportProblem(reportProblem.ID)}><DeleteIcon /></IconButton >
-                                    </TableCell> */}
                                     <TableCell align="center">
                                         <Button
 

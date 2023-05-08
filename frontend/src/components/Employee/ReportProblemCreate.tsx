@@ -79,60 +79,6 @@ export default function ReportProblemCreate(this: any) {
         });
     };
 
-    // const getFile = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    //     setFileData(e.target.files![0]);
-    // };
-    // const handleChange1 = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    //     setFileUpload(event.target.fileUpload ? event.target.fileUpload[0] : undefined);
-    //   };
-
-
-    // const uploadFile = (e: React.FormEvent<HTMLFormElement>): void => {
-    //     e.preventDefault();
-    //     const data = new FormData();
-    //     data.append("file", fileData!);
-    //     axios({
-    //         method: "POST",
-    //         url: "http://localhost:8080/upload",
-    //         data: data,
-    //     }).then((res) => {
-    //         alert(res.data.message);
-    //     });
-    // };
-
-    const selectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { files } = event.target;
-        const selectedFiles = files as FileList;
-        setCurrentFile(selectedFiles?.[0]);
-        setProgress(0);
-
-    };
-
-
-
-    ;
-    // const handleUpload = async () => {
-    //     const apiUrl = "http://localhost:8080/uploads";
-    //     const requestOptions = {
-    //         method: "POST",
-    //         headers: {
-    //             Authorization: `Bearer ${localStorage.getItem("token")}`,
-    //             "Content-Type": "application/json",
-    //         },
-    //     };
-    //     fetch(apiUrl, requestOptions)
-    //         .then((response) => response.json())
-
-    //     if (files) {
-    //         const formData = new FormData();
-    //         for (let i = 0; i < files.length; i++) {
-    //             formData.append('files', files[i]);
-    //         }
-    //         await axios.post('/upload', formData);
-    //     }
-    // };
-
-
     //ดึงพนักงาน
     function getEmployee() {
         const UserID = localStorage.getItem("uid")
@@ -238,32 +184,51 @@ export default function ReportProblemCreate(this: any) {
                 });
         }
     };
-
-
-
-
-
-    // function getUser() {
-    //     const UserID = localStorage.getItem("uid")
-    //     const apiUrl = `http://localhost:8080/users/${UserID}`;
-    //     const requestOptions = {
-    //         method: "GET",
-    //         headers: {
-    //             Authorization: `Bearer ${localStorage.getItem("token")}`,
-    //             "Content-Type": "application/json",
-    //         },
+    // const handleFileUpload = (event: { target: { files: any[]; }; }) => {
+    //     const file = event.target.files[0];
+    //     const reader = new FileReader();
+    //     reader.onload = () => {
+    //       const base64String = reader.result.replace("data:", "").replace(/^.+,/, "");
+    //       setReportProblem({
+    //         ...ReportProblem,
+    //         FileUpload: [
+    //           {
+    //             FileUploadID: null, // ใส่ null เพื่อให้ backend สร้าง ID ให้เอง
+    //             Name: file.name,
+    //             Size: file.size,
+    //             Type: file.type,
+    //             Content: base64String,
+    //           },
+    //         ],
+    //       });
     //     };
-    //     fetch(apiUrl, requestOptions)
-    //         .then((response) => response.json())
-    //         .then((res) => {
-    //             console.log("Combobox_User", res)
-    //             if (res.data) {
-    //                 setUser(res.data);
-    //             } else {
-    //                 console.log("else");
-    //             }
-    //         });
-    // }
+    //     reader.readAsDataURL(file);
+    //   };
+
+
+
+
+    function getUser() {
+        const UserID = localStorage.getItem("uid")
+        const apiUrl = `http://localhost:8080/users/${UserID}`;
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+        };
+        fetch(apiUrl, requestOptions)
+            .then((response) => response.json())
+            .then((res) => {
+                console.log("Combobox_User", res)
+                if (res.data) {
+                    setUser(res.data);
+                } else {
+                    console.log("else");
+                }
+            });
+    }
 
 
 
@@ -282,7 +247,7 @@ export default function ReportProblemCreate(this: any) {
             StatusID: 1,
             NotificationDate: ReportProblem.NotificationDate,
             DepartmentID: emp?.DepartmentID,
-            FileUpload: files,
+            FileUpload: ReportProblem.FileUploadID,
         };
         console.log("Data", data)
         const apiUrl = "http://localhost:8080/reportProblems";
@@ -293,6 +258,7 @@ export default function ReportProblemCreate(this: any) {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
+            timeout: 5000,
         };
         fetch(apiUrl, requestOptions)
             .then((response) => response.json())
@@ -312,7 +278,7 @@ export default function ReportProblemCreate(this: any) {
 
         getDepartment();
         getStatus();
-        // getUser();
+        getUser();
         getEmployee();
 
 

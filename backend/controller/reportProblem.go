@@ -16,7 +16,7 @@ func CreateReportProblem(c *gin.Context) {
 	var Employee entity.Employee
 	var status entity.Status
 	var department entity.Department
-	//  var fileUpload entity.FileUpload
+    var fileUpload entity.FileUpload
 
 	//เช็คว่าตรงกันมั้ย
 	if err := c.ShouldBindJSON(&reportProblem); err != nil {
@@ -42,6 +42,14 @@ func CreateReportProblem(c *gin.Context) {
 		return
 	}
 
+	// สร้าง FileUpload และบันทึกลงฐานข้อมูล
+	if reportProblem.FileUploadID != nil {
+		if tx := entity.DB().First(&fileUpload, *reportProblem.FileUploadID); tx.RowsAffected == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "file upload not found"})
+			return
+		}
+		reportProblem.FileUpload = fileUpload
+	}
 
 	// 12: สร้าง ReportProblem
 	wv := entity.ReportProblem{
@@ -119,7 +127,6 @@ func ListReportProblemStatusID4(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": reportProblem})
 }
 
-
 // DELETE /reportProblems/:id
 func DeleteReportProblem(c *gin.Context) {
 	id := c.Param("id")
@@ -132,32 +139,32 @@ func DeleteReportProblem(c *gin.Context) {
 }
 
 type output struct {
-	ID int
-	id int
-	NotiDate time.Time
-	Heading          string
-	Description      string
-	Empname   string
-	Status   string
-	Department    string
+	ID          int
+	id          int
+	NotiDate    time.Time
+	Heading     string
+	Description string
+	Empname     string
+	Status      string
+	Department  string
 	// FileUpload   string
 }
 
 func ListAdminReportProblem(c *gin.Context) {
-    var output []output
-    StaID := c.Param("id")
-    if err := entity.DB().Table("report_problems").
-        Select("report_problems.id, departments.id, statuses.id, employees.emp_name, statuses.name, departments.name, report_problems.heading, report_problems.description, report_problems.notification_date").
-        Joins("INNER JOIN report_problems ON report_problems.id = report_problems.report_type_id").
-        Joins("INNER JOIN employees ON employees.id = report_problems.employee_id").
-        Joins("INNER JOIN departments ON departments.id = report_problems.department_id").
-        Joins("INNER JOIN statuses ON statuses.id = report_problems.status_id").
-        Where("status_id = ?", StaID).
-        Find(&output).Error; err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        return
-    }
-    c.JSON(http.StatusOK, gin.H{"data": output})
+	var output []output
+	StaID := c.Param("id")
+	if err := entity.DB().Table("report_problems").
+		Select("report_problems.id, departments.id, statuses.id, employees.emp_name, statuses.name, departments.name, report_problems.heading, report_problems.description, report_problems.notification_date").
+		Joins("INNER JOIN report_problems ON report_problems.id = report_problems.report_type_id").
+		Joins("INNER JOIN employees ON employees.id = report_problems.employee_id").
+		Joins("INNER JOIN departments ON departments.id = report_problems.department_id").
+		Joins("INNER JOIN statuses ON statuses.id = report_problems.status_id").
+		Where("status_id = ?", StaID).
+		Find(&output).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": output})
 }
 
 // PATCH /reportProblem
@@ -167,7 +174,7 @@ func ListAdminReportProblem(c *gin.Context) {
 // 	var Employee entity.Employee
 // 	var status entity.Status
 // 	var department entity.Department
-	
+
 // 	// var fileUpload entity.FileUpload
 
 // 	if err := c.ShouldBindJSON(&newreportProblem); err != nil {
@@ -228,7 +235,7 @@ func ListAdminReportProblem(c *gin.Context) {
 // 		}
 // 		newreportProblem.Department = department
 // 	}
-	
+
 // 	// ค้นหา file ด้วย id
 // 	// if newreportProblem.FileUploadID != nil {
 // 	// 	if tx := entity.DB().Where("id = ?", newreportProblem.FileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
@@ -266,14 +273,13 @@ func ListAdminReportProblem(c *gin.Context) {
 // 		return
 // 	}
 
-// 	c.JSON(http.StatusOK, gin.H{"data": update})
-// }
+//		c.JSON(http.StatusOK, gin.H{"data": update})
+//	}
 func UpdateReportProblem(c *gin.Context) {
 	var reportProblem entity.ReportProblem
 	var employee entity.Employee
 	var status entity.Status
 	var department entity.Department
-
 
 	if err := c.ShouldBindJSON(&reportProblem); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -300,9 +306,8 @@ func UpdateReportProblem(c *gin.Context) {
 		Heading:          reportProblem.Heading,
 		Description:      reportProblem.Description,
 		FileUpload:       reportProblem.FileUpload,
-
 	}
-		// ขั้นตอนการ validate
+	// ขั้นตอนการ validate
 	if _, err := govalidator.ValidateStruct(update); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -313,6 +318,5 @@ func UpdateReportProblem(c *gin.Context) {
 		return
 	}
 
-	
 	c.JSON(http.StatusOK, gin.H{"data": update})
 }

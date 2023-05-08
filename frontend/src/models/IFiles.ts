@@ -3,5 +3,5 @@ export interface FilesInterface {
   name: string;
   size: number;
   type: string;
-  content: File;
+  content: File | null;
 }

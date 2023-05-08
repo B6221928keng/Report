@@ -117,7 +117,6 @@ type FileUpload struct {
 	Size    int64  `json:"size"`
 	Type    string `json:"type"`
 	Content []byte `json:"content"`
-
 	reportProblem []ReportProblem `gorm:"foreignKey:FileUploadID"`
   }
 

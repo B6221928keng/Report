@@ -117,10 +117,10 @@ export default function Report_End(props: any) {
                     ใช้งานได้ปกติ ?
                 </DialogTitle>
                 <DialogActions>
-                    <Button color="inherit" onClick={handleClose1}>ยกเลิก</Button>
                     <Button color="success" onClick={approveEnd} autoFocus>
                         ใช่
                     </Button>
+                      <Button color="inherit" onClick={handleClose1}>ยกเลิก</Button>
                     {/* <Button color="error" onClick={notapproveEnd} autoFocus>
                         ไม่ตรวจสอบ
                     </Button> */}

@@ -15,7 +15,7 @@ import (
  
   
   // Method POST /upload
-func UploadFile(c *gin.Context) {
+func UploadFile(c *gin.Context) { 
 	// Multipart form
 	form, err := c.MultipartForm()
 	if err != nil {

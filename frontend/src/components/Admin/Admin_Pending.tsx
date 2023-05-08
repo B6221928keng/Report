@@ -117,10 +117,10 @@ export default function Admin_Pending(props: any) {
                     ตรวจสอบรายการนี้ ?
                 </DialogTitle>
                 <DialogActions>
-                    <Button color="inherit" onClick={handleClose1}>ยกเลิก</Button>
                     <Button color="success" onClick={approvereport} autoFocus>
                         ใช่
                     </Button>
+                    <Button color="inherit" onClick={handleClose1}>ยกเลิก</Button>
                     {/* <Button color="error" onClick={notapprovereport} autoFocus>
                         ไม่ตรวจสอบ
                     </Button> */}

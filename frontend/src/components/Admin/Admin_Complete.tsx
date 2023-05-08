@@ -115,10 +115,10 @@ export default function Admin_Complete(props: any) {
                     แก้ไขรายการนี้เสร็จแล้ว ?
                 </DialogTitle>
                 <DialogActions>
-                    <Button color="inherit" onClick={handleClose1}>ยกเลิก</Button>
                     <Button color="success" onClick={approveComplete} autoFocus>
                         ใช่
                     </Button>
+                    <Button color="inherit" onClick={handleClose1}>ยกเลิก</Button>
                     {/* <Button color="error" onClick={notapproveComplete} autoFocus>
                         ไม่ตรวจสอบ
                     </Button> */}
