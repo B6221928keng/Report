@@ -2,6 +2,7 @@ package controller
 
 import (
 	// "fmt"
+	"io"
 	"net/http"
 	"time"
 
@@ -11,12 +12,13 @@ import (
 )
 
 // POST /reportProblems
+
 func CreateReportProblem(c *gin.Context) {
 	var reportProblem entity.ReportProblem
 	var Employee entity.Employee
 	var status entity.Status
 	var department entity.Department
-    var fileUpload entity.FileUpload
+	var fileUpload entity.FileUpload
 
 	//เช็คว่าตรงกันมั้ย
 	if err := c.ShouldBindJSON(&reportProblem); err != nil {
@@ -41,17 +43,55 @@ func CreateReportProblem(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "employee not found"})
 		return
 	}
+	// Check if file is uploaded
+	file, err := c.FormFile("file")
+	if err == nil {
+		// Open file
+		src, err := file.Open()
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		defer src.Close()
+
+		// Read file content
+		content, err := io.ReadAll(src)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		// Create file upload entity
+		fileUpload := entity.FileUpload{
+			Name:    file.Filename,
+			Size:    file.Size,
+			Type:    file.Header.Get("Content-Type"),
+			Content: content,
+		}
+
+		// Save file uploads to database
+		if err := entity.DB().Create(&fileUpload).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		reportProblem.FileUploadID = &fileUpload.ID
+		reportProblem.FileUpload = fileUpload
+	} else {
+		// No file uploaded, set FileUpload field to empty struct
+		reportProblem.FileUpload = entity.FileUpload{}
+		reportProblem.FileUploadID = nil
+	}
 
 	// สร้าง FileUpload และบันทึกลงฐานข้อมูล
-	if reportProblem.FileUploadID != nil {
-		if tx := entity.DB().First(&fileUpload, *reportProblem.FileUploadID); tx.RowsAffected == 0 {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "file upload not found"})
+	if fileUpload.ID != 0 {
+		if tx := entity.DB().First(&fileUpload, fileUpload.ID); tx.RowsAffected == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "fileupload not found"})
 			return
 		}
 		reportProblem.FileUpload = fileUpload
 	}
-
-	// 12: สร้าง ReportProblem
+	// Create ReportProblem entity
 	wv := entity.ReportProblem{
 		NotificationDate: reportProblem.NotificationDate,
 		Heading:          reportProblem.Heading,
@@ -60,16 +100,21 @@ func CreateReportProblem(c *gin.Context) {
 		Status:           status,
 		Department:       department,
 		FileUpload:       reportProblem.FileUpload,
+		FileUploadID:     reportProblem.FileUploadID,
 	}
+
+	// Validate entity
 	if _, err := govalidator.ValidateStruct(wv); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	// 15: บันทึก
+
+	// Save entity to database
 	if err := entity.DB().Create(&wv).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
 	c.JSON(http.StatusOK, gin.H{"data": wv})
 }
 

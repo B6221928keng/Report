@@ -15,7 +15,7 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { ReportProblemInterface } from "../../models/IReportProblem";
 import { EmployeeInterface } from "../../models/IEmployee";
 import { DepartmentInterface } from "../../models/IDepartment";
-import { FilesInterface } from "../../models/IFiles";
+import { FileUploadInterface } from "../../models/IFileUpload";
 import { set } from "date-fns";
 import GetAppRoundedIcon from '@mui/icons-material/GetAppRounded';
 import { UserInterface } from "../../models/IUser";
@@ -25,7 +25,7 @@ function ReportProblem() {
     const [Department, setDepartment] = React.useState<DepartmentInterface>();
     const [user, setUser] = React.useState<UserInterface>();
     const [reportProblem, setReportProblem] = React.useState<ReportProblemInterface[]>([]);
-    const [uploadfile, setuploadfile] = React.useState<FilesInterface[]>([]);
+    const [uploadfile, setuploadfile] = React.useState<FileUploadInterface[]>([]);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(false);
     const [ErrorMessage, setErrorMessage] = React.useState("");

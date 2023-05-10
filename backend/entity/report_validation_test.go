@@ -28,3 +28,4 @@ func TestNewdayIDReportProblem(t *testing.T) {
     g.Expect(t, today.Format("2006-01-02"), reportProblem.NotificationDate.Format("2006-01-02"))
 })
 }
+

@@ -1,10 +1,8 @@
 package entity
 
 import (
-	_ "image/png"
+	
 	"time"
-
-	// "github.com/asaskevich/govalidator"
 	"gorm.io/gorm"
 )
 
@@ -12,9 +10,8 @@ type ReportProblem struct {
 	gorm.Model
 	ID int
 	NotificationDate time.Time
-	Heading          string
-	Description      string
-
+	Heading          string   `validate:"required"`
+	Description      string   
 	EmployeeID *uint
 	Employee   Employee
 
@@ -23,9 +20,8 @@ type ReportProblem struct {
 
 	DepartmentID *uint
 	Department   Department `gorm:"references:id" valid:"-"`
-
-	FileUploadID *uint
-	FileUpload   FileUpload `gorm:"references:id" valid:"-"`
+	FileUploadID     *uint `gorm:"unique"`
+	FileUpload       FileUpload `gorm:"foreignKey:FileUploadID" valid:"-"`
 }
 type ReportProblem1 struct {
 	gorm.Model
@@ -65,7 +61,7 @@ type ReportProblem3 struct {
 	gorm.Model
 	ID int
 	NotificationDate time.Time
-	Heading          string
+	Heading          string `valid:"required"`
 	Description      string
 
 	EmployeeID *uint
@@ -117,7 +113,6 @@ type FileUpload struct {
 	Size    int64  `json:"size"`
 	Type    string `json:"type"`
 	Content []byte `json:"content"`
-	reportProblem []ReportProblem `gorm:"foreignKey:FileUploadID"`
   }
 
 //   func (rp *ReportProblem) BeforeCreate(tx *gorm.DB) (err error) {

@@ -3,19 +3,19 @@ package controller
 import (
 	"io"
 	"net/http"
-	"os"
-	"path/filepath"
-	"strconv"
-	"time"
+	// "os"
+	// "path/filepath"
+	// "strconv"
+	// "time"
 
 	"github.com/B6221928keng/Report/entity"
 	"github.com/gin-gonic/gin"
 )
   
  
-  
-  // Method POST /upload
-func UploadFile(c *gin.Context) { 
+
+ // Method POST /upload
+func UploadFile(c *gin.Context) {
 	// Multipart form
 	form, err := c.MultipartForm()
 	if err != nil {
@@ -25,6 +25,12 @@ func UploadFile(c *gin.Context) {
 
 	// Get files from form
 	files := form.File["files"]
+
+	// Check if any files were uploaded
+	if len(files) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "no file uploads found"})
+		return
+	}
 
 	// Loop through files
 	var fileUploads []entity.FileUpload
@@ -46,42 +52,23 @@ func UploadFile(c *gin.Context) {
 
 		// Create file upload entity
 		fileUpload := entity.FileUpload{
-			Name:        file.Filename,
-			Size:        file.Size,
-			Type:        file.Header.Get("Content-Type"),
-			Content:     content,
+			Name:    file.Filename,
+			Size:    file.Size,
+			Type:    file.Header.Get("Content-Type"),
+			Content: content,
 		}
 		fileUploads = append(fileUploads, fileUpload)
-
-		// Save file to disk
-		dst, err := os.Create(filepath.Join("./uploads", strconv.FormatInt(time.Now().UnixNano(), 10)+"_"+file.Filename))
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		defer dst.Close()
-
-		_, err = io.Copy(dst, src)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
 	}
 
-	if len(fileUploads) == 0 {
-		// ไม่มีข้อมูล fileUploads ให้ return error
-		c.JSON(http.StatusBadRequest, gin.H{"error": "no file uploads found"})
-		return
-	  }
-	  
-	  // Save file uploads to database
-	  if err := entity.DB().Create(&fileUploads).Error; err != nil {
+	// Save file uploads to database
+	if err := entity.DB().Create(&fileUploads).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
-	  }
+	}
 
 	c.JSON(http.StatusOK, gin.H{"data": fileUploads})
 }
+
 // Method GET /download/:id
 func DownloadFile(c *gin.Context) {
 	id := c.Param("id")

@@ -6,9 +6,6 @@ import Snackbar from '@mui/material/Snackbar'
 import Box from '@mui/material/Box';
 import SourceIcon from '@mui/icons-material/Source';
 import Paper from '@mui/material/Paper'
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { Button, CssBaseline, FormControl, Grid, Select, MenuItem, SelectChangeEvent, Stack, TextField, Typography } from '@mui/material'
 import { useState } from 'react';
 import axios from 'axios';
@@ -21,7 +18,7 @@ import { ReportProblemInterface } from "../../models/IReportProblem";
 import { EmployeeInterface } from "../../models/IEmployee";
 import { DepartmentInterface } from "../../models/IDepartment";
 import { set } from "date-fns";
-import { FilesInterface } from "../../models/IFiles";
+import { FileUploadInterface } from "../../models/IFileUpload";
 
 
 export default function ReportProblemCreate(this: any) {
@@ -38,7 +35,7 @@ export default function ReportProblemCreate(this: any) {
     const [ReportProblem, setReportProblem] = React.useState<Partial<ReportProblemInterface>>({
         NotificationDate: new Date(),
     });
-    const [files, setFiles] = useState<FileList | null>(null);
+    const [files, setFiles] = React.useState<FileUploadInterface[]>([]);
     const [loading, setLoading] = React.useState(false);
     const [ErrorMessage, setErrorMessage] = React.useState<String>();
     const [message, setMessage] = React.useState<string>("");
@@ -154,7 +151,16 @@ export default function ReportProblemCreate(this: any) {
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
-            setFiles(event.target.files);
+            const newFiles = Array.from(event.target.files).map((file) => {
+                return {
+                    ID: 0,
+                    name: file.name,
+                    size: file.size,
+                    type: file.type,
+                    content: file,
+                };
+            });
+            setFiles((prevFiles) => [...prevFiles, ...newFiles]);
         }
     };
 
@@ -164,8 +170,12 @@ export default function ReportProblemCreate(this: any) {
 
         if (files) {
             const formData = new FormData();
+
             for (let i = 0; i < files.length; i++) {
-                formData.append("files", files[i]);
+                const file = files[i];
+                if (file.content) {
+                    formData.append('files', file.content);
+                }
             }
 
             fetch(apiUrl, {
@@ -178,12 +188,27 @@ export default function ReportProblemCreate(this: any) {
                 .then((response) => response.json())
                 .then((data) => {
                     console.log(data);
+                    if (data.success) {
+                        setReportProblem({
+                            ...ReportProblem,
+                            FileUploadID: data.fileId,
+                            FileUpload: {
+                                ID: data.fileId,
+                                name: data.fileName,
+                                size: data.fileSize,
+                                type: data.fileType,
+                                content: null,
+                            },
+                        });
+                    }
                 })
                 .catch((error) => {
                     console.log(error);
                 });
         }
     };
+
+
     // const handleFileUpload = (event: { target: { files: any[]; }; }) => {
     //     const file = event.target.files[0];
     //     const reader = new FileReader();
@@ -239,6 +264,18 @@ export default function ReportProblemCreate(this: any) {
 
     function submit() {
         setLoading(true)
+        // Validate Heading
+        if (!ReportProblem.Heading) {
+            setLoading(false)
+            alert("กรุณากรอกหัวข้อของปัญหาด้วยนะครับ");
+            return
+        }
+        // Validate Heading
+        if (!ReportProblem.Description) {
+            setLoading(false)
+            alert("กรุณากรอกรายละเอียดของปัญหาด้วยนะครับ");
+            return
+        }
         let data = {
             ID: ReportProblem.ID,
             EmployeeID: emp?.ID,
@@ -247,9 +284,12 @@ export default function ReportProblemCreate(this: any) {
             StatusID: 1,
             NotificationDate: ReportProblem.NotificationDate,
             DepartmentID: emp?.DepartmentID,
-            FileUpload: ReportProblem.FileUploadID,
+            FileUploadID: ReportProblem.FileUploadID,
         };
-        console.log("Data", data)
+
+        console.log(data.FileUploadID);
+        console.log("Data", data);
+
         const apiUrl = "http://localhost:8080/reportProblems";
         const requestOptions = {
             method: "POST",
@@ -260,16 +300,17 @@ export default function ReportProblemCreate(this: any) {
             body: JSON.stringify(data),
             timeout: 5000,
         };
+
         fetch(apiUrl, requestOptions)
             .then((response) => response.json())
             .then((res) => {
-                console.log("Res", res)
+                console.log("Res", res);
                 if (res.data) {
-                    setErrorMessage("")
+                    setErrorMessage("");
                     setSuccess(true);
                 } else {
-                    setErrorMessage(res.error)
-                    setError(true)
+                    setErrorMessage(res.error);
+                    setError(true);
                 }
             });
     }
@@ -327,7 +368,7 @@ export default function ReportProblemCreate(this: any) {
                 </Box>
                 </Box>
 
-                <Grid item xs={4}>
+                {/* <Grid item xs={4}>
                     <FormControl fullWidth variant="outlined" style={{ width: '105%', float: 'left' }}>
                         <FormControl fullWidth variant="outlined" style={{ width: '100%' }}>
                             <Grid item xs={120}>
@@ -343,7 +384,9 @@ export default function ReportProblemCreate(this: any) {
                             <Grid item xs={120}><Typography>แผนก :  {localStorage.getItem("did")}</Typography></Grid>
                         </FormControl>
                     </FormControl>
-                </Grid>
+                </Grid> */}
+
+
                 <Grid container spacing={2}>
                     <Grid item xs={4}>
                         <FormControl fullWidth variant="outlined" style={{ width: '100%' }}>
@@ -380,7 +423,9 @@ export default function ReportProblemCreate(this: any) {
                 </Grid>
 
 
-                <div>
+
+
+                <div style={{ marginTop: '20px' }}>
                     <form onSubmit={handleSubmit}>
                         <input type="file" name="files" multiple onChange={handleFileChange} />
                         <Button type="submit" variant="contained" color="primary">
@@ -389,51 +434,6 @@ export default function ReportProblemCreate(this: any) {
                     </form>
                 </div>
 
-
-
-                {/* <div className="col-4">
-                    <button
-                        className="btn btn-success btn-sm"
-                        disabled={!currentFile}
-                        onClick={upload}
-                    >
-                        Upload
-                    </button>
-                </div>
-
-
-                {currentFile && (
-                    <div className="progress my-3">
-                        <div
-                            className="progress-bar progress-bar-info"
-                            role="progressbar"
-                            aria-valuenow={progress}
-                            aria-valuemin={0}
-                            aria-valuemax={100}
-                            style={{ width: progress + "%" }}
-                        >
-                            {progress}%
-                        </div>
-                    </div>
-                )}
-
-                {message && (
-                    <div className="alert alert-secondary mt-3" role="alert">
-                        {message}
-                    </div>
-                )}
-
-                <div className="card mt-3">
-                    <div className="card-header">List of Files</div>
-                    <ul className="list-group list-group-flush">
-                        {fileUpload &&
-                            fileUpload.map((fileUpload, index) => (
-                                <li className="list-group-item" key={index}>
-                                    <a href={fileUpload.Filename}>{fileUpload.ID}{fileUpload.Mimetype}</a>
-                                </li>
-                            ))}
-                    </ul>
-                </div> */}
 
                 {/* <Grid item xs={4}>
                         <FormControl fullWidth variant="outlined" style={{ width: '105%', float: 'left' }}>
@@ -475,8 +475,8 @@ export default function ReportProblemCreate(this: any) {
                             variant="contained"
                             color="primary"
                             onClick={submit}
-                            component={RouterLink}
-                            to="/reportProblem"
+                        // component={RouterLink}
+                        // to="/reportProblem"
                         >
                             บันทึกข้อมูล
                         </Button>
