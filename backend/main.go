@@ -61,7 +61,7 @@ func main() {
 	r.GET("/employeeID/:id", controller.GetEmployee)
 
 	//File
-	r.GET("/fileUploads", controller.ListFileUploads )
+	r.GET("/fileUploads", controller.ListFileUploads)
 	r.GET("/downloadFile/:id", controller.DownloadFile)
 	r.POST("/uploadfile", controller.UploadFile)
 

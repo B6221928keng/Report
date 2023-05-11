@@ -76,13 +76,24 @@ func CreateReportProblem(c *gin.Context) {
 		}
 
 		reportProblem.FileUploadID = &fileUpload.ID
-		reportProblem.FileUpload = fileUpload
 	} else {
 		// No file uploaded, set FileUpload field to empty struct
 		reportProblem.FileUpload = entity.FileUpload{}
 		reportProblem.FileUploadID = nil
 	}
 
+	// สร้าง FileUpload และบันทึกลงฐานข้อมูล
+	if reportProblem.FileUploadID != nil {
+		if tx := entity.DB().Where("id = ?", *reportProblem.FileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "fileupload not found"})
+			return
+		}
+		reportProblem.FileUpload = fileUpload
+	} else {
+		// No file uploaded, set FileUpload field to empty struct
+		reportProblem.FileUpload = entity.FileUpload{}
+		reportProblem.FileUploadID = nil
+	}
 	// สร้าง FileUpload และบันทึกลงฐานข้อมูล
 	if fileUpload.ID != 0 {
 		if tx := entity.DB().First(&fileUpload, fileUpload.ID); tx.RowsAffected == 0 {

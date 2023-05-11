@@ -92,3 +92,12 @@ func ListFileUploads(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"data": fileUploads})
 }
+
+func ListFileUpload(c *gin.Context) {
+	var fileUpload []entity.Department
+	if err := entity.DB().Raw("SELECT * FROM file_uploads").Find(&fileUpload).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": fileUpload})
+}

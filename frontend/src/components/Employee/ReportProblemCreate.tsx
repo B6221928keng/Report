@@ -35,16 +35,11 @@ export default function ReportProblemCreate(this: any) {
     const [ReportProblem, setReportProblem] = React.useState<Partial<ReportProblemInterface>>({
         NotificationDate: new Date(),
     });
+    // const [filess, setFiless] = React.useState<FileUploadInterface>();
     const [files, setFiles] = React.useState<FileUploadInterface[]>([]);
     const [loading, setLoading] = React.useState(false);
     const [ErrorMessage, setErrorMessage] = React.useState<String>();
     const [message, setMessage] = React.useState<string>("");
-    const [progress, setProgress] = useState<number>(0);
-    const [currentFile, setCurrentFile] = useState<File>();
-    const [fileData, setFileData] = useState<string>("");
-
-
-
 
     const handleClose = (res: any) => {
         if (res === "clickaway") {
@@ -148,21 +143,49 @@ export default function ReportProblemCreate(this: any) {
                 }
             });
     }
+    const getFileUploads = () => {
+        const apiUrl = "http://localhost:8080/fileUploads";
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+        };
+
+        fetch(apiUrl, requestOptions)
+            .then((response) => response.json())
+            .then((res) => {
+                console.log("FileUploads", res);
+                if (res.data) {
+                    console.log(res.data);
+                    setFiles(res.data);
+                } else {
+                    console.log("else");
+                }
+            });
+    };
+
+
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
-            const newFiles = Array.from(event.target.files).map((file) => {
-                return {
-                    ID: 0,
-                    name: file.name,
-                    size: file.size,
-                    type: file.type,
-                    content: file,
-                };
-            });
-            setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+          const newFiles = Array.from(event.target.files).map((file) => {
+            return {
+              ID: 0,
+              name: file.name,
+              size: file.size,
+              type: file.type,
+              CreatedAt: new Date(file.lastModified),
+              UpdatedAt: new Date(file.lastModified),
+              content: file,
+            };
+          });
+          setFiles((prevFiles) => [...prevFiles, ...newFiles]);
         }
-    };
+      };
+      
+
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -177,7 +200,6 @@ export default function ReportProblemCreate(this: any) {
                     formData.append('files', file.content);
                 }
             }
-
             fetch(apiUrl, {
                 method: "POST",
                 headers: {
@@ -188,18 +210,21 @@ export default function ReportProblemCreate(this: any) {
                 .then((response) => response.json())
                 .then((data) => {
                     console.log(data);
-                    if (data.success) {
-                        setReportProblem({
-                            ...ReportProblem,
-                            FileUploadID: data.fileId,
+                    if (data.data && data.data.length > 0 && data.data[0].FileUploadID !== undefined) {
+                        const fileData = data.data[0];
+                        setReportProblem((prevReportProblem) => ({
+                            ...prevReportProblem,
+                            FileUploadID: fileData.FileUploadID,
                             FileUpload: {
-                                ID: data.fileId,
-                                name: data.fileName,
-                                size: data.fileSize,
-                                type: data.fileType,
+                                ID: fileData.FileUploadID,
+                                name: fileData.name,
+                                size: fileData.size,
+                                type: fileData.type,
+                                CreatedAt: fileData.time,
+                                UpdatedAt: fileData.time,
                                 content: null,
                             },
-                        });
+                        }));
                     }
                 })
                 .catch((error) => {
@@ -207,6 +232,7 @@ export default function ReportProblemCreate(this: any) {
                 });
         }
     };
+
 
 
     // const handleFileUpload = (event: { target: { files: any[]; }; }) => {
@@ -285,6 +311,7 @@ export default function ReportProblemCreate(this: any) {
             NotificationDate: ReportProblem.NotificationDate,
             DepartmentID: emp?.DepartmentID,
             FileUploadID: ReportProblem.FileUploadID,
+
         };
 
         console.log(data.FileUploadID);
@@ -314,6 +341,7 @@ export default function ReportProblemCreate(this: any) {
                 }
             });
     }
+
     //ดึงข้อมูล ใส่ combobox
     React.useEffect(() => {
 
@@ -321,6 +349,7 @@ export default function ReportProblemCreate(this: any) {
         getStatus();
         getUser();
         getEmployee();
+        getFileUploads();
 
 
         console.log(localStorage.getItem("did"))

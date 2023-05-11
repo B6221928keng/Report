@@ -20,8 +20,8 @@ type ReportProblem struct {
 
 	DepartmentID *uint
 	Department   Department `gorm:"references:id" valid:"-"`
-	FileUploadID     *uint `gorm:"unique"`
-	FileUpload       FileUpload `gorm:"foreignKey:FileUploadID" valid:"-"`
+	FileUploadID   *uint `gorm:"column:file_upload_id"` // ตั้งค่าชื่อคอลัมน์เป็น file_upload_id
+	FileUpload     FileUpload `gorm:"foreignKey:FileUploadID" valid:"-"`
 }
 type ReportProblem1 struct {
 	gorm.Model
@@ -113,6 +113,9 @@ type FileUpload struct {
 	Size    int64  `json:"size"`
 	Type    string `json:"type"`
 	Content []byte `json:"content"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	reportProblem []ReportProblem `gorm:"foreignKey:FileUploadID"`
   }
 
 //   func (rp *ReportProblem) BeforeCreate(tx *gorm.DB) (err error) {
