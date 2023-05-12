@@ -9,9 +9,6 @@ import Paper from '@mui/material/Paper'
 import { Button, CssBaseline, FormControl, Grid, Select, MenuItem, SelectChangeEvent, Stack, TextField, Typography } from '@mui/material'
 import { useState } from 'react';
 import axios from 'axios';
-
-import UploadService from "../../service/FileUploadService";
-
 import { UserInterface } from "../../models/IUser";
 import { StatusInterface } from "../../models/IStatus";
 import { ReportProblemInterface } from "../../models/IReportProblem";
@@ -20,9 +17,7 @@ import { DepartmentInterface } from "../../models/IDepartment";
 import { set } from "date-fns";
 import { FileUploadInterface } from "../../models/IFileUpload";
 
-
 export default function ReportProblemCreate(this: any) {
-
 
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);
@@ -133,7 +128,6 @@ export default function ReportProblemCreate(this: any) {
         fetch(apiUrl, requestOptions)
             .then((response) => response.json())
             .then((res) => {
-
                 console.log("Combobox_department", res)
                 if (res.data) {
                     console.log(res.data)
@@ -143,6 +137,7 @@ export default function ReportProblemCreate(this: any) {
                 }
             });
     }
+
     const getFileUploads = () => {
         const apiUrl = "http://localhost:8080/fileUploads";
         const requestOptions = {
@@ -152,7 +147,6 @@ export default function ReportProblemCreate(this: any) {
                 "Content-Type": "application/json",
             },
         };
-
         fetch(apiUrl, requestOptions)
             .then((response) => response.json())
             .then((res) => {
@@ -166,34 +160,30 @@ export default function ReportProblemCreate(this: any) {
             });
     };
 
-
-
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
-          const newFiles = Array.from(event.target.files).map((file) => {
-            return {
-              ID: 0,
-              name: file.name,
-              size: file.size,
-              type: file.type,
-              CreatedAt: new Date(file.lastModified),
-              UpdatedAt: new Date(file.lastModified),
-              content: file,
-            };
-          });
-          setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+            const newFiles = Array.from(event.target.files).map((file) => {
+                return {
+                    ID: 0,
+                    name: file.name,
+                    size: file.size,
+                    type: file.type,
+                    CreatedAt: new Date(file.lastModified),
+                    UpdatedAt: new Date(file.lastModified),
+                    content: file,
+                };
+            });
+            setFiles((prevFiles) => [...prevFiles, ...newFiles]);
         }
-      };
-      
-
+    };
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const apiUrl = "http://localhost:8080/uploadfile";
-
+    
         if (files) {
             const formData = new FormData();
-
+    
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
                 if (file.content) {
@@ -210,18 +200,19 @@ export default function ReportProblemCreate(this: any) {
                 .then((response) => response.json())
                 .then((data) => {
                     console.log(data);
-                    if (data.data && data.data.length > 0 && data.data[0].FileUploadID !== undefined) {
+                    if (data.data && data.data.length > 0) {
                         const fileData = data.data[0];
                         setReportProblem((prevReportProblem) => ({
                             ...prevReportProblem,
-                            FileUploadID: fileData.FileUploadID,
+                            FileUploadID: fileData.ID,
                             FileUpload: {
-                                ID: fileData.FileUploadID,
+                                ...prevReportProblem.FileUpload,
+                                ID: fileData.ID,
                                 name: fileData.name,
                                 size: fileData.size,
                                 type: fileData.type,
-                                CreatedAt: fileData.time,
-                                UpdatedAt: fileData.time,
+                                CreatedAt: fileData.CreatedAt,
+                                UpdatedAt: fileData.UpdatedAt,
                                 content: null,
                             },
                         }));
@@ -232,8 +223,7 @@ export default function ReportProblemCreate(this: any) {
                 });
         }
     };
-
-
+    
 
     // const handleFileUpload = (event: { target: { files: any[]; }; }) => {
     //     const file = event.target.files[0];

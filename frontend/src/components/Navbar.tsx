@@ -124,7 +124,7 @@ export default function Navbar({ open, onClick }: any) {
                     <Typography
                         style={{
                             textAlign: 'right',
-                            backgroundColor: 'error',
+                            backgroundColor: "errorColor",
                             color: 'white',
                             padding: '5px 10px',
                             border: '0.5px solid white',
@@ -132,7 +132,7 @@ export default function Navbar({ open, onClick }: any) {
                             display: 'inline-block'
                         }}
                     >
-                        <AccountCircleRoundedIcon style={{ verticalAlign: 'middle', marginRight: '5px' }} />
+                        <AccountCircleRoundedIcon style={{ verticalAlign: 'middle', marginRight: '5px', color: "indigo" }} />
                         User: {emp?.EmployeeName} | {localStorage.getItem('did')}
                     </Typography>
 

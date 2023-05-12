@@ -120,6 +120,29 @@ function ReportProblem() {
             });
     }
 
+
+    function getFile() {
+        const apiUrl = `http://localhost:8080/downloadFile/:id`;
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+        };
+        fetch(apiUrl, requestOptions)
+            .then((response) => response.json())
+            .then((res) => {
+
+                console.log("Combobox_file_uploads", res)
+                if (res.data) {
+                    console.log(res.data)
+                    setEmp(res.data);
+                } else {
+                    console.log("else");
+                }
+            });
+    }
     // const DeleteReportProblem = async (id: string | number | undefined) => {
     //     const apiUrl = "http://localhost:8080";
     //     const requestOptions = {
@@ -173,20 +196,16 @@ function ReportProblem() {
             .catch((error) => console.log(error));
     }
 
-    // //อัพรูป
-    // const selectImage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     const selectedFiles = event.target.files as FileList;
-    //     setCurrentImage(selectedFiles?.[0]);
-    //     setPreviewImage(URL.createObjectURL(selectedFiles?.[0]));
-    //     setProgress(0);
-    // };
+
 
 
     useEffect(() => {
         getEmployee();
         getReportProblem();
+        // handleDownloadFile();
         // getUser();
         // getDepartment();
+        // getFile();
     }, []);
 
 

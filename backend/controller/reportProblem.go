@@ -12,7 +12,6 @@ import (
 )
 
 // POST /reportProblems
-
 func CreateReportProblem(c *gin.Context) {
 	var reportProblem entity.ReportProblem
 	var Employee entity.Employee
@@ -111,24 +110,20 @@ func CreateReportProblem(c *gin.Context) {
 		Status:           status,
 		Department:       department,
 		FileUpload:       reportProblem.FileUpload,
-		FileUploadID:     reportProblem.FileUploadID,
+		// FileUploadID:     reportProblem.FileUploadID,
 	}
-
 	// Validate entity
 	if _, err := govalidator.ValidateStruct(wv); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
 	// Save entity to database
 	if err := entity.DB().Create(&wv).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
 	c.JSON(http.StatusOK, gin.H{"data": wv})
 }
-
 // GET /reportProblem/:id
 func GetReportProblem(c *gin.Context) {
 	var reportProblem entity.ReportProblem
@@ -139,7 +134,6 @@ func GetReportProblem(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"data": reportProblem})
 }
-
 // GET /reportProblem
 func ListReportProblem(c *gin.Context) {
 	var reportProblem []entity.ReportProblem

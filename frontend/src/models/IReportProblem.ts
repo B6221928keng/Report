@@ -31,6 +31,9 @@ export interface ReportProblem1Interface{
     Description?: string;
     Status?: string;
     DepartmentName?: number;
+    name: File;
+    FileUploadID: number,
+    FileUpload: FileUploadInterface,
 }
 export interface ReportProblem2Interface{
     id?: number;
@@ -40,6 +43,9 @@ export interface ReportProblem2Interface{
     Description?: string;
     Status?: string;
     DepartmentName?: number;
+    
+    FileUploadID: number,
+    FileUpload: FileUploadInterface,
 }
 export interface ReportProblem3Interface{
     id?: number;
@@ -49,4 +55,7 @@ export interface ReportProblem3Interface{
     Description?: string;
     Status?: string;
     DepartmentName?: number;
+    
+    FileUploadID: number,
+    FileUpload: FileUploadInterface,
 }

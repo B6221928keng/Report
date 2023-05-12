@@ -3,9 +3,10 @@ import React, { useEffect, useState } from "react";
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { Box, Button, Container, IconButton, Paper, Typography } from '@mui/material';
 import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarColumnsButton, GridToolbarFilterButton } from '@mui/x-data-grid';
-import {  ReportProblemInterface } from '../../models/IReportProblem';
-import {  ListAdminReportProblem1 } from '../../service/Servics';
+import { ReportProblemInterface } from '../../models/IReportProblem';
+import { ListAdminReportProblem1 } from '../../service/Servics';
 import Admin_Pending from './Admin_Pending';
+import GetAppRoundedIcon from '@mui/icons-material/GetAppRounded';
 import moment from 'moment';
 
 function ProblemShow() {
@@ -17,11 +18,34 @@ function ProblemShow() {
             console.log(res.data)
         }
     };
-
+    const apiUrl = "http://localhost:8080";
+    function handleDownloadFile(id: number, filename: string) {
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+        };
+        fetch(`${apiUrl}/downloadFile/${id}`, requestOptions)
+            .then((response) => response.blob())
+            .then((blob) => {
+                const url = window.URL.createObjectURL(
+                    new Blob([blob], { type: "application/octet-stream" })
+                );
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", filename);
+                link.innerHTML = filename; // เพิ่มคำสั่งนี้เพื่อแสดงชื่อไฟล์
+                document.body.appendChild(link);
+                link.click();
+            })
+            .catch((error) => console.log(error));
+    }
     useEffect(() => {
         getreportList()
     }, []);
-   
+
     const columns: GridColDef[] = [
         {
             field: "ID", headerName: "ID", type: "number", width: 120, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
@@ -30,7 +54,7 @@ function ProblemShow() {
         },
         {
             field: "Employee", headerName: "ผู้รายงาน", type: "string", width: 120, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
-                return <>{params.row.Employee.EmployeeName }</>
+                return <>{params.row.Employee.EmployeeName}</>
             },
         },
         {
@@ -56,12 +80,30 @@ function ProblemShow() {
         { field: "NotificationDate", headerName: "เวลา", type: "date", width: 100, headerAlign: "center", align: "center", valueFormatter: (params) => moment(params?.value).format("HH:mm") },
 
         {
+            field: 'Download',
+            headerName: 'ไฟล์',
+            sortable: false,
+            width: 50,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: (params: GridRenderCellParams<any>) => {
+              return (
+                <IconButton onClick={() => handleDownloadFile(params.row.ID, params.row.FileName)}>
+                  <GetAppRoundedIcon />
+                  <span>{params.row.FileName}</span> {/* เพิ่มตรงนี้เพื่อแสดงชื่อไฟล์ */}
+                </IconButton>
+              );
+            },
+          },
+        
+
+        {
             field: "...",
             align: "center",
             headerAlign: "center",
-            width: 110,
+            width: 100,
             renderCell: (params: GridRenderCellParams<any>) => {
-                
+
                 return <Admin_Pending params={params.row.ID} />;
             },
             sortable: false,
