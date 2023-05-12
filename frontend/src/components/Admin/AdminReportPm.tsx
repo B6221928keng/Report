@@ -18,6 +18,31 @@ function ProblemShow() {
             console.log(res.data)
         }
     };
+    // const apiUrl = "http://localhost:8080";
+    // function handleDownloadFile(id: number, filename: string) {
+    //     const requestOptions = {
+    //         method: "GET",
+    //         headers: {
+    //             Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //             "Content-Type": "application/json",
+    //         },
+    //     };
+    //     fetch(`${apiUrl}/downloadFile/${id}`, requestOptions)
+    //         .then((response) => response.blob())
+    //         .then((blob) => {
+    //             const url = window.URL.createObjectURL(
+    //                 new Blob([blob], { type: "application/octet-stream" })
+    //             );
+    //             const link = document.createElement("a");
+    //             link.href = url;
+    //             link.setAttribute("download", filename);
+    //             link.innerHTML = filename; // เพิ่มคำสั่งนี้เพื่อแสดงชื่อไฟล์
+    //             document.body.appendChild(link);
+    //             link.click();
+    //         })
+    //         .catch((error) => console.log(error));
+    // }
+    
     const apiUrl = "http://localhost:8080";
     function handleDownloadFile(id: number, filename: string) {
         const requestOptions = {
@@ -27,20 +52,36 @@ function ProblemShow() {
                 "Content-Type": "application/json",
             },
         };
+
         fetch(`${apiUrl}/downloadFile/${id}`, requestOptions)
-            .then((response) => response.blob())
-            .then((blob) => {
-                const url = window.URL.createObjectURL(
-                    new Blob([blob], { type: "application/octet-stream" })
-                );
-                const link = document.createElement("a");
-                link.href = url;
-                link.setAttribute("download", filename);
-                link.innerHTML = filename; // เพิ่มคำสั่งนี้เพื่อแสดงชื่อไฟล์
-                document.body.appendChild(link);
-                link.click();
+            .then((response) => {
+                const contentDisposition = response.headers.get('Content-Disposition');
+                const Filename = getFilenameFromResponseHeaders(contentDisposition) || filename;
+
+                return response.blob().then((blob) => {
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.setAttribute("download", Filename);
+                    link.innerHTML = Filename;
+                    document.body.appendChild(link);
+                    link.click();
+                });
             })
             .catch((error) => console.log(error));
+    }
+
+    function getFilenameFromResponseHeaders(contentDisposition: string | null) {
+        if (contentDisposition === null) {
+            return null;
+        }
+    
+        const regex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+        const matches = regex.exec(contentDisposition);
+        if (matches != null && matches[1]) {
+            return matches[1].replace(/['"]/g, '');
+        }
+        return null;
     }
     useEffect(() => {
         getreportList()
@@ -86,15 +127,15 @@ function ProblemShow() {
             headerAlign: 'center',
             align: 'center',
             renderCell: (params: GridRenderCellParams<any>) => {
-              return (
-                <IconButton onClick={() => handleDownloadFile(params.row.ID, params.row.FileName)}>
-                  <GetAppRoundedIcon />
-                  <span>{params.row.FileName}</span> {/* เพิ่มตรงนี้เพื่อแสดงชื่อไฟล์ */}
-                </IconButton>
-              );
+                return (
+                    <IconButton onClick={() => handleDownloadFile(params.row.ID, params.row.FileName)}>
+                        <GetAppRoundedIcon />
+                        <span>{params.row.FileName}</span> {/* เพิ่มตรงนี้เพื่อแสดงชื่อไฟล์ */}
+                    </IconButton>
+                );
             },
-          },
-        
+        },
+
 
         {
             field: "...",

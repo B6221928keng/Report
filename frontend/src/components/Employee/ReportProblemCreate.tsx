@@ -38,6 +38,7 @@ export default function ReportProblemCreate(this: any) {
     const [message, setMessage] = React.useState<string>("");
     const [uploadSuccess, setUploadSuccess] = React.useState(false);
     const [uploadError, setUploadError] = React.useState(false);
+    const [fileUploads, setFileUploads] = React.useState<FileUploadInterface[]>([]);
 
     const handleClose = (res: any) => {
         if (res === "clickaway") {
@@ -210,7 +211,7 @@ export default function ReportProblemCreate(this: any) {
                             ...prevReportProblem,
                             FileUploadID: fileData.ID,
                             FileUpload: {
-                                ...prevReportProblem.FileUpload,
+                                ...(prevReportProblem.FileUpload || {}),
                                 ID: fileData.ID,
                                 name: fileData.name,
                                 size: fileData.size,
@@ -221,6 +222,7 @@ export default function ReportProblemCreate(this: any) {
                             },
                         }));
                         setUploadSuccess(true);
+                        setFiles((prevFileUploads) => [...prevFileUploads, fileData]);
                     }
                 })
                 .catch((error) => {
@@ -229,27 +231,6 @@ export default function ReportProblemCreate(this: any) {
                 });
         }
     };
-
-    // const handleFileUpload = (event: { target: { files: any[]; }; }) => {
-    //     const file = event.target.files[0];
-    //     const reader = new FileReader();
-    //     reader.onload = () => {
-    //       const base64String = reader.result.replace("data:", "").replace(/^.+,/, "");
-    //       setReportProblem({
-    //         ...ReportProblem,
-    //         FileUpload: [
-    //           {
-    //             FileUploadID: null, // ใส่ null เพื่อให้ backend สร้าง ID ให้เอง
-    //             Name: file.name,
-    //             Size: file.size,
-    //             Type: file.type,
-    //             Content: base64String,
-    //           },
-    //         ],
-    //       });
-    //     };
-    //     reader.readAsDataURL(file);
-    //   };
 
     function getUser() {
         const UserID = localStorage.getItem("uid")
