@@ -45,7 +45,6 @@ function ProblemShow() {
     useEffect(() => {
         getreportList()
     }, []);
-
     const columns: GridColDef[] = [
         {
             field: "ID", headerName: "ID", type: "number", width: 120, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {

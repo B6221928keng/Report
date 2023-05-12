@@ -132,7 +132,7 @@ export default function Navbar({ open, onClick }: any) {
                             display: 'inline-block'
                         }}
                     >
-                        <AccountCircleRoundedIcon style={{ verticalAlign: 'middle', marginRight: '5px', color: "indigo" }} />
+                        <AccountCircleRoundedIcon style={{ verticalAlign: 'middle', marginRight: '5px', color: "DarkBlue" }} />
                         User: {emp?.EmployeeName} | {localStorage.getItem('did')}
                     </Typography>
 

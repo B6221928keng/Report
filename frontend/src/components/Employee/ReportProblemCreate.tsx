@@ -12,6 +12,7 @@ import axios from 'axios';
 import { UserInterface } from "../../models/IUser";
 import { StatusInterface } from "../../models/IStatus";
 import { ReportProblemInterface } from "../../models/IReportProblem";
+import DriveFolderUploadRoundedIcon from '@mui/icons-material/DriveFolderUploadRounded';
 import { EmployeeInterface } from "../../models/IEmployee";
 import { DepartmentInterface } from "../../models/IDepartment";
 import { set } from "date-fns";
@@ -35,6 +36,8 @@ export default function ReportProblemCreate(this: any) {
     const [loading, setLoading] = React.useState(false);
     const [ErrorMessage, setErrorMessage] = React.useState<String>();
     const [message, setMessage] = React.useState<string>("");
+    const [uploadSuccess, setUploadSuccess] = React.useState(false);
+    const [uploadError, setUploadError] = React.useState(false);
 
     const handleClose = (res: any) => {
         if (res === "clickaway") {
@@ -43,6 +46,8 @@ export default function ReportProblemCreate(this: any) {
         setSuccess(false);
         setError(false);
         setLoading(false)
+        setUploadSuccess(false);
+        setUploadError(false);
     };
 
     const handleInputChange = (
@@ -178,12 +183,11 @@ export default function ReportProblemCreate(this: any) {
     };
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        setLoading(true)
         event.preventDefault();
         const apiUrl = "http://localhost:8080/uploadfile";
-    
         if (files) {
             const formData = new FormData();
-    
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
                 if (file.content) {
@@ -216,14 +220,15 @@ export default function ReportProblemCreate(this: any) {
                                 content: null,
                             },
                         }));
+                        setUploadSuccess(true);
                     }
                 })
                 .catch((error) => {
                     console.log(error);
+                    setUploadError(true);
                 });
         }
     };
-    
 
     // const handleFileUpload = (event: { target: { files: any[]; }; }) => {
     //     const file = event.target.files[0];
@@ -246,9 +251,6 @@ export default function ReportProblemCreate(this: any) {
     //     reader.readAsDataURL(file);
     //   };
 
-
-
-
     function getUser() {
         const UserID = localStorage.getItem("uid")
         const apiUrl = `http://localhost:8080/users/${UserID}`;
@@ -270,8 +272,6 @@ export default function ReportProblemCreate(this: any) {
                 }
             });
     }
-
-
 
     const convertType = (data: string | number | undefined | null) => {
         let val = typeof data === "string" ? parseInt(data) : data;
@@ -366,6 +366,25 @@ export default function ReportProblemCreate(this: any) {
                     บันทึกข้อมูลไม่สำเร็จ: {ErrorMessage}
                 </Alert>
             </Snackbar>
+            <Snackbar open={uploadSuccess} autoHideDuration={6000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="success">
+                    อัพโหลดไฟล์สำเร็จ
+                </Alert>
+            </Snackbar>
+            <Snackbar open={uploadSuccess} autoHideDuration={6000} onClose={handleClose}>
+                <Alert
+                    onClose={handleClose}
+                    severity="success"
+                    icon={<DriveFolderUploadRoundedIcon />}
+                >
+                    อัพโหลดไฟล์สำเร็จ
+                </Alert>
+            </Snackbar>
+            <Snackbar open={uploadError} autoHideDuration={6000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="error">
+                    อัพโหลดไฟล์ไม่สำเร็จ
+                </Alert>
+            </Snackbar>
             <Paper sx={{ p: 4, pb: 10 }}  >
                 <Box display="flex" > <Box flexGrow={1}>
                     <Typography
@@ -440,9 +459,6 @@ export default function ReportProblemCreate(this: any) {
                         </FormControl>
                     </Grid>
                 </Grid>
-
-
-
 
                 <div style={{ marginTop: '20px' }}>
                     <form onSubmit={handleSubmit}>
