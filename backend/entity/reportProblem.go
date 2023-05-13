@@ -8,7 +8,7 @@ import (
 
 type ReportProblem struct {
 	gorm.Model
-	ID int
+	ID uint
 	NotificationDate time.Time
 	Heading          string   `validate:"required"`
 	Description      string   

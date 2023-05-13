@@ -2,13 +2,13 @@ package controller
 
 import (
 	// "fmt"
-	"io"
-	"net/http"
-	"time"
-
+	// "io"
 	"github.com/B6221928keng/Report/entity"
 	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
+	"io/ioutil"
+	"net/http"
+	"time"
 )
 
 // POST /reportProblems
@@ -42,6 +42,7 @@ func CreateReportProblem(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "employee not found"})
 		return
 	}
+
 	// Check if file is uploaded
 	file, err := c.FormFile("file")
 	if err == nil {
@@ -54,7 +55,7 @@ func CreateReportProblem(c *gin.Context) {
 		defer src.Close()
 
 		// Read file content
-		content, err := io.ReadAll(src)
+		content, err := ioutil.ReadAll(src)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -73,12 +74,7 @@ func CreateReportProblem(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-
 		reportProblem.FileUploadID = &fileUpload.ID
-	} else {
-		// No file uploaded, set FileUpload field to empty struct
-		reportProblem.FileUpload = entity.FileUpload{}
-		reportProblem.FileUploadID = nil
 	}
 
 	// สร้าง FileUpload และบันทึกลงฐานข้อมูล
@@ -93,6 +89,7 @@ func CreateReportProblem(c *gin.Context) {
 		reportProblem.FileUpload = entity.FileUpload{}
 		reportProblem.FileUploadID = nil
 	}
+
 	// สร้าง FileUpload และบันทึกลงฐานข้อมูล
 	if fileUpload.ID != 0 {
 		if tx := entity.DB().First(&fileUpload, fileUpload.ID); tx.RowsAffected == 0 {
@@ -124,6 +121,7 @@ func CreateReportProblem(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"data": wv})
 }
+
 // GET /reportProblem/:id
 func GetReportProblem(c *gin.Context) {
 	var reportProblem entity.ReportProblem
@@ -134,6 +132,7 @@ func GetReportProblem(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"data": reportProblem})
 }
+
 // GET /reportProblem
 func ListReportProblem(c *gin.Context) {
 	var reportProblem []entity.ReportProblem

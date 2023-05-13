@@ -3,6 +3,11 @@ package controller
 import (
 	"io"
 	"net/http"
+	"os"
+	"path/filepath"
+	"strconv"
+	"time"
+
 	// "os"
 	// "path/filepath"
 	// "strconv"
@@ -11,10 +16,8 @@ import (
 	"github.com/B6221928keng/Report/entity"
 	"github.com/gin-gonic/gin"
 )
-  
- 
 
- // Method POST /upload
+// Method POST /upload
 func UploadFile(c *gin.Context) {
 	// Multipart form
 	form, err := c.MultipartForm()
@@ -58,6 +61,27 @@ func UploadFile(c *gin.Context) {
 			Content: content,
 		}
 		fileUploads = append(fileUploads, fileUpload)
+
+		// Save file to disk
+		dst, err := os.Create(filepath.Join("./uploads", strconv.FormatInt(time.Now().UnixNano(), 10)+"_"+file.Filename))
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		defer dst.Close()
+
+		_, err = io.Copy(dst, src)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+	}
+	
+
+	if len(fileUploads) == 0 {
+		// No file uploads found, return error
+		c.JSON(http.StatusBadRequest, gin.H{"error": "no file uploads found"})
+		return
 	}
 
 	// Save file uploads to database
@@ -83,6 +107,7 @@ func DownloadFile(c *gin.Context) {
 	c.Header("Content-Type", fileUpload.Type)
 	c.Data(http.StatusOK, fileUpload.Type, fileUpload.Content)
 }
+
 // GET /fileUploads
 func ListFileUploads(c *gin.Context) {
 	var fileUploads []entity.FileUpload

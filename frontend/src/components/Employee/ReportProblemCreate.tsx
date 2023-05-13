@@ -204,9 +204,11 @@ export default function ReportProblemCreate(this: any) {
             })
                 .then((response) => response.json())
                 .then((data) => {
+                    setLoading(false);
                     console.log(data);
                     if (data.data && data.data.length > 0) {
                         const fileData = data.data[0];
+                        const fileUploadID = fileData.ID;
                         setReportProblem((prevReportProblem) => ({
                             ...prevReportProblem,
                             FileUploadID: fileData.ID,
@@ -228,6 +230,7 @@ export default function ReportProblemCreate(this: any) {
                 .catch((error) => {
                     console.log(error);
                     setUploadError(true);
+                    setLoading(false);
                 });
         }
     };
@@ -284,7 +287,8 @@ export default function ReportProblemCreate(this: any) {
             FileUploadID: ReportProblem.FileUploadID,
 
         };
-
+        console.log("FileUploadID:", ReportProblem.FileUploadID);
+        console.log("FileUpload:", ReportProblem.FileUpload);
         console.log(data.FileUploadID);
         console.log("Data", data);
 
@@ -345,11 +349,6 @@ export default function ReportProblemCreate(this: any) {
             <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity="error">
                     บันทึกข้อมูลไม่สำเร็จ: {ErrorMessage}
-                </Alert>
-            </Snackbar>
-            <Snackbar open={uploadSuccess} autoHideDuration={6000} onClose={handleClose}>
-                <Alert onClose={handleClose} severity="success">
-                    อัพโหลดไฟล์สำเร็จ
                 </Alert>
             </Snackbar>
             <Snackbar open={uploadSuccess} autoHideDuration={6000} onClose={handleClose}>
