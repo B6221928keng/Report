@@ -62,8 +62,8 @@ function ProblemShow() {
                     const url = window.URL.createObjectURL(blob);
                     const link = document.createElement("a");
                     link.href = url;
-                    link.setAttribute("download", Filename);
-                    link.innerHTML = Filename;
+                    link.setAttribute("download", filename);
+                    link.innerHTML = filename;
                     document.body.appendChild(link);
                     link.click();
                 });
@@ -93,12 +93,12 @@ function ProblemShow() {
             },
         },
         {
-            field: "Employee", headerName: "ผู้รายงาน", type: "string", width: 120, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+            field: "Employee", headerName: "ผู้รายงาน", type: "string", width: 105, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
                 return <>{params.row.Employee.EmployeeName}</>
             },
         },
         {
-            field: "Department", headerName: "แผนก", type: "string", width: 150, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+            field: "Department", headerName: "แผนก", type: "string", width: 105, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
                 return <>{params.row.Department.DepartmentName}</>;
             },
         },
@@ -123,14 +123,14 @@ function ProblemShow() {
             field: 'Download',
             headerName: 'ไฟล์',
             sortable: false,
-            width: 50,
+            width: 110,
             headerAlign: 'center',
             align: 'center',
             renderCell: (params: GridRenderCellParams<any>) => {
                 return (
-                    <IconButton onClick={() => handleDownloadFile(params.row.ID, params.row.FileName)}>
+                    <IconButton onClick={() => handleDownloadFile(params.row.ID, params.row.FileUpload.name)}>
                         <GetAppRoundedIcon />
-                        <span>{params.row.FileName}</span> {/* เพิ่มตรงนี้เพื่อแสดงชื่อไฟล์ */}
+                        <span style={{ fontSize: 'small' }}>{params.row.FileUpload.name}</span>
                     </IconButton>
                 );
             },
