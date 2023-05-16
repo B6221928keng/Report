@@ -3,12 +3,13 @@ package controller
 import (
 	// "fmt"
 	// "io"
-	"github.com/B6221928keng/Report/entity"
-	"github.com/asaskevich/govalidator"
-	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
 	"time"
+
+	"github.com/B6221928keng/Report/entity"
+	"github.com/asaskevich/govalidator"
+	"github.com/gin-gonic/gin"
 )
 
 // POST /reportProblems
@@ -114,13 +115,18 @@ func CreateReportProblem(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	
+	
+	
 	// Save entity to database
 	if err := entity.DB().Create(&wv).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	
 	c.JSON(http.StatusOK, gin.H{"data": wv})
 }
+
 
 // GET /reportProblem/:id
 func GetReportProblem(c *gin.Context) {

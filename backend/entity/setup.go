@@ -117,23 +117,23 @@ func SetupDatabase() {
 	}
 	db.Model(&User{}).Create(&userAdmin)
 
-	Admin := Employee{
-		EmployeeName: "Jirawat",
-		Email:        "Jirawat@gmail.com",
-		User:         userAdmin,
-		Role:         role2,
-		Department:   Department5,
-	}
-	db.Model(&Employee{}).Create(&Admin)
-
 	Employee1 := Employee{
 		EmployeeName: "Napakan",
-		Email:        "Napakan@gmail.com",
+		Email:        "keng-085@hotmail.com",
 		User:         userEmployee,
 		Role:         role1,
 		Department:   Department1,
 	}
 	db.Model(&Employee{}).Create(&Employee1)
+
+	Admin := Employee{
+		EmployeeName: "Jirawat",
+		Email:        "jirawatkeng086@gmail.com",
+		User:         userAdmin,
+		Role:         role2,
+		Department:   Department5,
+	}
+	db.Model(&Employee{}).Create(&Admin)
 
 	FileUpload1 := FileUpload{
 		Name:    "file1.txt",

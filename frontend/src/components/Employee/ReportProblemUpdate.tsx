@@ -15,7 +15,8 @@ import { StatusInterface } from "../../models/IStatus";
 import { ReportProblemInterface } from "../../models/IReportProblem";
 import { EmployeeInterface } from "../../models/IEmployee";
 import { DepartmentInterface } from "../../models/IDepartment";
-
+import DriveFolderUploadRoundedIcon from '@mui/icons-material/DriveFolderUploadRounded';
+import { FileUploadInterface } from '../../models/IFileUpload';
 export default function ReportProblemUpdate() {
 
     const [success, setSuccess] = React.useState(false);
@@ -24,14 +25,15 @@ export default function ReportProblemUpdate() {
     const [user, setUser] = React.useState<UserInterface>();
     const [emp, setEmp] = React.useState<EmployeeInterface>();
     const [status, setStatus] = React.useState<StatusInterface[]>([]);
-
+    const [files, setFiles] = React.useState<FileUploadInterface[]>([]);
+    const [uploadError, setUploadError] = React.useState(false);
+    const [uploadSuccess, setUploadSuccess] = React.useState(false);
     const [department, setDepartment] = React.useState<DepartmentInterface[]>([]);
     const [ReportProblem, setReportProblem] =React.useState<Partial<ReportProblemInterface>>({
         NotificationDate: new Date(),
     });
     const [loading, setLoading] = React.useState(false);
     const [ErrorMessage, setErrorMessage] = React.useState<String>();
-
     const handleClose = (res: any) => {
         if (res === "clickaway") {
             return;
@@ -39,6 +41,8 @@ export default function ReportProblemUpdate() {
         setSuccess(false);
         setError(false);
         setLoading(false)
+        setUploadSuccess(false);
+        setUploadError(false);
     };
 
     const handleInputChange = (
@@ -181,7 +185,98 @@ export default function ReportProblemUpdate() {
                 }
             });
     }
+    const getFileUploads = () => {
+        const apiUrl = "http://localhost:8080/fileUploads";
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+        };
+        fetch(apiUrl, requestOptions)
+            .then((response) => response.json())
+            .then((res) => {
+                console.log("FileUploads", res);
+                if (res.data) {
+                    console.log(res.data);
+                    setFiles(res.data);
+                } else {
+                    console.log("else");
+                }
+            });
+    };
 
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files) {
+            const newFiles = Array.from(event.target.files).map((file) => {
+                const fileInfo = {
+                    ID: 0,
+                    name: file.name,
+                    size: file.size,
+                    type: file.type,
+                    CreatedAt: new Date(file.lastModified),
+                    UpdatedAt: new Date(file.lastModified),
+                    content: file,
+                };
+                console.log(fileInfo); // แสดงข้อมูลใน Console
+                return fileInfo;
+            });
+            setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+        }
+    };
+
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        setLoading(true)
+        event.preventDefault();
+        const apiUrl = "http://localhost:8080/uploadfile";
+        if (files) {
+            const formData = new FormData();
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.content) {
+                    formData.append('files', file.content);
+                }
+            }
+            fetch(apiUrl, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: formData,
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    setLoading(false);
+                    console.log(data);
+                    if (data.data && data.data.length > 0) {
+                        const fileData = data.data[0];
+                        const fileUploadID = fileData.ID;
+                        setReportProblem((prevReportProblem) => ({
+                            ...prevReportProblem,
+                            FileUploadID: fileData.ID,
+                            FileUpload: {
+                                ...(prevReportProblem.FileUpload || {}),
+                                ID: fileData.ID,
+                                name: fileData.name,
+                                size: fileData.size,
+                                type: fileData.type,
+                                CreatedAt: fileData.CreatedAt,
+                                UpdatedAt: fileData.UpdatedAt,
+                                content: null,
+                            },
+                        }));
+                        setUploadSuccess(true);
+                        setFiles((prevFileUploads) => [...prevFileUploads, fileData]);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    setUploadError(true);
+                    setLoading(false);
+                });
+        }
+    };
     const convertType = (data: string | number | undefined | null) => {
         let val = typeof data === "string" ? parseInt(data) : data;
         return val;
@@ -197,7 +292,11 @@ export default function ReportProblemUpdate() {
             StatusID: 1,
             NotificationDate: ReportProblem.NotificationDate,
             DepartmentID: convertType(emp?.DepartmentID),
+            FileUploadID: ReportProblem.FileUploadID,
         };
+        console.log("FileUploadID:", ReportProblem.FileUploadID);
+        console.log("FileUpload:", ReportProblem.FileUpload);
+        console.log(data.FileUploadID);
         console.log("Data", data)
         const apiUrl = "http://localhost:8080/reportProblem";
         const requestOptions = {
@@ -250,6 +349,20 @@ export default function ReportProblemUpdate() {
             <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity="error">
                     บันทึกข้อมูลไม่สำเร็จ: {ErrorMessage}
+                </Alert>
+            </Snackbar>
+            <Snackbar open={uploadSuccess} autoHideDuration={6000} onClose={handleClose}>
+                <Alert
+                    onClose={handleClose}
+                    severity="success"
+                    icon={<DriveFolderUploadRoundedIcon />}
+                >
+                    อัพโหลดไฟล์สำเร็จ
+                </Alert>
+            </Snackbar>
+            <Snackbar open={uploadError} autoHideDuration={6000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="error">
+                    อัพโหลดไฟล์ไม่สำเร็จ
                 </Alert>
             </Snackbar>
             <Paper sx={{ p: 4, pb: 10 }}  >
@@ -327,6 +440,17 @@ export default function ReportProblemUpdate() {
                     </Grid>
                     </Grid>
                 <option />
+
+                <div style={{ marginTop: '20px' }}>
+                    <form onSubmit={handleSubmit}>
+                        <input type="file" name="files" multiple onChange={handleFileChange} />
+                        <Button type="submit" variant="contained" color="primary">
+                            Upload*
+                        </Button>
+                    </form>
+                </div>
+
+
 
 {/* 
                     <Grid item xs={4}>

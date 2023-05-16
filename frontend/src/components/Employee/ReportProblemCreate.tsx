@@ -15,10 +15,14 @@ import { ReportProblemInterface } from "../../models/IReportProblem";
 import DriveFolderUploadRoundedIcon from '@mui/icons-material/DriveFolderUploadRounded';
 import { EmployeeInterface } from "../../models/IEmployee";
 import { DepartmentInterface } from "../../models/IDepartment";
-import { set } from "date-fns";
 import { FileUploadInterface } from "../../models/IFileUpload";
-
-export default function ReportProblemCreate(this: any) {
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+    props,
+    ref
+) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+export default function ReportProblemCreate(props: any) {
 
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);
@@ -39,6 +43,7 @@ export default function ReportProblemCreate(this: any) {
     const [uploadSuccess, setUploadSuccess] = React.useState(false);
     const [uploadError, setUploadError] = React.useState(false);
     const [fileUploads, setFileUploads] = React.useState<FileUploadInterface[]>([]);
+    const { params, Amail, Email } = props;
 
     const handleClose = (res: any) => {
         if (res === "clickaway") {
@@ -169,8 +174,8 @@ export default function ReportProblemCreate(this: any) {
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
             const newFiles = Array.from(event.target.files).map((file) => {
-                return {
-                    ID: 0,
+                const fileInfo = {
+                    ID: 1,
                     name: file.name,
                     size: file.size,
                     type: file.type,
@@ -178,14 +183,18 @@ export default function ReportProblemCreate(this: any) {
                     UpdatedAt: new Date(file.lastModified),
                     content: file,
                 };
+                console.log(fileInfo); // แสดงข้อมูลใน Console
+                return fileInfo;
             });
             setFiles((prevFiles) => [...prevFiles, ...newFiles]);
         }
     };
+    
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         setLoading(true)
         event.preventDefault();
+       
         const apiUrl = "http://localhost:8080/uploadfile";
         if (files) {
             const formData = new FormData();
@@ -235,6 +244,24 @@ export default function ReportProblemCreate(this: any) {
         }
     };
 
+    async function mail() {
+        let data = {
+            email: "jirawatkeng086@gmail.com",
+            password: "awztnitdqwzgbfqx",
+            empemail: "keng-085@hotmail.com",
+        };
+        console.log(data)
+        axios.post('http://localhost:8080/Email', data)
+            .then(response => {
+                console.log(response.data);
+                // ทำสิ่งที่คุณต้องการเมื่อส่งอีเมลสำเร็จ
+            })
+            .catch(error => {
+                console.error(error);
+                // ทำสิ่งที่คุณต้องการเมื่อเกิดข้อผิดพลาดในการส่งอีเมล
+            });
+    }
+
     function getUser() {
         const UserID = localStorage.getItem("uid")
         const apiUrl = `http://localhost:8080/users/${UserID}`;
@@ -270,12 +297,13 @@ export default function ReportProblemCreate(this: any) {
             alert("กรุณากรอกหัวข้อของปัญหาด้วยนะครับ");
             return
         }
-        // Validate Heading
+        // Validate Description
         if (!ReportProblem.Description) {
             setLoading(false)
             alert("กรุณากรอกรายละเอียดของปัญหาด้วยนะครับ");
             return
         }
+      
         let data = {
             ID: ReportProblem.ID,
             EmployeeID: emp?.ID,
@@ -287,6 +315,7 @@ export default function ReportProblemCreate(this: any) {
             FileUploadID: ReportProblem.FileUploadID,
 
         };
+        console.log(Email)
         console.log("FileUploadID:", ReportProblem.FileUploadID);
         console.log("FileUpload:", ReportProblem.FileUpload);
         console.log(data.FileUploadID);
@@ -310,6 +339,7 @@ export default function ReportProblemCreate(this: any) {
                 if (res.data) {
                     setErrorMessage("");
                     setSuccess(true);
+                    // mail();
                 } else {
                     setErrorMessage(res.error);
                     setError(true);
@@ -444,10 +474,11 @@ export default function ReportProblemCreate(this: any) {
                     <form onSubmit={handleSubmit}>
                         <input type="file" name="files" multiple onChange={handleFileChange} />
                         <Button type="submit" variant="contained" color="primary">
-                            Upload
+                            Upload*
                         </Button>
                     </form>
                 </div>
+
 
 
                 {/* <Grid item xs={4}>

@@ -79,6 +79,8 @@ func main() {
 	r.POST("/signin", controller.Signin)
 	r.GET("/valid", controller.Validation)
 
+	r.POST("/Email", controller.SendEmailEmp)
+	r.POST("/Amail", controller.SendEmailAdmin)
 	
 	r.Run()
 }

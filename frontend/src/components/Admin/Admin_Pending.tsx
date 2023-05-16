@@ -7,6 +7,7 @@ import { GetReportproblemByID, UpdateReportproblem } from "../../service/Servics
 import { ReportProblemInterface } from "../../models/IReportProblem";
 import React from "react";
 import moment from "moment";
+import axios from "axios";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -15,7 +16,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 export default function Admin_Pending(props: any) {
-    const { params } = props;
+    const { params, Amail, Email } = props;
     const [open, setOpen] = useState(false);
     const [alertmessage, setAlertMessage] = useState("");
     const [success, setSuccess] = useState(false);
@@ -59,12 +60,14 @@ export default function Admin_Pending(props: any) {
                 NotificationDate: new Date(),
             };
             console.log(data)
+            console.log(params)
+            console.log(Amail)
             let res = await UpdateReportproblem(data);
             setSuccess(true);
-            setTimeout(() => {
-                window.location.reload();
-            }, 800);
-
+            // setTimeout(() => {
+            //     window.location.reload();
+            // }, 800);
+            mail();
         } catch (err) {
             setError(true);
             console.log(err);
@@ -87,7 +90,7 @@ export default function Admin_Pending(props: any) {
             setTimeout(() => {
                 window.location.reload();
             }, 800);
-
+            mail();
         } catch (err) {
             setError(true);
             console.log(err);
@@ -96,6 +99,23 @@ export default function Admin_Pending(props: any) {
     useEffect(() => {
         getreportProblemByID(params);
     }, []);
+    async function mail() {
+        let data = {
+            email: "keng-085@hotmail.com",
+            password: "awztnitdqwzgbfqx",
+            empemail: "jirawatkeng086@gmail.com",
+        };
+        console.log(data)
+        axios.post('http://localhost:8080/Amail', data)
+            .then(response => {
+                console.log(response.data);
+                // ทำสิ่งที่คุณต้องการเมื่อส่งอีเมลสำเร็จ
+            })
+            .catch(error => {
+                console.error(error);
+                // ทำสิ่งที่คุณต้องการเมื่อเกิดข้อผิดพลาดในการส่งอีเมล
+            });
+    }
     return (
         <div>
             <Button
