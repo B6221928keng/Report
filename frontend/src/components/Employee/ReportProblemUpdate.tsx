@@ -17,6 +17,8 @@ import { EmployeeInterface } from "../../models/IEmployee";
 import { DepartmentInterface } from "../../models/IDepartment";
 import DriveFolderUploadRoundedIcon from '@mui/icons-material/DriveFolderUploadRounded';
 import { FileUploadInterface } from '../../models/IFileUpload';
+import GppMaybeSharpIcon from '@mui/icons-material/GppMaybeSharp';
+import SnackbarContent from '@mui/material/SnackbarContent';
 export default function ReportProblemUpdate() {
 
     const [success, setSuccess] = React.useState(false);
@@ -26,13 +28,15 @@ export default function ReportProblemUpdate() {
     const [emp, setEmp] = React.useState<EmployeeInterface>();
     const [status, setStatus] = React.useState<StatusInterface[]>([]);
     const [files, setFiles] = React.useState<FileUploadInterface[]>([]);
+    const [fileUploads, setFileUploads] = React.useState<FileUploadInterface[]>([]);
     const [uploadError, setUploadError] = React.useState(false);
     const [uploadSuccess, setUploadSuccess] = React.useState(false);
     const [department, setDepartment] = React.useState<DepartmentInterface[]>([]);
-    const [ReportProblem, setReportProblem] =React.useState<Partial<ReportProblemInterface>>({
+    const [ReportProblem, setReportProblem] = React.useState<Partial<ReportProblemInterface>>({
         NotificationDate: new Date(),
     });
     const [loading, setLoading] = React.useState(false);
+    const [showSnackbar, setShowSnackbar] = React.useState(false);
     const [ErrorMessage, setErrorMessage] = React.useState<String>();
     const handleClose = (res: any) => {
         if (res === "clickaway") {
@@ -138,8 +142,8 @@ export default function ReportProblemUpdate() {
             });
     }
 
-     //ดึงข้อมูลแผนก
-     function getDepartment() {
+    //ดึงข้อมูลแผนก
+    function getDepartment() {
         const UserID = localStorage.getItem("uid")
         const apiUrl = `http://localhost:8080/employeeUId/${UserID}`;
         const requestOptions = {
@@ -211,7 +215,7 @@ export default function ReportProblemUpdate() {
         if (event.target.files) {
             const newFiles = Array.from(event.target.files).map((file) => {
                 const fileInfo = {
-                    ID: 0,
+                    ID: 1,
                     name: file.name,
                     size: file.size,
                     type: file.type,
@@ -225,6 +229,7 @@ export default function ReportProblemUpdate() {
             setFiles((prevFiles) => [...prevFiles, ...newFiles]);
         }
     };
+
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         setLoading(true)
@@ -284,6 +289,24 @@ export default function ReportProblemUpdate() {
 
     function submit() {
         setLoading(true)
+        // Validate Heading
+        if (!ReportProblem.Heading) {
+            setLoading(false)
+            alert("กรุณากรอกหัวข้อของปัญหาด้วยนะครับ");
+            return
+        }
+        // Validate Description
+        if (!ReportProblem.Description) {
+            setLoading(false)
+            alert("กรุณากรอกรายละเอียดของปัญหาด้วยนะครับ");
+            return
+        }
+        if (!ReportProblem.FileUploadID) {
+            setShowSnackbar(true);
+            setLoading(false);
+            return;
+        }
+
         let data = {
             ID: convertType(ReportProblem.ID),
             EmployeeID: emp?.ID,
@@ -306,7 +329,9 @@ export default function ReportProblemUpdate() {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
+            timeout: 5000,
         };
+
         fetch(apiUrl, requestOptions)
             .then((response) => response.json())
             .then((res) => {
@@ -328,6 +353,7 @@ export default function ReportProblemUpdate() {
         getStatus();
         getUser();
         getEmployee();
+        getFileUploads();
         getreportProblemID(id);
     }, []);
 
@@ -337,8 +363,6 @@ export default function ReportProblemUpdate() {
     ) {
         return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
     });
-
-
     return (
         <Container maxWidth="lg">
             <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
@@ -362,8 +386,18 @@ export default function ReportProblemUpdate() {
             </Snackbar>
             <Snackbar open={uploadError} autoHideDuration={6000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity="error">
-                    อัพโหลดไฟล์ไม่สำเร็จ
+                    อัพโหลดไฟล์ไม่สำเร็จ: {ErrorMessage}
                 </Alert>
+            </Snackbar>
+            <Snackbar open={showSnackbar} autoHideDuration={3000} onClose={() => setShowSnackbar(false)}>
+                <SnackbarContent
+                    message={
+                        <span style={{ display: 'flex', alignItems: 'center' }}>
+                            <GppMaybeSharpIcon style={{ marginRight: '8px' }} />
+                            เมื่อทำการเลือกไฟล์แล้ว กรุณากดปุ่ม " UPLOAD "  ก่อนกดปุ่ม " บันทึกข้อมูล "
+                        </span>
+                    }
+                />
             </Snackbar>
             <Paper sx={{ p: 4, pb: 10 }}  >
                 <Box display="flex" > <Box flexGrow={1}>
@@ -373,7 +407,7 @@ export default function ReportProblemUpdate() {
                         color="error"
                         gutterBottom
                     >
-                         แก้ไขแบบฟอร์มแจ้งปัญหา Software
+                        แก้ไขแบบฟอร์มแจ้งปัญหา Software
 
                         <Button style={{ float: "right" }}
                             component={RouterLink}
@@ -386,7 +420,8 @@ export default function ReportProblemUpdate() {
                     </Typography>
                 </Box>
                 </Box>
-                <Grid item xs={4}>
+
+                {/* <Grid item xs={4}>
                     <FormControl fullWidth variant="outlined" style={{ width: '105%', float: 'left' }}>
                         <FormControl fullWidth variant="outlined" style={{ width: '100%' }}>
                             <Grid item xs={120}>
@@ -402,7 +437,9 @@ export default function ReportProblemUpdate() {
                             <Grid item xs={120}><Typography>แผนก :  {localStorage.getItem("did")}</Typography></Grid>
                         </FormControl>
                     </FormControl>
-                </Grid>
+                </Grid> */}
+
+
                 <Grid container spacing={2}>
                     <Grid item xs={4}>
                         <FormControl fullWidth variant="outlined" style={{ width: '100%' }}>
@@ -420,8 +457,8 @@ export default function ReportProblemUpdate() {
                             </FormControl>
                         </FormControl>
                     </Grid>
-                    </Grid>
-                    <Grid container spacing={1}>
+                </Grid>
+                <Grid container spacing={1}>
                     <Grid item xs={5}>
                         <FormControl fullWidth variant="outlined" style={{ width: '150%', float: 'left' }}>
                             <p>รายละเอียด</p>
@@ -438,8 +475,8 @@ export default function ReportProblemUpdate() {
                             </FormControl>
                         </FormControl>
                     </Grid>
-                    </Grid>
-                <option />
+                </Grid>
+
 
                 <div style={{ marginTop: '20px' }}>
                     <form onSubmit={handleSubmit}>
@@ -452,7 +489,7 @@ export default function ReportProblemUpdate() {
 
 
 
-{/* 
+                {/* 
                     <Grid item xs={4}>
                         <FormControl fullWidth variant="outlined" style={{ width: '105%', float: 'left' }}>
                             <p>วันที่/เวลา</p>

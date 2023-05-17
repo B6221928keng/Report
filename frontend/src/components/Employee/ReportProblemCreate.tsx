@@ -8,6 +8,7 @@ import SourceIcon from '@mui/icons-material/Source';
 import Paper from '@mui/material/Paper'
 import { Button, CssBaseline, FormControl, Grid, Select, MenuItem, SelectChangeEvent, Stack, TextField, Typography } from '@mui/material'
 import { useState } from 'react';
+import SnackbarContent from '@mui/material/SnackbarContent';
 import axios from 'axios';
 import { UserInterface } from "../../models/IUser";
 import { StatusInterface } from "../../models/IStatus";
@@ -16,6 +17,7 @@ import DriveFolderUploadRoundedIcon from '@mui/icons-material/DriveFolderUploadR
 import { EmployeeInterface } from "../../models/IEmployee";
 import { DepartmentInterface } from "../../models/IDepartment";
 import { FileUploadInterface } from "../../models/IFileUpload";
+import GppMaybeSharpIcon from '@mui/icons-material/GppMaybeSharp';
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
     ref
@@ -44,7 +46,7 @@ export default function ReportProblemCreate(props: any) {
     const [uploadError, setUploadError] = React.useState(false);
     const [fileUploads, setFileUploads] = React.useState<FileUploadInterface[]>([]);
     const { params, Amail, Email } = props;
-
+    const [showSnackbar, setShowSnackbar] = React.useState(false);
     const handleClose = (res: any) => {
         if (res === "clickaway") {
             return;
@@ -189,12 +191,12 @@ export default function ReportProblemCreate(props: any) {
             setFiles((prevFiles) => [...prevFiles, ...newFiles]);
         }
     };
-    
+
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         setLoading(true)
         event.preventDefault();
-       
+
         const apiUrl = "http://localhost:8080/uploadfile";
         if (files) {
             const formData = new FormData();
@@ -303,7 +305,12 @@ export default function ReportProblemCreate(props: any) {
             alert("กรุณากรอกรายละเอียดของปัญหาด้วยนะครับ");
             return
         }
-      
+        if (!ReportProblem.FileUploadID) {
+            setShowSnackbar(true);
+            setLoading(false);
+            return;
+        }
+
         let data = {
             ID: ReportProblem.ID,
             EmployeeID: emp?.ID,
@@ -313,14 +320,12 @@ export default function ReportProblemCreate(props: any) {
             NotificationDate: ReportProblem.NotificationDate,
             DepartmentID: emp?.DepartmentID,
             FileUploadID: ReportProblem.FileUploadID,
-
         };
         console.log(Email)
         console.log("FileUploadID:", ReportProblem.FileUploadID);
         console.log("FileUpload:", ReportProblem.FileUpload);
         console.log(data.FileUploadID);
         console.log("Data", data);
-
         const apiUrl = "http://localhost:8080/reportProblems";
         const requestOptions = {
             method: "POST",
@@ -392,8 +397,18 @@ export default function ReportProblemCreate(props: any) {
             </Snackbar>
             <Snackbar open={uploadError} autoHideDuration={6000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity="error">
-                    อัพโหลดไฟล์ไม่สำเร็จ
+                    อัพโหลดไฟล์ไม่สำเร็จ: {ErrorMessage}
                 </Alert>
+            </Snackbar>
+            <Snackbar open={showSnackbar} autoHideDuration={3000} onClose={() => setShowSnackbar(false)}>
+                <SnackbarContent
+                    message={
+                        <span style={{ display: 'flex', alignItems: 'center' }}>
+                            <GppMaybeSharpIcon style={{ marginRight: '8px' }} />
+                            เมื่อทำการเลือกไฟล์แล้ว กรุณากดปุ่ม " UPLOAD "  ก่อนกดปุ่ม " บันทึกข้อมูล "
+                        </span>
+                    }
+                />
             </Snackbar>
             <Paper sx={{ p: 4, pb: 10 }}  >
                 <Box display="flex" > <Box flexGrow={1}>

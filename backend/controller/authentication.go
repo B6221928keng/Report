@@ -257,8 +257,8 @@ func SendEmailAdmin(c *gin.Context) {
 	}
 
 	// SMTP server information
-	smtpHost := "smtp.email.com"
-	smtpPort := "465"
+	smtpHost := "smtp.office365.com"
+	smtpPort := "587"
 	username := data.Email
 	password := data.Password
 

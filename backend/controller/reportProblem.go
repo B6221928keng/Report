@@ -335,6 +335,7 @@ func UpdateReportProblem(c *gin.Context) {
 	var employee entity.Employee
 	var status entity.Status
 	var department entity.Department
+	var fileUpload entity.FileUpload
 
 	if err := c.ShouldBindJSON(&reportProblem); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -352,6 +353,11 @@ func UpdateReportProblem(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ไม่พบแผนก"})
 		return
 	}
+	if tx := entity.DB().Where("id = ?", reportProblem.FileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ไม่พบไฟล์"})
+		return
+	}
+
 
 	update := entity.ReportProblem{
 		NotificationDate: reportProblem.NotificationDate,
