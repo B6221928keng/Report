@@ -76,7 +76,6 @@ func UploadFile(c *gin.Context) {
 			return
 		}
 	}
-	
 
 	if len(fileUploads) == 0 {
 		// No file uploads found, return error
@@ -92,6 +91,7 @@ func UploadFile(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"data": fileUploads})
 }
+
 
 // Method GET /download/:id
 func DownloadFile(c *gin.Context) {

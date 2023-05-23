@@ -59,9 +59,17 @@ export interface ReportProblem3Interface{
 	NotificationDate?:    Date | null;
     Heading?: string;
     Description?: string;
-    Status?: string;
-    DepartmentName?: number;
     
+    DepartmentName?: number;
+    EmployeeID: number,
+    Employee: UserInterface,
+
+    StatusID: number,
+    Status: StatusInterface
+
+    DepartmentID: number,
+	Department: DepartmentInterface
+
     FileUploadID: number,
     FileUpload: FileUploadInterface,
 }

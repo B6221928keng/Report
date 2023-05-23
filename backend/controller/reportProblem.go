@@ -117,7 +117,6 @@ func CreateReportProblem(c *gin.Context) {
 	}
 	
 	
-	
 	// Save entity to database
 	if err := entity.DB().Create(&wv).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -126,7 +125,6 @@ func CreateReportProblem(c *gin.Context) {
 	
 	c.JSON(http.StatusOK, gin.H{"data": wv})
 }
-
 
 // GET /reportProblem/:id
 func GetReportProblem(c *gin.Context) {
@@ -353,10 +351,19 @@ func UpdateReportProblem(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ไม่พบแผนก"})
 		return
 	}
-	if tx := entity.DB().Where("id = ?", reportProblem.FileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "ไม่พบไฟล์"})
-		return
+	if reportProblem.FileUploadID != nil {
+		fileUploadID := *reportProblem.FileUploadID
+		if tx := entity.DB().Where("id = ?", fileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "ไม่พบไฟล์"})
+			return
+		}
+		reportProblem.FileUpload = fileUpload
 	}
+	if reportProblem.FileUploadID == nil {
+		reportProblem.FileUploadID = nil
+		reportProblem.FileUpload = entity.FileUpload{}
+	}
+	
 
 
 	update := entity.ReportProblem{

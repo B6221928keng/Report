@@ -9,9 +9,16 @@ import { ListAdminReportProblem4 } from '../../service/Servics';
 import moment from 'moment';
 import GetAppRoundedIcon from '@mui/icons-material/GetAppRounded';
 import Report_End from "../Employee/Report_End";
-
+import * as ExcelJS from 'exceljs';
 function AdminReportEnd() {
     const [reportlistRcom, setReportlist] = useState<ReportProblem3Interface[]>([])
+    const [filterDate, setFilterDate] = useState("");
+    const handleFilterDateChange = (event: any) => {
+        const selectedDate = event.target.value;
+        const formattedDate = moment(selectedDate).format('YYYY-MM');
+        console.log(formattedDate);
+        setFilterDate(formattedDate);
+    };
     const getreportListAdminEnd = async () => {
         let res = await ListAdminReportProblem4();
         if (res.data) {
@@ -62,6 +69,121 @@ function AdminReportEnd() {
     useEffect(() => {
         getreportListAdminEnd()
     }, []);
+    // const handleExportExcel = async () => {
+    //     // สร้าง workbook ใหม่
+    //     const workbook = new ExcelJS.Workbook();
+
+    //     // สร้าง worksheet ใหม่
+    //     const worksheet = workbook.addWorksheet('รายการแจ้งปัญหาSoftware');
+
+    //     // กำหนดหัวตาราง
+    //     const headerRow = worksheet.addRow([
+    //         'ID', 'ผู้รายงาน', 'แผนก', 'หัวข้อ', 'รายละเอียด', 'สถานะ', 'เวลา'
+    //     ]);
+
+    //     // กำหนดสไตล์สำหรับหัวตาราง
+    //     headerRow.eachCell((cell) => {
+    //         cell.fill = {
+    //             type: 'pattern',
+    //             pattern: 'solid',
+    //             fgColor: { argb: 'FFC00000' }, // สีแดง
+    //         };
+    //         cell.font = {
+    //             bold: true,
+    //             color: { argb: 'FFFFFFFF' }, // สีขาว
+    //         };
+    //     });
+
+    //     // เพิ่มข้อมูลลงในแต่ละแถวของตาราง
+    //     reportlistRcom.forEach((row) => {
+    //         worksheet.addRow([
+    //             moment(row.NotificationDate).format('DDMMYY') + '|' + row.id,
+    //             row.Employee?.Name,
+    //             row.Department.DepartmentName,
+    //             row.Heading,
+    //             row.Description,
+    //             row.Status.StatusName,
+    //             moment(row.NotificationDate).format('HH:mm')
+    //         ]);
+    //     });
+
+    //     // กำหนดขนาดคอลัมน์ให้พอดีกับข้อมูล
+    //     worksheet.columns.forEach((column) => {
+    //         column.width = Math.max(10, column.width || 0);
+    //     });
+
+    //     // สร้างไฟล์ Excel
+    //     const buffer = await workbook.xlsx.writeBuffer();
+
+    //     // ดาวน์โหลดไฟล์ Excel
+    //     const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    //     const url = window.URL.createObjectURL(blob);
+    //     const link = document.createElement('a');
+    //     link.href = url;
+    //     link.download = 'admin_report_end.xlsx'; // ชื่อไฟล์ที่จะดาวน์โหลด
+    //     document.body.appendChild(link);
+    //     link.click();
+    //     document.body.removeChild(link);
+    //     window.URL.revokeObjectURL(url);
+    // };
+
+    //     <Box>
+    // <Button
+    //     variant="contained"
+    //     color="primary"
+    //     sx={{ borderRadius: 20, '&:hover': { color: '#065D95', backgroundColor: '#e3f2fd' } }}
+    //     startIcon={<GetAppRoundedIcon />}
+    //     onClick={handleExportExcel}
+    //   >
+    //     Export Excel
+    //   </Button>
+    // </Box>
+
+    async function handleExportExcel() {
+        // สร้าง workbook ใหม่
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('My Worksheet');
+
+        // เพิ่มหัวข้อตาราง
+        worksheet.columns = [
+            { header: 'ID', key: 'ID', width: 10 },
+            { header: 'ชื่อ', key: 'Employee', width: 20 },
+            { header: 'แผนก', key: 'Department', width: 20 },
+            { header: 'หัวข้อ', key: 'heading', width: 20 },
+            { header: 'แผนก', key: 'description', width: 20 },
+            { header: 'สถานะ', key: 'Status', width: 15 },
+            { header: 'ไฟล์', key: 'NotificationDate', width: 20 }
+        ];
+
+        // เพิ่มข้อมูลลงในตาราง
+        reportlistRcom.forEach(row => {
+            const { id, Employee, DepartmentName, Heading, Description, Status, NotificationDate } = row;
+            worksheet.addRow({
+              id,
+              Employee: Employee,
+              Department: DepartmentName,
+              heading: Heading,
+              description: Description,
+              Status: Status?.StatusName,
+              NotificationDate: moment(NotificationDate).format("HH:mm")
+            });
+          });
+
+        // สร้างไฟล์ Excel
+        workbook.xlsx.writeBuffer()
+            .then(buffer => {
+                const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'my-workbook.xlsx';
+                link.click();
+                URL.revokeObjectURL(url);
+            })
+            .catch(error => {
+                console.log(`Error: ${error.message}`);
+            });
+    }
 
     const columns: GridColDef[] = [
         {
@@ -128,6 +250,7 @@ function AdminReportEnd() {
     ];
 
     return (
+
         <div>
             <Container className="container" maxWidth="lg">
                 <Paper
@@ -148,9 +271,11 @@ function AdminReportEnd() {
                                 color="IndianRed"
                                 sx={{ fontWeight: 'bold' }}
                                 gutterBottom
+
                             >
                                 รายการแจ้งปัญหาSoftware
                             </Typography>
+
                         </Box>
                         {/* <Box>
                         <Button
@@ -164,7 +289,7 @@ function AdminReportEnd() {
                         </Button>
                     </Box> */}
                     </Box>
-
+                    <button onClick={handleExportExcel}>Export to Excel</button>
                     <Box sx={{ borderRadius: 30 }}>
                         <DataGrid
                             rows={reportlistRcom}

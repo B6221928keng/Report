@@ -355,7 +355,7 @@ export default function ReportProblemCreate(props: any) {
                 if (res.data) {
                     setErrorMessage("");
                     setSuccess(true);
-                     mail();
+                    //  mail();
                 } else {
                     setErrorMessage(res.error);
                     setError(true);
