@@ -20,6 +20,7 @@ type ReportProblem struct {
 
 	DepartmentID *uint
 	Department   Department `gorm:"references:id" valid:"-"`
+	
 	FileUploadID   *uint `gorm:"column:file_upload_id"` // ตั้งค่าชื่อคอลัมน์เป็น file_upload_id
 	FileUpload     FileUpload `gorm:"foreignKey:FileUploadID" valid:"-"`
 }
@@ -38,6 +39,8 @@ type ReportProblem1 struct {
 
 	DepartmentID *uint
 	Department   Department `gorm:"references:id" valid:"-"`
+	FileUploadID   *uint `gorm:"column:file_upload_id"` // ตั้งค่าชื่อคอลัมน์เป็น file_upload_id
+	FileUpload     FileUpload `gorm:"foreignKey:FileUploadID" valid:"-"`
 
 }
 type ReportProblem2 struct {
@@ -56,6 +59,8 @@ type ReportProblem2 struct {
 	DepartmentID *uint
 	Department   Department `gorm:"references:id" valid:"-"`
 
+	FileUploadID   *uint `gorm:"column:file_upload_id"` // ตั้งค่าชื่อคอลัมน์เป็น file_upload_id
+	FileUpload     FileUpload `gorm:"foreignKey:FileUploadID" valid:"-"`
 }
 type ReportProblem3 struct {
 	gorm.Model
@@ -72,6 +77,9 @@ type ReportProblem3 struct {
 
 	DepartmentID *uint
 	Department   Department `gorm:"references:id" valid:"-"`
+
+	FileUploadID   *uint `gorm:"column:file_upload_id"` // ตั้งค่าชื่อคอลัมน์เป็น file_upload_id
+	FileUpload     FileUpload `gorm:"foreignKey:FileUploadID" valid:"-"`
 
 }
 type Status struct {

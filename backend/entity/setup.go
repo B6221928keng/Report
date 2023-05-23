@@ -118,8 +118,8 @@ func SetupDatabase() {
 	db.Model(&User{}).Create(&userAdmin)
 
 	Employee1 := Employee{
-		EmployeeName: "Napakan",
-		Email:        "keng-085@hotmail.com",
+		EmployeeName: "Jirawat",
+		Email:        "jirawatkeng086@gmail.com",
 		User:         userEmployee,
 		Role:         role1,
 		Department:   Department1,
@@ -127,8 +127,8 @@ func SetupDatabase() {
 	db.Model(&Employee{}).Create(&Employee1)
 
 	Admin := Employee{
-		EmployeeName: "Jirawat",
-		Email:        "jirawatkeng086@gmail.com",
+		EmployeeName: "KENG",
+		Email:        "keng-085@hotmail.com",
 		User:         userAdmin,
 		Role:         role2,
 		Department:   Department5,

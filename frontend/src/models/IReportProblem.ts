@@ -25,6 +25,8 @@ export interface ReportProblemInterface {
 }
 export interface ReportProblem1Interface{
     id?: number;
+    EmpEmail: string;
+    AdminEmail: string;
     EmployeeName?: number;
 	NotificationDate?:    Date | null;
     Heading?: string;
@@ -37,6 +39,8 @@ export interface ReportProblem1Interface{
 }
 export interface ReportProblem2Interface{
     id?: number;
+    EmpEmail: string;
+    AdminEmail: string;
     EmployeeName?: number;
 	NotificationDate?:    Date | null;
     Heading?: string;
@@ -49,6 +53,8 @@ export interface ReportProblem2Interface{
 }
 export interface ReportProblem3Interface{
     id?: number;
+    EmpEmail: string;
+    AdminEmail: string;
     EmployeeName?: number;
 	NotificationDate?:    Date | null;
     Heading?: string;

@@ -180,22 +180,36 @@ function ReportProblem() {
                 "Content-Type": "application/json",
             },
         };
+
         fetch(`${apiUrl}/downloadFile/${id}`, requestOptions)
-            .then((response) => response.blob())
-            .then((blob) => {
-                const url = window.URL.createObjectURL(
-                    new Blob([blob], { type: "application/octet-stream" })
-                );
-                const link = document.createElement("a");
-                link.href = url;
-                link.setAttribute("download", filename);
-                link.innerHTML = filename; // เพิ่มคำสั่งนี้เพื่อแสดงชื่อไฟล์
-                document.body.appendChild(link);
-                link.click();
+            .then((response) => {
+                const contentDisposition = response.headers.get('Content-Disposition');
+                const Filename = getFilenameFromResponseHeaders(contentDisposition) || filename;
+
+                return response.blob().then((blob) => {
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.setAttribute("download", filename);
+                    link.innerHTML = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                });
             })
             .catch((error) => console.log(error));
     }
-
+    function getFilenameFromResponseHeaders(contentDisposition: string | null) {
+        if (contentDisposition === null) {
+            return null;
+        }
+    
+        const regex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+        const matches = regex.exec(contentDisposition);
+        if (matches != null && matches[1]) {
+            return matches[1].replace(/['"]/g, '');
+        }
+        return null;
+    }
 
 
 

@@ -24,7 +24,13 @@ type EmployeeResponse struct {
 	RoleName       string `json:"role_name"`
 	DepartmentName string `json:"department_name"`
 }
-
+type AdminResponse struct {
+	Token          string
+	UserID         uint   `json:"user_id"`
+	EmpID          uint   `json:"p_id"`
+	RoleName       string `json:"role_name"`
+	DepartmentName string `json:"department_name"`
+}
 // POST /signin
 func Signin(c *gin.Context) {
 	var payload LoginPayload
@@ -72,21 +78,37 @@ func Signin(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "error signing token"})
 		return
 	}
-	var emp entity.Employee
-	if tx := entity.DB().
-		Raw("SELECT * FROM employees WHERE user_id = ?", login.ID).Find(&emp); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "employees not found"})
-		return
+	if role.Name == "employee"{
+		var emp entity.Employee
+		if tx := entity.DB().
+			Raw("SELECT * FROM employees WHERE user_id = ?", login.ID).Find(&emp); tx.RowsAffected == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "employees not found"})
+			return
+		}
+		tokenResponse := EmployeeResponse{
+			Token:    signedToken,
+			UserID:   login.ID,
+			EmpID: emp.ID,
+			RoleName: role.Name,
+			DepartmentName: dep.DepartmentName,
+		}
+		c.JSON(http.StatusOK, gin.H{"data": tokenResponse})
+	}else if role.Name == "admin"{
+		var admin entity.Employee
+		if tx := entity.DB().
+			Raw("SELECT * FROM employees WHERE user_id = ?", login.ID).Find(&admin); tx.RowsAffected == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "employees not found"})
+			return
+		}
+		tokenResponse := AdminResponse{
+			Token:    signedToken,
+			UserID:   login.ID,
+			EmpID: admin.ID,
+			RoleName: role.Name,
+			DepartmentName: dep.DepartmentName,
+		}
+		c.JSON(http.StatusOK, gin.H{"data": tokenResponse})
 	}
-	tokenResponse := EmployeeResponse{
-		Token:          signedToken,
-		UserID:         login.ID,
-		EmpID:          emp.ID,
-		RoleName:       role.Name,
-		DepartmentName: dep.DepartmentName,
-	}
-	c.JSON(http.StatusOK, gin.H{"data": tokenResponse})
-
 }
 
 // GET /valid
@@ -143,6 +165,16 @@ func SendEmailEmp(c *gin.Context) {
 		return
 	}
 
+	// Get report problem ID from the request
+	// reportProblemID := c.Param("id")
+
+	// Get report problem details
+	// reportProblem, err := GetReportProblemByID(reportProblemID)
+	// if err != nil {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	// 	return
+	// }
+
 	// SMTP server information
 	smtpHost := "smtp.gmail.com"
 	smtpPort := "465"
@@ -154,18 +186,19 @@ func SendEmailEmp(c *gin.Context) {
 
 	// Email content
 	subject := "แจ้งปัญหา"
-	body := "ได้ส่งข้อมูลของปัญหา http://localhost:3000"
-
+	body := "ได้ส่งข้อมูลของปัญหา: " + "\n" +
+		"หัวข้อ: " +  "\n" +
+		"รายละเอียด: " +  "\n" +
+		"ลิงก์: http://localhost:3000"
 
 	// Construct email message
 	message := []byte("To: " + to[0] + "\r\n" +
 		"Subject: " + subject + "\r\n" +
 		"\r\n" +
-		body + "\r\n")
+		body + "\r\n" + "\r\n")
 
 	// TLS configuration
 	tlsConfig := &tls.Config{
-
 		ServerName: smtpHost,
 	}
 
@@ -237,9 +270,19 @@ func SendEmailEmp(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to quit connection"})
 		return
 	}
+
 	log.Println("Email sent successfully")
 	c.JSON(http.StatusOK, gin.H{"message": "Email sent successfully"})
 }
+
+func GetReportProblemByID(id string) (*entity.ReportProblem, error) {
+	var reportProblem entity.ReportProblem
+	if err := entity.DB().Preload("Employee").Preload("Status").Preload("Department").Preload("FileUpload").Raw("SELECT * FROM report_Problems WHERE id = ?", id).Find(&reportProblem).Error; err != nil {
+		return nil, err
+	}
+	return &reportProblem, nil
+}
+
 
 type EmailData1 struct {
 	Role     string `json:"admin"`

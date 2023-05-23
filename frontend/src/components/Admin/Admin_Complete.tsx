@@ -54,6 +54,7 @@ export default function Admin_Complete(props: any) {
                 Heading: reportProblem?.Heading,
                 Description: reportProblem?.Description,
                 NotificationDate: new Date(),
+                FileUploadID: reportProblem?.FileUploadID,
 
             };
             console.log(data)

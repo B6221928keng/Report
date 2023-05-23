@@ -132,7 +132,7 @@ func CreateReportProblem(c *gin.Context) {
 func GetReportProblem(c *gin.Context) {
 	var reportProblem entity.ReportProblem
 	id := c.Param("id")
-	if err := entity.DB().Preload("Employee").Preload("Status").Preload("Department").Raw("SELECT * FROM report_Problems WHERE id = ?", id).Find(&reportProblem).Error; err != nil {
+	if err := entity.DB().Preload("Employee").Preload("Status").Preload("Department").Preload("FileUpload").Raw("SELECT * FROM report_Problems WHERE id = ?", id).Find(&reportProblem).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

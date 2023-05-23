@@ -172,12 +172,13 @@ export default function ReportProblemCreate(props: any) {
                 }
             });
     };
+    const [fileSelected, setFileSelected] = React.useState(false);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
             const newFiles = Array.from(event.target.files).map((file) => {
                 const fileInfo = {
-                    ID: 1,
+                    ID: 0,
                     name: file.name,
                     size: file.size,
                     type: file.type,
@@ -189,80 +190,90 @@ export default function ReportProblemCreate(props: any) {
                 return fileInfo;
             });
             setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+            setFileSelected(true); // ตั้งค่าว่ามีการเลือกไฟล์แล้ว
         }
     };
-
+    
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        setLoading(true)
+        setLoading(true);
         event.preventDefault();
-
-        const apiUrl = "http://localhost:8080/uploadfile";
-        if (files) {
-            const formData = new FormData();
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                if (file.content) {
-                    formData.append('files', file.content);
-                }
-            }
-            fetch(apiUrl, {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-                body: formData,
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    setLoading(false);
-                    console.log(data);
-                    if (data.data && data.data.length > 0) {
-                        const fileData = data.data[0];
-                        const fileUploadID = fileData.ID;
-                        setReportProblem((prevReportProblem) => ({
-                            ...prevReportProblem,
-                            FileUploadID: fileData.ID,
-                            FileUpload: {
-                                ...(prevReportProblem.FileUpload || {}),
-                                ID: fileData.ID,
-                                name: fileData.name,
-                                size: fileData.size,
-                                type: fileData.type,
-                                CreatedAt: fileData.CreatedAt,
-                                UpdatedAt: fileData.UpdatedAt,
-                                content: null,
-                            },
-                        }));
-                        setUploadSuccess(true);
-                        setFiles((prevFileUploads) => [...prevFileUploads, fileData]);
+    
+        if (!ReportProblem.FileUploadID && files.length === 0) {
+            setShowSnackbar(true);
+            setLoading(false);
+            return;
+        } {
+            // กรณีมีการเลือกไฟล์
+            const apiUrl = "http://localhost:8080/uploadfile";
+            if (files) {
+                const formData = new FormData();
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    if (file.content) {
+                        formData.append('files', file.content);
                     }
+                }
+                fetch(apiUrl, {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                    body: formData,
                 })
-                .catch((error) => {
-                    console.log(error);
-                    setUploadError(true);
-                    setLoading(false);
-                });
+                    .then((response) => response.json())
+                    .then((data) => {
+                        setLoading(false);
+                        console.log(data);
+                        if (data.data && data.data.length > 0) {
+                            const fileData = data.data[0];
+                            const fileUploadID = fileData.ID;
+                            setReportProblem((prevReportProblem) => ({
+                                ...prevReportProblem,
+                                FileUploadID: fileData.ID,
+                                FileUpload: {
+                                    ...(prevReportProblem.FileUpload || {}),
+                                    ID: fileData.ID,
+                                    name: fileData.name,
+                                    size: fileData.size,
+                                    type: fileData.type,
+                                    CreatedAt: fileData.CreatedAt,
+                                    UpdatedAt: fileData.UpdatedAt,
+                                    content: null,
+                                },
+                            }));
+                            setUploadSuccess(true);
+                            setFiles((prevFileUploads) => [...prevFileUploads, fileData]);
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        setUploadError(true);
+                        setLoading(false);
+                    });
+            }
         }
     };
+    
 
     async function mail() {
         let data = {
-            email: "jirawatkeng086@gmail.com",
-            password: "awztnitdqwzgbfqx",
-            empemail: "keng-085@hotmail.com",
+          email: "jirawatkeng086@gmail.com",
+          password: "awztnitdqwzgbfqx",
+          empemail: "keng-085@hotmail.com",
         };
-        console.log(data)
-        axios.post('http://localhost:8080/Email', data)
-            .then(response => {
-                console.log(response.data);
-                // ทำสิ่งที่คุณต้องการเมื่อส่งอีเมลสำเร็จ
-            })
-            .catch(error => {
-                console.error(error);
-                // ทำสิ่งที่คุณต้องการเมื่อเกิดข้อผิดพลาดในการส่งอีเมล
-            });
-    }
+        
+        axios.post('http://localhost:8080/Email', { message, ...data })
+          .then(response => {
+            console.log(response.data);
+            // ทำสิ่งที่คุณต้องการเมื่อส่งอีเมลสำเร็จ
+          })
+          .catch(error => {
+            console.error(error);
+            // ทำสิ่งที่คุณต้องการเมื่อเกิดข้อผิดพลาดในการส่งอีเมล
+          });
+      }
+      
 
     function getUser() {
         const UserID = localStorage.getItem("uid")
@@ -292,25 +303,25 @@ export default function ReportProblemCreate(props: any) {
     };
 
     function submit() {
-        setLoading(true)
+        setLoading(true);
         // Validate Heading
         if (!ReportProblem.Heading) {
-            setLoading(false)
+            setLoading(false);
             alert("กรุณากรอกหัวข้อของปัญหาด้วยนะครับ");
-            return
+            return;
         }
         // Validate Description
         if (!ReportProblem.Description) {
-            setLoading(false)
+            setLoading(false);
             alert("กรุณากรอกรายละเอียดของปัญหาด้วยนะครับ");
-            return
+            return;
         }
-        if (!ReportProblem.FileUploadID) {
+        if (!ReportProblem.FileUploadID && fileSelected) {
             setShowSnackbar(true);
             setLoading(false);
             return;
         }
-
+    
         let data = {
             ID: ReportProblem.ID,
             EmployeeID: emp?.ID,
@@ -321,7 +332,7 @@ export default function ReportProblemCreate(props: any) {
             DepartmentID: emp?.DepartmentID,
             FileUploadID: ReportProblem.FileUploadID,
         };
-        console.log(Email)
+        console.log(Email);
         console.log("FileUploadID:", ReportProblem.FileUploadID);
         console.log("FileUpload:", ReportProblem.FileUpload);
         console.log(data.FileUploadID);
@@ -336,7 +347,7 @@ export default function ReportProblemCreate(props: any) {
             body: JSON.stringify(data),
             timeout: 5000,
         };
-
+    
         fetch(apiUrl, requestOptions)
             .then((response) => response.json())
             .then((res) => {
@@ -344,13 +355,14 @@ export default function ReportProblemCreate(props: any) {
                 if (res.data) {
                     setErrorMessage("");
                     setSuccess(true);
-                    // mail();
+                     mail();
                 } else {
                     setErrorMessage(res.error);
                     setError(true);
                 }
             });
     }
+    
 
     //ดึงข้อมูล ใส่ combobox
     React.useEffect(() => {

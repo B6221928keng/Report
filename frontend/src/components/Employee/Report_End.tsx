@@ -56,7 +56,7 @@ export default function Report_End(props: any) {
                 Heading: reportProblem?.Heading,
                 Description: reportProblem?.Description,
                 NotificationDate: new Date(),
-
+                FileUploadID: reportProblem?.FileUploadID,
             };
             console.log(data)
             let res = await UpdateReportproblem(data);

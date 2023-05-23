@@ -119,10 +119,25 @@ func ListFileUploads(c *gin.Context) {
 }
 
 func ListFileUpload(c *gin.Context) {
-	var fileUpload []entity.Department
+	var fileUpload []entity.FileUpload
 	if err := entity.DB().Raw("SELECT * FROM file_uploads").Find(&fileUpload).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	c.JSON(http.StatusOK, gin.H{"data": fileUpload})
+}
+// GET /Department/:id
+func GetFileUpload(c *gin.Context) {
+	var fileUpload entity.FileUpload
+	id := c.Param("id")
+	if err := entity.DB().Raw("SELECT * FROM file_uploads WHERE id = ?", id).Find(&fileUpload).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	if fileUpload.ID == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "id not found"})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{"data": fileUpload})
 }
