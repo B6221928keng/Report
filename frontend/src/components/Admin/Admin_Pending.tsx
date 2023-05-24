@@ -65,10 +65,10 @@ export default function Admin_Pending(props: any) {
             console.log(Amail)
             let res = await UpdateReportproblem(data);
             setSuccess(true);
-            setTimeout(() => {
-                window.location.reload();
-            }, 800);
-            // mail();
+            // setTimeout(() => {
+            //     window.location.reload();
+            // }, 800);
+             mail();
         } catch (err) {
             setError(true);
             console.log(err);
@@ -91,7 +91,7 @@ export default function Admin_Pending(props: any) {
             setTimeout(() => {
                 window.location.reload();
             }, 800);
-            // mail();
+            //  mail();
         } catch (err) {
             setError(true);
             console.log(err);

@@ -70,12 +70,12 @@ function AdminReportComplete() {
             },
         },
         {
-            field: "Employee", headerName: "ผู้รายงาน", type: "string", width: 120, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+            field: "Employee", headerName: "ผู้รายงาน", type: "string", width: 105, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
                 return <>{params.row.Employee?.EmployeeName}</>
             },
         },
         {
-            field: "Department", headerName: "แผนก", type: "string", width: 150, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+            field: "Department", headerName: "แผนก", type: "string", width: 105, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
                 return <>{params.row.Department.DepartmentName}</>;
             },
         },
@@ -102,7 +102,7 @@ function AdminReportComplete() {
             sortable: false,
             width: 110,
             headerAlign: 'center',
-            align: 'center',
+            align: 'left',
             renderCell: (params: GridRenderCellParams<any>) => {
                 return (
                     <IconButton onClick={() => handleDownloadFile(params.row.ID, params.row.FileUpload.name)}>

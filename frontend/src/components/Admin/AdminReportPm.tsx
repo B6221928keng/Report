@@ -125,7 +125,7 @@ function ProblemShow() {
             sortable: false,
             width: 110,
             headerAlign: 'center',
-            align: 'center',
+            align: 'left',
             renderCell: (params: GridRenderCellParams<any>) => {
                 return (
                     <IconButton onClick={() => handleDownloadFile(params.row.ID, params.row.FileUpload.name)}>

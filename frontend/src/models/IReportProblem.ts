@@ -52,7 +52,8 @@ export interface ReportProblem2Interface{
     FileUpload: FileUploadInterface,
 }
 export interface ReportProblem3Interface{
-    id?: number;
+    ID: number;
+    id: number;
     EmpEmail: string;
     AdminEmail: string;
     EmployeeName?: number;

@@ -69,75 +69,6 @@ function AdminReportEnd() {
     useEffect(() => {
         getreportListAdminEnd()
     }, []);
-    // const handleExportExcel = async () => {
-    //     // สร้าง workbook ใหม่
-    //     const workbook = new ExcelJS.Workbook();
-
-    //     // สร้าง worksheet ใหม่
-    //     const worksheet = workbook.addWorksheet('รายการแจ้งปัญหาSoftware');
-
-    //     // กำหนดหัวตาราง
-    //     const headerRow = worksheet.addRow([
-    //         'ID', 'ผู้รายงาน', 'แผนก', 'หัวข้อ', 'รายละเอียด', 'สถานะ', 'เวลา'
-    //     ]);
-
-    //     // กำหนดสไตล์สำหรับหัวตาราง
-    //     headerRow.eachCell((cell) => {
-    //         cell.fill = {
-    //             type: 'pattern',
-    //             pattern: 'solid',
-    //             fgColor: { argb: 'FFC00000' }, // สีแดง
-    //         };
-    //         cell.font = {
-    //             bold: true,
-    //             color: { argb: 'FFFFFFFF' }, // สีขาว
-    //         };
-    //     });
-
-    //     // เพิ่มข้อมูลลงในแต่ละแถวของตาราง
-    //     reportlistRcom.forEach((row) => {
-    //         worksheet.addRow([
-    //             moment(row.NotificationDate).format('DDMMYY') + '|' + row.id,
-    //             row.Employee?.Name,
-    //             row.Department.DepartmentName,
-    //             row.Heading,
-    //             row.Description,
-    //             row.Status.StatusName,
-    //             moment(row.NotificationDate).format('HH:mm')
-    //         ]);
-    //     });
-
-    //     // กำหนดขนาดคอลัมน์ให้พอดีกับข้อมูล
-    //     worksheet.columns.forEach((column) => {
-    //         column.width = Math.max(10, column.width || 0);
-    //     });
-
-    //     // สร้างไฟล์ Excel
-    //     const buffer = await workbook.xlsx.writeBuffer();
-
-    //     // ดาวน์โหลดไฟล์ Excel
-    //     const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    //     const url = window.URL.createObjectURL(blob);
-    //     const link = document.createElement('a');
-    //     link.href = url;
-    //     link.download = 'admin_report_end.xlsx'; // ชื่อไฟล์ที่จะดาวน์โหลด
-    //     document.body.appendChild(link);
-    //     link.click();
-    //     document.body.removeChild(link);
-    //     window.URL.revokeObjectURL(url);
-    // };
-
-    //     <Box>
-    // <Button
-    //     variant="contained"
-    //     color="primary"
-    //     sx={{ borderRadius: 20, '&:hover': { color: '#065D95', backgroundColor: '#e3f2fd' } }}
-    //     startIcon={<GetAppRoundedIcon />}
-    //     onClick={handleExportExcel}
-    //   >
-    //     Export Excel
-    //   </Button>
-    // </Box>
 
     async function handleExportExcel() {
         // สร้าง workbook ใหม่
@@ -146,28 +77,31 @@ function AdminReportEnd() {
 
         // เพิ่มหัวข้อตาราง
         worksheet.columns = [
-            { header: 'ID', key: 'ID', width: 10 },
+            { header: 'ID', key: 'id', width: 10 },
             { header: 'ชื่อ', key: 'Employee', width: 20 },
             { header: 'แผนก', key: 'Department', width: 20 },
             { header: 'หัวข้อ', key: 'heading', width: 20 },
             { header: 'แผนก', key: 'description', width: 20 },
-            { header: 'สถานะ', key: 'Status', width: 15 },
-            { header: 'ไฟล์', key: 'NotificationDate', width: 20 }
+            { header: 'สถานะ', key: 'Status', width: 20 },
+            { header: 'เวลา', key: 'NotificationDate', width: 15 },
+            { header: 'ไฟล์', key: 'FileUpload', width: 20 }
         ];
 
         // เพิ่มข้อมูลลงในตาราง
         reportlistRcom.forEach(row => {
-            const { id, Employee, DepartmentName, Heading, Description, Status, NotificationDate } = row;
+            const { ID, Employee, Department, Heading, Description, Status, NotificationDate, FileUpload } = row;
             worksheet.addRow({
-              id,
-              Employee: Employee,
-              Department: DepartmentName,
-              heading: Heading,
-              description: Description,
-              Status: Status?.StatusName,
-              NotificationDate: moment(NotificationDate).format("HH:mm")
+                id: `${moment(NotificationDate).format('DDMMYY')}|${ID}`,
+                Employee: Employee.EmployeeName,
+                Department: Department.DepartmentName,
+                heading: Heading,
+                description: Description,
+                Status: Status?.StatusName,
+                NotificationDate: moment(NotificationDate).format("HH:mm"),
+                FileUpload: FileUpload?.name
+
             });
-          });
+        });
 
         // สร้างไฟล์ Excel
         workbook.xlsx.writeBuffer()
@@ -192,12 +126,12 @@ function AdminReportEnd() {
             },
         },
         {
-            field: "Employee", headerName: "ผู้รายงาน", type: "string", width: 120, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+            field: "Employee", headerName: "ผู้รายงาน", type: "string", width: 105, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
                 return <>{params.row.Employee?.EmployeeName}</>
             },
         },
         {
-            field: "Department", headerName: "แผนก", type: "string", width: 150, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+            field: "Department", headerName: "แผนก", type: "string", width: 105, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
                 return <>{params.row.Department.DepartmentName}</>;
             },
         },
@@ -224,7 +158,7 @@ function AdminReportEnd() {
             sortable: false,
             width: 110,
             headerAlign: 'center',
-            align: 'center',
+            align: 'left',
             renderCell: (params: GridRenderCellParams<any>) => {
                 return (
                     <IconButton onClick={() => handleDownloadFile(params.row.ID, params.row.FileUpload.name)}>
@@ -263,33 +197,26 @@ function AdminReportEnd() {
                 >
                     <Box
                         display="flex"
+                        justifyContent="space-between" // จัดเรียงปุ่มที่ต้องการให้อยู่ข้างขวา
                     >
-                        <Box flexGrow={1}>
-                            <Typography
-                                component="h2"
-                                variant="h5"
-                                color="IndianRed"
-                                sx={{ fontWeight: 'bold' }}
-                                gutterBottom
-
-                            >
-                                รายการแจ้งปัญหาSoftware
-                            </Typography>
-
-                        </Box>
-                        {/* <Box>
+                        <Typography
+                            component="h2"
+                            variant="h5"
+                            color="IndianRed"
+                            sx={{ fontWeight: 'bold' }}
+                            gutterBottom
+                        >
+                            รายการแจ้งปัญหา Software
+                        </Typography>
                         <Button
-                            component={RouterLink}
-                            to="/history"
+                            onClick={handleExportExcel} // เรียกใช้ฟังก์ชัน handleExportExcel เมื่อคลิกปุ่ม
                             variant="contained"
                             color="primary"
                             sx={{ borderRadius: 20, '&:hover': { color: '#065D95', backgroundColor: '#e3f2fd' } }}
                         >
-                            ประวัติอนุมัติ
+                            Export to Excel
                         </Button>
-                    </Box> */}
                     </Box>
-                    <button onClick={handleExportExcel}>Export to Excel</button>
                     <Box sx={{ borderRadius: 30 }}>
                         <DataGrid
                             rows={reportlistRcom}
@@ -303,6 +230,7 @@ function AdminReportEnd() {
                 </Paper>
             </Container>
         </div>
-    )
+    );
 }
-export default AdminReportEnd
+
+export default AdminReportEnd;

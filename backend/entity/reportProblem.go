@@ -14,7 +14,7 @@ type ReportProblem struct {
 	Description      string   
 	EmployeeID *uint
 	Employee   Employee
-
+	
 	StatusID *uint
 	Status   Status `gorm:"references:id" valid:"-"`
 

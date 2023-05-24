@@ -103,6 +103,12 @@ func DownloadFile(c *gin.Context) {
 		return
 	}
 
+	// Check if fileUpload is empty
+	if fileUpload.ID == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "file upload not found"})
+		return
+	}
+
 	c.Header("Content-Disposition", "attachment; filename="+fileUpload.Name)
 	c.Header("Content-Type", fileUpload.Type)
 	c.Data(http.StatusOK, fileUpload.Type, fileUpload.Content)

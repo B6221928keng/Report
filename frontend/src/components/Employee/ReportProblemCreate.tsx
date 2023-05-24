@@ -193,12 +193,14 @@ export default function ReportProblemCreate(props: any) {
             setFileSelected(true); // ตั้งค่าว่ามีการเลือกไฟล์แล้ว
         }
     };
-    
+
+    const [submitted, setSubmitted] = React.useState(false);
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         setLoading(true);
         event.preventDefault();
-    
+        
+
         if (!ReportProblem.FileUploadID && files.length === 0) {
             setShowSnackbar(true);
             setLoading(false);
@@ -254,26 +256,26 @@ export default function ReportProblemCreate(props: any) {
             }
         }
     };
-    
+
 
     async function mail() {
         let data = {
-          email: "jirawatkeng086@gmail.com",
-          password: "awztnitdqwzgbfqx",
-          empemail: "keng-085@hotmail.com",
+            email: "jirawatkeng086@gmail.com",
+            password: "awztnitdqwzgbfqx",
+            empemail: "keng-085@hotmail.com",
         };
-        
+
         axios.post('http://localhost:8080/Email', { message, ...data })
-          .then(response => {
-            console.log(response.data);
-            // ทำสิ่งที่คุณต้องการเมื่อส่งอีเมลสำเร็จ
-          })
-          .catch(error => {
-            console.error(error);
-            // ทำสิ่งที่คุณต้องการเมื่อเกิดข้อผิดพลาดในการส่งอีเมล
-          });
-      }
-      
+            .then(response => {
+                console.log(response.data);
+                // ทำสิ่งที่คุณต้องการเมื่อส่งอีเมลสำเร็จ
+            })
+            .catch(error => {
+                console.error(error);
+                // ทำสิ่งที่คุณต้องการเมื่อเกิดข้อผิดพลาดในการส่งอีเมล
+            });
+    }
+
 
     function getUser() {
         const UserID = localStorage.getItem("uid")
@@ -321,7 +323,9 @@ export default function ReportProblemCreate(props: any) {
             setLoading(false);
             return;
         }
-    
+        if (submitted) {
+            return;
+        }
         let data = {
             ID: ReportProblem.ID,
             EmployeeID: emp?.ID,
@@ -347,7 +351,7 @@ export default function ReportProblemCreate(props: any) {
             body: JSON.stringify(data),
             timeout: 5000,
         };
-    
+
         fetch(apiUrl, requestOptions)
             .then((response) => response.json())
             .then((res) => {
@@ -355,6 +359,7 @@ export default function ReportProblemCreate(props: any) {
                 if (res.data) {
                     setErrorMessage("");
                     setSuccess(true);
+                    setSubmitted(true);
                     //  mail();
                 } else {
                     setErrorMessage(res.error);
@@ -362,7 +367,7 @@ export default function ReportProblemCreate(props: any) {
                 }
             });
     }
-    
+
 
     //ดึงข้อมูล ใส่ combobox
     React.useEffect(() => {
@@ -548,8 +553,9 @@ export default function ReportProblemCreate(props: any) {
                             variant="contained"
                             color="primary"
                             onClick={submit}
-                        // component={RouterLink}
-                        // to="/reportProblem"
+                            // component={RouterLink}
+                            // to="/reportProblem"
+                            disabled={submitted} // Disable the button if data has been submitted
                         >
                             บันทึกข้อมูล
                         </Button>
