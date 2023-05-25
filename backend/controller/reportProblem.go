@@ -5,6 +5,7 @@ import (
 	// "io"
 	"io/ioutil"
 	"net/http"
+	
 	"time"
 
 	"github.com/B6221928keng/Report/entity"
@@ -19,6 +20,7 @@ func CreateReportProblem(c *gin.Context) {
 	var status entity.Status
 	var department entity.Department
 	var fileUpload entity.FileUpload
+	// var admin entity.Admin
 
 	//เช็คว่าตรงกันมั้ย
 	if err := c.ShouldBindJSON(&reportProblem); err != nil {
@@ -99,6 +101,7 @@ func CreateReportProblem(c *gin.Context) {
 		}
 		reportProblem.FileUpload = fileUpload
 	}
+	
 	// Create ReportProblem entity
 	wv := entity.ReportProblem{
 		NotificationDate: reportProblem.NotificationDate,
@@ -110,6 +113,9 @@ func CreateReportProblem(c *gin.Context) {
 		FileUpload:       reportProblem.FileUpload,
 		// FileUploadID:     reportProblem.FileUploadID,
 	}
+
+	
+
 	// Validate entity
 	if _, err := govalidator.ValidateStruct(wv); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -360,11 +366,17 @@ func UpdateReportProblem(c *gin.Context) {
 		reportProblem.FileUpload = fileUpload
 	}
 	if reportProblem.FileUploadID == nil {
+		// ตรวจสอบว่ามีไฟล์ที่เกี่ยวข้องอยู่หรือไม่
+		if reportProblem.FileUpload.ID != 0 {
+			// ลบไฟล์ออกจากฐานข้อมูล
+			if err := entity.DB().Delete(&reportProblem.FileUpload).Error; err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+				return
+			}
+		}
 		reportProblem.FileUploadID = nil
 		reportProblem.FileUpload = entity.FileUpload{}
 	}
-	
-
 
 	update := entity.ReportProblem{
 		NotificationDate: reportProblem.NotificationDate,
@@ -388,3 +400,4 @@ func UpdateReportProblem(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"data": update})
 }
+

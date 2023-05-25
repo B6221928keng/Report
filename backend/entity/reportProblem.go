@@ -8,13 +8,17 @@ import (
 
 type ReportProblem struct {
 	gorm.Model
-	ID uint
+	ID               int
 	NotificationDate time.Time
+	lastID int
 	Heading          string   `validate:"required"`
 	Description      string   
 	EmployeeID *uint
 	Employee   Employee
-	
+
+	AdminID *uint
+	Admin   Admin `gorm:"references:id" valid:"-"`
+
 	StatusID *uint
 	Status   Status `gorm:"references:id" valid:"-"`
 
@@ -24,6 +28,7 @@ type ReportProblem struct {
 	FileUploadID   *uint `gorm:"column:file_upload_id"` // ตั้งค่าชื่อคอลัมน์เป็น file_upload_id
 	FileUpload     FileUpload `gorm:"foreignKey:FileUploadID" valid:"-"`
 }
+
 type ReportProblem1 struct {
 	gorm.Model
 	ID int
@@ -33,6 +38,9 @@ type ReportProblem1 struct {
 
 	EmployeeID *uint
 	Employee   Employee `gorm:"references:id" valid:"-"`
+
+	AdminID *uint
+	Admin   Admin `gorm:"references:id" valid:"-"`
 
 	StatusID *uint
 	Status   Status `gorm:"references:id" valid:"-"`
@@ -53,6 +61,9 @@ type ReportProblem2 struct {
 	EmployeeID *uint
 	Employee   Employee `gorm:"references:id" valid:"-"`
 
+	AdminID *uint
+	Admin   Admin `gorm:"references:id" valid:"-"`
+
 	StatusID *uint
 	Status   Status `gorm:"references:id" valid:"-"`
 
@@ -71,6 +82,9 @@ type ReportProblem3 struct {
 
 	EmployeeID *uint
 	Employee   Employee `gorm:"references:id" valid:"-"`
+
+	AdminID *uint
+	Admin   Admin `gorm:"references:id" valid:"-"`
 
 	StatusID *uint
 	Status   Status `gorm:"references:id" valid:"-"`
@@ -114,6 +128,23 @@ type Employee struct {
 	Department   Department
 
 	reportProblem []ReportProblem `gorm:"foreignKey:EmployeeID"`
+}
+type Admin struct {
+	gorm.Model
+
+	AdminName string `gorm:"uniqueIndex"`
+	Email        string
+
+	UserID *uint
+	User   User
+
+	RoleID *uint
+	Role   Role
+
+	DepartmentID *uint
+	Department   Department
+
+	reportProblem []ReportProblem `gorm:"foreignKey:AdminID"`
 }
 type FileUpload struct {
 	gorm.Model

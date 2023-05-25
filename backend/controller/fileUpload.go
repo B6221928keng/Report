@@ -94,6 +94,7 @@ func UploadFile(c *gin.Context) {
 
 
 // Method GET /download/:id
+// Method GET /download/:id
 func DownloadFile(c *gin.Context) {
 	id := c.Param("id")
 
@@ -111,8 +112,11 @@ func DownloadFile(c *gin.Context) {
 
 	c.Header("Content-Disposition", "attachment; filename="+fileUpload.Name)
 	c.Header("Content-Type", fileUpload.Type)
-	c.Data(http.StatusOK, fileUpload.Type, fileUpload.Content)
+
+	// Write the file content to the response body
+	c.Writer.Write(fileUpload.Content)
 }
+
 
 // GET /fileUploads
 func ListFileUploads(c *gin.Context) {

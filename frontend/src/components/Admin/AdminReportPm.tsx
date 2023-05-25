@@ -42,7 +42,7 @@ function ProblemShow() {
     //         })
     //         .catch((error) => console.log(error));
     // }
-    
+
     const apiUrl = "http://localhost:8080";
     function handleDownloadFile(id: number, filename: string) {
         const requestOptions = {
@@ -75,7 +75,7 @@ function ProblemShow() {
         if (contentDisposition === null) {
             return null;
         }
-    
+
         const regex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
         const matches = regex.exec(contentDisposition);
         if (matches != null && matches[1]) {

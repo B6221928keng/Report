@@ -14,6 +14,7 @@ import { UserInterface } from "../../models/IUser";
 import { StatusInterface } from "../../models/IStatus";
 import { ReportProblemInterface } from "../../models/IReportProblem";
 import DriveFolderUploadRoundedIcon from '@mui/icons-material/DriveFolderUploadRounded';
+import CheckCircleSharpIcon from '@mui/icons-material/CheckCircleSharp';
 import { EmployeeInterface } from "../../models/IEmployee";
 import { DepartmentInterface } from "../../models/IDepartment";
 import { FileUploadInterface } from "../../models/IFileUpload";
@@ -190,70 +191,69 @@ export default function ReportProblemCreate(props: any) {
                 return fileInfo;
             });
             setFiles((prevFiles) => [...prevFiles, ...newFiles]);
-            setFileSelected(true); // ตั้งค่าว่ามีการเลือกไฟล์แล้ว
+            setFileSelected(true); // ตั้งค่า fileSelected เป็น true เมื่อมีการเลือกไฟล์
         }
     };
-
     const [submitted, setSubmitted] = React.useState(false);
-
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         setLoading(true);
         event.preventDefault();
-        
-
-        if (!ReportProblem.FileUploadID && files.length === 0) {
-            setShowSnackbar(true);
-            setLoading(false);
-            return;
-        } {
-            // กรณีมีการเลือกไฟล์
+    
+        // กรณีมีการเลือกไฟล์
+        if (fileSelected && files) {
             const apiUrl = "http://localhost:8080/uploadfile";
-            if (files) {
-                const formData = new FormData();
-                for (let i = 0; i < files.length; i++) {
-                    const file = files[i];
-                    if (file.content) {
-                        formData.append('files', file.content);
-                    }
-                }
-                fetch(apiUrl, {
-                    method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                    body: formData,
-                })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        setLoading(false);
-                        console.log(data);
-                        if (data.data && data.data.length > 0) {
-                            const fileData = data.data[0];
-                            const fileUploadID = fileData.ID;
-                            setReportProblem((prevReportProblem) => ({
-                                ...prevReportProblem,
-                                FileUploadID: fileData.ID,
-                                FileUpload: {
-                                    ...(prevReportProblem.FileUpload || {}),
-                                    ID: fileData.ID,
-                                    name: fileData.name,
-                                    size: fileData.size,
-                                    type: fileData.type,
-                                    CreatedAt: fileData.CreatedAt,
-                                    UpdatedAt: fileData.UpdatedAt,
-                                    content: null,
-                                },
-                            }));
-                            setUploadSuccess(true);
-                            setFiles((prevFileUploads) => [...prevFileUploads, fileData]);
-                        }
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                        setUploadError(true);
-                        setLoading(false);
-                    });
+            if (files.length === 0) {
+                setLoading(false);
+                setShowSnackbar(true); // แสดง Snackbar เตือนให้อัปโหลดไฟล์
+                return;
             }
+            const formData = new FormData();
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.content) {
+                    formData.append('files', file.content);
+                }
+            }
+            fetch(apiUrl, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: formData,
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    setLoading(false);
+                    console.log(data);
+                    if (data.data && data.data.length > 0) {
+                        const fileData = data.data[0];
+                        const fileUploadID = fileData.ID;
+                        setReportProblem((prevReportProblem) => ({
+                            ...prevReportProblem,
+                            FileUploadID: fileData.ID,
+                            FileUpload: {
+                                ...(prevReportProblem.FileUpload || {}),
+                                ID: fileData.ID,
+                                name: fileData.name,
+                                size: fileData.size,
+                                type: fileData.type,
+                                CreatedAt: fileData.CreatedAt,
+                                UpdatedAt: fileData.UpdatedAt,
+                                content: null,
+                            },
+                        }));
+                        setUploadSuccess(true);
+                        setFiles((prevFileUploads) => [...prevFileUploads, fileData]);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    setUploadError(true);
+                    setLoading(false);
+                });
+        } else {
+            setLoading(false);
+            setShowSnackbar(true); // แสดง Snackbar เตือนให้เลือกไฟล์
         }
     };
 
@@ -318,14 +318,18 @@ export default function ReportProblemCreate(props: any) {
             alert("กรุณากรอกรายละเอียดของปัญหาด้วยนะครับ");
             return;
         }
-        if (!ReportProblem.FileUploadID && fileSelected) {
-            setShowSnackbar(true);
-            setLoading(false);
-            return;
-        }
+    
         if (submitted) {
             return;
         }
+    
+        // เพิ่มเงื่อนไขเพื่อตรวจสอบว่ามีการเลือกไฟล์หรือไม่
+        if (!fileSelected || (fileSelected && files.length === 0)) {
+            setLoading(false);
+            setShowSnackbar(true); // แสดง Snackbar เตือนให้เลือกไฟล์
+            return;
+        }
+    
         let data = {
             ID: ReportProblem.ID,
             EmployeeID: emp?.ID,
@@ -336,6 +340,7 @@ export default function ReportProblemCreate(props: any) {
             DepartmentID: emp?.DepartmentID,
             FileUploadID: ReportProblem.FileUploadID,
         };
+    
         console.log(Email);
         console.log("FileUploadID:", ReportProblem.FileUploadID);
         console.log("FileUpload:", ReportProblem.FileUpload);
@@ -371,14 +376,11 @@ export default function ReportProblemCreate(props: any) {
 
     //ดึงข้อมูล ใส่ combobox
     React.useEffect(() => {
-
         getDepartment();
         getStatus();
         getUser();
         getEmployee();
         getFileUploads();
-
-
         console.log(localStorage.getItem("did"))
 
     }, []);
@@ -394,7 +396,7 @@ export default function ReportProblemCreate(props: any) {
     return (
         <Container maxWidth="lg">
             <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
-                <Alert onClose={handleClose} severity="success">
+                <Alert onClose={handleClose} severity="success" icon={<CheckCircleSharpIcon />} style={{ fontSize: '20px' }}>
                     บันทึกข้อมูลสำเร็จ
                 </Alert>
             </Snackbar>
@@ -408,8 +410,9 @@ export default function ReportProblemCreate(props: any) {
                     onClose={handleClose}
                     severity="success"
                     icon={<DriveFolderUploadRoundedIcon />}
+                    style={{ fontSize: '20px' }} // เพิ่มสไตล์ที่ต้องการตรงนี้
                 >
-                    อัพโหลดไฟล์สำเร็จ
+                    อัพโหลดไฟล์สำเร็จ ต่อไปกดปุ่ม " บันทึกข้อมูล "
                 </Alert>
             </Snackbar>
             <Snackbar open={uploadError} autoHideDuration={6000} onClose={handleClose}>
@@ -420,9 +423,13 @@ export default function ReportProblemCreate(props: any) {
             <Snackbar open={showSnackbar} autoHideDuration={3000} onClose={() => setShowSnackbar(false)}>
                 <SnackbarContent
                     message={
-                        <span style={{ display: 'flex', alignItems: 'center' }}>
+                        <span style={{ display: 'flex', alignItems: 'center', fontSize: '20px' }}>
                             <GppMaybeSharpIcon style={{ marginRight: '8px' }} />
-                            เมื่อทำการเลือกไฟล์แล้ว กรุณากดปุ่ม " UPLOAD "  ก่อนกดปุ่ม " บันทึกข้อมูล "
+                            {fileSelected && !files ? (
+                                'กรุณากดปุ่ม "UPLOAD" ก่อนกดปุ่ม "บันทึกข้อมูล"'
+                            ) : (
+                                'กรุณาเลือกไฟล์ก่อน "UPLOAD" และกดปุ่ม "บันทึกข้อมูล"'
+                            )}
                         </span>
                     }
                 />
@@ -470,7 +477,10 @@ export default function ReportProblemCreate(props: any) {
                 <Grid container spacing={2}>
                     <Grid item xs={4}>
                         <FormControl fullWidth variant="outlined" style={{ width: '100%' }}>
-                            <p>หัวข้อ*</p>
+                            <p>
+                                <span style={{ color: 'black' }}>หัวข้อ</span>
+                                <span style={{ color: 'red' }}>*</span>
+                            </p>
                             <FormControl fullWidth variant="outlined">
                                 <TextField
                                     id="Heading"
@@ -487,7 +497,10 @@ export default function ReportProblemCreate(props: any) {
                 <Grid container spacing={1}>
                     <Grid item xs={5}>
                         <FormControl fullWidth variant="outlined" style={{ width: '150%', float: 'left' }}>
-                            <p>รายละเอียด*</p>
+                            <p>
+                                <span style={{ color: 'black' }}>รายละเอียด</span>
+                                <span style={{ color: 'red' }}>*</span>
+                            </p>
                             <FormControl fullWidth variant="outlined">
                                 <TextField
                                     id="Description"
@@ -553,16 +566,18 @@ export default function ReportProblemCreate(props: any) {
                             variant="contained"
                             color="primary"
                             onClick={submit}
-                            // component={RouterLink}
-                            // to="/reportProblem"
-                            disabled={submitted} // Disable the button if data has been submitted
+                            disabled={submitted || (!fileSelected || (fileSelected && files.length === 0))}
                         >
                             บันทึกข้อมูล
                         </Button>
 
                     </Stack>
                 </Grid>
-
+                <p>
+                    <span style={{ color: 'black' }}>หมายเหตุ</span>
+                    <span style={{ color: 'red' }}>*</span>
+                    <span style={{ color: 'black' }}> ต้องกรอกข้อมูลให้ครบทุกอย่างถึงจะกดบันทึกข้อมูลได้</span>
+                </p>
             </Paper>
         </Container>
 

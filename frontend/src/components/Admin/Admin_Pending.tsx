@@ -68,7 +68,7 @@ export default function Admin_Pending(props: any) {
             // setTimeout(() => {
             //     window.location.reload();
             // }, 800);
-             mail();
+            mail();
         } catch (err) {
             setError(true);
             console.log(err);
@@ -102,8 +102,8 @@ export default function Admin_Pending(props: any) {
     }, []);
     async function mail() {
         let data = {
-            email: "keng-085@hotmail.com",
-            password: "awztnitdqwzgbfqx",
+            email: "kengjrw@gmail.com",
+            password: "pwtoomhvcwsmpxan",
             empemail: "jirawatkeng086@gmail.com",
         };
         console.log(data)
@@ -134,17 +134,16 @@ export default function Admin_Pending(props: any) {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle id="alert-dialog-title">
+                <DialogTitle id="alert-dialog-title" style={{ fontSize: '20px' }}>
                     ตรวจสอบรายการนี้ ?
                 </DialogTitle>
                 <DialogActions>
                     <Button color="success" onClick={approvereport} autoFocus>
                         ใช่
                     </Button>
-                    <Button color="inherit" onClick={handleClose1}>ยกเลิก</Button>
-                    {/* <Button color="error" onClick={notapprovereport} autoFocus>
-                        ไม่ตรวจสอบ
-                    </Button> */}
+                    <Button color="inherit" onClick={handleClose1}>
+                        ยกเลิก
+                    </Button>
                 </DialogActions>
                 <Snackbar
                     open={success}
@@ -167,6 +166,7 @@ export default function Admin_Pending(props: any) {
                     </Alert>
                 </Snackbar>
             </Dialog>
+
 
         </div>
     );

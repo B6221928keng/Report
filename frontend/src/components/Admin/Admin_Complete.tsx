@@ -6,6 +6,7 @@ import DomainVerificationIcon from '@mui/icons-material/DomainVerification';
 import { GetReportproblemByID, UpdateReportproblem } from "../../service/Servics";
 import { ReportProblemInterface } from "../../models/IReportProblem";
 import React from "react";
+import axios from "axios";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -63,7 +64,7 @@ export default function Admin_Complete(props: any) {
             setTimeout(() => {
                 window.location.reload();
             }, 800);
-
+            //mail();
         } catch (err) {
             setError(true);
             console.log(err);
@@ -95,6 +96,23 @@ export default function Admin_Complete(props: any) {
     useEffect(() => {
         getreportProblemByID(params);
     }, []);
+    async function mail() {
+        let data = {
+            email: "keng-085@hotmail.com",
+            password: "awztnitdqwzgbfqx",
+            empemail: "jirawatkeng086@gmail.com",
+        };
+        console.log(data)
+        axios.post('http://localhost:8080/AmailComplete', data)
+            .then(response => {
+                console.log(response.data);
+                // ทำสิ่งที่คุณต้องการเมื่อส่งอีเมลสำเร็จ
+            })
+            .catch(error => {
+                console.error(error);
+                // ทำสิ่งที่คุณต้องการเมื่อเกิดข้อผิดพลาดในการส่งอีเมล
+            });
+    }
     return (
         <div>
             <Button

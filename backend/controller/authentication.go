@@ -150,6 +150,8 @@ func Validation(c *gin.Context) {
 	})
 }
 
+//--------------------------Employee---------------------------
+
 type EmailData struct {
 	Role     string `json:"employee"`
 	Email    string `json:"email"`
@@ -157,6 +159,7 @@ type EmailData struct {
 	Empemail string `json:"empemail"`
 }
 
+//สร้างข้อมูล
 func SendEmailEmp(c *gin.Context) {
 	var data EmailData
 	err := c.BindJSON(&data)
@@ -283,6 +286,237 @@ func GetReportProblemByID(id string) (*entity.ReportProblem, error) {
 	return &reportProblem, nil
 }
 
+type EmailDataUPDATE struct {
+	Role     string `json:"employee"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Empemail string `json:"empemail"`
+}
+//อัพเดพข้อมูล
+func SendEmailEmpUPDATE(c *gin.Context) {
+	var data EmailDataUPDATE
+	err := c.BindJSON(&data)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		return
+	}
+
+	// SMTP server information
+	smtpHost := "smtp.gmail.com"
+	smtpPort := "465"
+	username := data.Email
+	password := data.Password
+
+	// Recipient information
+	to := []string{data.Empemail}
+
+	// Email content
+	subject := "มีการอัพเดตข้อมูลการแจ้งปัญหา"
+	body := "ได้ส่งข้อมูลอัพเดตของปัญหา: " + "\n" +
+		"หัวข้อ: " +  "\n" +
+		"รายละเอียด: " +  "\n" +
+		"ลิงก์: http://localhost:3000"
+
+	// Construct email message
+	message := []byte("To: " + to[0] + "\r\n" +
+		"Subject: " + subject + "\r\n" +
+		"\r\n" +
+		body + "\r\n" + "\r\n")
+
+	// TLS configuration
+	tlsConfig := &tls.Config{
+		ServerName: smtpHost,
+	}
+
+	// Connect to the SMTP server
+	auth := smtp.PlainAuth("", username, password, smtpHost)
+	conn, err := tls.Dial("tcp", smtpHost+":"+smtpPort, tlsConfig)
+	if err != nil {
+		log.Println("Failed to connect to the SMTP server:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to connect to the SMTP server"})
+		return
+	}
+	defer conn.Close()
+
+	client, err := smtp.NewClient(conn, smtpHost)
+	if err != nil {
+		log.Println("Failed to create SMTP client:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create SMTP client"})
+		return
+	}
+
+	// Start the communication
+	err = client.Auth(auth)
+	if err != nil {
+		log.Println("Failed to authenticate:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to authenticate"})
+		return
+	}
+
+	err = client.Mail(username)
+	if err != nil {
+		log.Println("Failed to set sender:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to set sender"})
+		return
+	}
+
+	for _, recipient := range to {
+		err = client.Rcpt(recipient)
+		if err != nil {
+			log.Println("Failed to add recipient:", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add recipient"})
+			return
+		}
+	}
+
+	w, err := client.Data()
+	if err != nil {
+		log.Println("Failed to open data connection:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to open data connection"})
+		return
+	}
+
+	_, err = w.Write(message)
+	if err != nil {
+		log.Println("Failed to write message:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to write message"})
+		return
+	}
+
+	err = w.Close()
+	if err != nil {
+		log.Println("Failed to close data connection:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to close data connection"})
+		return
+	}
+
+	err = client.Quit()
+	if err != nil {
+		log.Println("Failed to quit connection:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to quit connection"})
+		return
+	}
+
+	log.Println("Email sent successfully")
+	c.JSON(http.StatusOK, gin.H{"message": "Email sent successfully"})
+}
+//จบการทำงาน
+type EmailDataEND struct {
+	Role     string `json:"employee"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Empemail string `json:"empemail"`
+}
+//จบการทำงาน
+func SendEmailEmpEND(c *gin.Context) {
+	var data EmailDataEND
+	err := c.BindJSON(&data)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		return
+	}
+
+	// SMTP server information
+	smtpHost := "smtp.gmail.com"
+	smtpPort := "465"
+	username := data.Email
+	password := data.Password
+
+	// Recipient information
+	to := []string{data.Empemail}
+
+	// Email content
+	subject := "ใช้งานได้ปกติ"
+	body := "เสร็จสมบูรณ์ Software ใช้งานได้ปกติ " + "\n" +
+		"หัวข้อ: " +  "\n" +
+		"รายละเอียด: " +  "\n" +
+		"ลิงก์: http://localhost:3000"
+
+	// Construct email message
+	message := []byte("To: " + to[0] + "\r\n" +
+		"Subject: " + subject + "\r\n" +
+		"\r\n" +
+		body + "\r\n" + "\r\n")
+
+	// TLS configuration
+	tlsConfig := &tls.Config{
+		ServerName: smtpHost,
+	}
+
+	// Connect to the SMTP server
+	auth := smtp.PlainAuth("", username, password, smtpHost)
+	conn, err := tls.Dial("tcp", smtpHost+":"+smtpPort, tlsConfig)
+	if err != nil {
+		log.Println("Failed to connect to the SMTP server:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to connect to the SMTP server"})
+		return
+	}
+	defer conn.Close()
+
+	client, err := smtp.NewClient(conn, smtpHost)
+	if err != nil {
+		log.Println("Failed to create SMTP client:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create SMTP client"})
+		return
+	}
+
+	// Start the communication
+	err = client.Auth(auth)
+	if err != nil {
+		log.Println("Failed to authenticate:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to authenticate"})
+		return
+	}
+
+	err = client.Mail(username)
+	if err != nil {
+		log.Println("Failed to set sender:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to set sender"})
+		return
+	}
+
+	for _, recipient := range to {
+		err = client.Rcpt(recipient)
+		if err != nil {
+			log.Println("Failed to add recipient:", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add recipient"})
+			return
+		}
+	}
+
+	w, err := client.Data()
+	if err != nil {
+		log.Println("Failed to open data connection:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to open data connection"})
+		return
+	}
+
+	_, err = w.Write(message)
+	if err != nil {
+		log.Println("Failed to write message:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to write message"})
+		return
+	}
+
+	err = w.Close()
+	if err != nil {
+		log.Println("Failed to close data connection:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to close data connection"})
+		return
+	}
+
+	err = client.Quit()
+	if err != nil {
+		log.Println("Failed to quit connection:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to quit connection"})
+		return
+	}
+
+	log.Println("Email sent successfully")
+	c.JSON(http.StatusOK, gin.H{"message": "Email sent successfully"})
+}
+
+ //-----------------------Admin-------------------------------
 
 type EmailData1 struct {
 	Role     string `json:"admin"`
@@ -290,7 +524,7 @@ type EmailData1 struct {
 	Password   string `json:"password"`
 	Adminemail string `json:"adminemail"`
 }
-
+//กำลังแก้ไข
 func SendEmailAdmin(c *gin.Context) {
 	var data EmailData1
 	err := c.BindJSON(&data)
@@ -300,8 +534,8 @@ func SendEmailAdmin(c *gin.Context) {
 	}
 
 	// SMTP server information
-	smtpHost := "smtp.office365.com"
-	smtpPort := "587"
+	smtpHost := "smtp.gmail.com"
+	smtpPort := "465"
 	username := data.Email
 	password := data.Password
 
@@ -392,6 +626,121 @@ func SendEmailAdmin(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to quit connection"})
 		return
 	}
+	log.Println("Email sent successfully")
+	c.JSON(http.StatusOK, gin.H{"message": "Email sent successfully"})
+}
+
+type EmailDataComplete struct {
+	Role     string `json:"employee"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Empemail string `json:"empemail"`
+}
+//แก้ไขเสร็จ
+func SendEmailAdminComplete(c *gin.Context) {
+	var data EmailDataComplete
+	err := c.BindJSON(&data)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		return
+	}
+
+	// SMTP server information
+	smtpHost := "smtp.gmail.com"
+	smtpPort := "465"
+	username := data.Email
+	password := data.Password
+
+	// Recipient information
+	to := []string{data.Empemail}
+
+	// Email content
+	subject := "ทำการแก้ไขแล้ว"
+	body := " ทำการแก้ไขแล้วโปรดตรวจสอบด้วยครับ " + "\n" +
+		"หัวข้อ: " +  "\n" +
+		"รายละเอียด: " +  "\n" +
+		"ลิงก์: http://localhost:3000"
+
+	// Construct email message
+	message := []byte("To: " + to[0] + "\r\n" +
+		"Subject: " + subject + "\r\n" +
+		"\r\n" +
+		body + "\r\n" + "\r\n")
+
+	// TLS configuration
+	tlsConfig := &tls.Config{
+		ServerName: smtpHost,
+	}
+
+	// Connect to the SMTP server
+	auth := smtp.PlainAuth("", username, password, smtpHost)
+	conn, err := tls.Dial("tcp", smtpHost+":"+smtpPort, tlsConfig)
+	if err != nil {
+		log.Println("Failed to connect to the SMTP server:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to connect to the SMTP server"})
+		return
+	}
+	defer conn.Close()
+
+	client, err := smtp.NewClient(conn, smtpHost)
+	if err != nil {
+		log.Println("Failed to create SMTP client:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create SMTP client"})
+		return
+	}
+
+	// Start the communication
+	err = client.Auth(auth)
+	if err != nil {
+		log.Println("Failed to authenticate:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to authenticate"})
+		return
+	}
+
+	err = client.Mail(username)
+	if err != nil {
+		log.Println("Failed to set sender:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to set sender"})
+		return
+	}
+
+	for _, recipient := range to {
+		err = client.Rcpt(recipient)
+		if err != nil {
+			log.Println("Failed to add recipient:", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add recipient"})
+			return
+		}
+	}
+
+	w, err := client.Data()
+	if err != nil {
+		log.Println("Failed to open data connection:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to open data connection"})
+		return
+	}
+
+	_, err = w.Write(message)
+	if err != nil {
+		log.Println("Failed to write message:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to write message"})
+		return
+	}
+
+	err = w.Close()
+	if err != nil {
+		log.Println("Failed to close data connection:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to close data connection"})
+		return
+	}
+
+	err = client.Quit()
+	if err != nil {
+		log.Println("Failed to quit connection:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to quit connection"})
+		return
+	}
+
 	log.Println("Email sent successfully")
 	c.JSON(http.StatusOK, gin.H{"message": "Email sent successfully"})
 }

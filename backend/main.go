@@ -37,8 +37,6 @@ func main() {
 	r := gin.Default()
 	r.Use(CORSMiddleware())
 
-	
-
 	//-----------------------------------แจ้งปัญหา------------------------------------
 	r.POST("/reportProblems", controller.CreateReportProblem)
 	r.GET("/reportProblem", controller.ListReportProblem)
@@ -71,7 +69,7 @@ func main() {
 	//Department
 	r.GET("/departments", controller.ListDepartment)
 	r.GET("/employeeUId/:id", controller.GetEmployeeByUserID)
-	
+
 	// User
 	r.POST("/user", controller.CreateUser)
 	r.GET("/users", controller.ListUser)
@@ -79,8 +77,17 @@ func main() {
 	r.POST("/signin", controller.Signin)
 	r.GET("/valid", controller.Validation)
 
+	//Email
+	//แจ้งปัญหา
 	r.POST("/Email", controller.SendEmailEmp)
+	//อัพเดตปัญหา
+	r.POST("/Emailupdate", controller.SendEmailEmpUPDATE)
+	//จบการทำงาน
+	r.POST("/EmailEND", controller.SendEmailEmpEND)
+	//กำลังแก้ไข
 	r.POST("/Amail", controller.SendEmailAdmin)
-	
+	//แก้ไข้เสร็จ
+	r.POST("/AmailComplete", controller.SendEmailAdminComplete)
+
 	r.Run()
 }

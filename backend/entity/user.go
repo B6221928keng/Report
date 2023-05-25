@@ -14,6 +14,7 @@ type User struct {
 	gorm.Model
 	UserName string `gorm:"uniqueIndex"`
 	Password string
+	
 	Email string
 	Employee []Employee `gorm:"foreignKey:UserID"`
 	

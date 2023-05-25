@@ -16,11 +16,19 @@ import { ReportProblemInterface } from "../../models/IReportProblem";
 import { EmployeeInterface } from "../../models/IEmployee";
 import { DepartmentInterface } from "../../models/IDepartment";
 import DriveFolderUploadRoundedIcon from '@mui/icons-material/DriveFolderUploadRounded';
+import CheckCircleSharpIcon from '@mui/icons-material/CheckCircleSharp';
 import { FileUploadInterface } from '../../models/IFileUpload';
 import GppMaybeSharpIcon from '@mui/icons-material/GppMaybeSharp';
 import SnackbarContent from '@mui/material/SnackbarContent';
-export default function ReportProblemUpdate() {
-
+import axios from 'axios';
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+    props,
+    ref
+) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+export default function ReportProblemUpdate(props: any) {
+    const [message, setMessage] = React.useState<string>("");
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);
     const [date, setDate] = React.useState<Date | null>(null);
@@ -35,6 +43,7 @@ export default function ReportProblemUpdate() {
     const [ReportProblem, setReportProblem] = React.useState<Partial<ReportProblemInterface>>({
         NotificationDate: new Date(),
     });
+    const { params, Amail, Email } = props;
     const [loading, setLoading] = React.useState(false);
     const [showSnackbar, setShowSnackbar] = React.useState(false);
     const [ErrorMessage, setErrorMessage] = React.useState<String>();
@@ -212,7 +221,16 @@ export default function ReportProblemUpdate() {
     };
 
     const [fileSelected, setFileSelected] = React.useState(false);
-
+    const [fileUpload, setFileUpload] = useState<{
+        ID: number;
+        name: string;
+        size: number;
+        type: string;
+        CreatedAt: Date;
+        UpdatedAt: Date;
+        content: File;
+    } | null>(null);
+    const [submitted, setSubmitted] = React.useState(false);
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
             const newFiles = Array.from(event.target.files).map((file) => {
@@ -230,6 +248,7 @@ export default function ReportProblemUpdate() {
             });
             setFiles((prevFiles) => [...prevFiles, ...newFiles]);
             setFileSelected(true); // ตั้งค่าว่ามีการเลือกไฟล์แล้ว
+            setFileUpload(newFiles[0]); // กำหนดค่า fileUpload เป็นไฟล์แรกที่ถูกเลือก
         }
     };
 
@@ -238,61 +257,77 @@ export default function ReportProblemUpdate() {
         setLoading(true);
         event.preventDefault();
 
-        if (!ReportProblem.FileUploadID && files.length === 0) {
-            setShowSnackbar(true);
+        if (!ReportProblem.FileUploadID && fileSelected) {
+            event.preventDefault(); // ป้องกันการส่งคำร้องขอฟอร์ม
+            setShowSnackbar(true); // ตั้งค่าให้แสดง Snackbar
             setLoading(false);
             return;
-        } {
-            // กรณีมีการเลือกไฟล์
-            const apiUrl = "http://localhost:8080/uploadfile";
-            if (files) {
-                const formData = new FormData();
-                for (let i = 0; i < files.length; i++) {
-                    const file = files[i];
-                    if (file.content) {
-                        formData.append('files', file.content);
+        }
+
+        // กรณีมีการเลือกไฟล์
+        const apiUrl = "http://localhost:8080/uploadfile";
+        if (fileUpload) { // เปลี่ยนเงื่อนไขจาก files เป็น fileUpload
+            const formData = new FormData();
+            formData.append('files', fileUpload.content); // เปลี่ยน files เป็น fileUpload
+
+            fetch(apiUrl, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: formData,
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    setLoading(false);
+                    console.log(data);
+                    if (data.data && data.data.length > 0) {
+                        const fileData = data.data[0];
+                        const fileUploadID = fileData.ID;
+                        setReportProblem((prevReportProblem) => ({
+                            ...prevReportProblem,
+                            FileUploadID: fileData.ID,
+                            FileUpload: {
+                                ...(prevReportProblem.FileUpload || {}),
+                                ID: fileData.ID,
+                                name: fileData.name,
+                                size: fileData.size,
+                                type: fileData.type,
+                                CreatedAt: fileData.CreatedAt,
+                                UpdatedAt: fileData.UpdatedAt,
+                                content: null,
+                            },
+                        }));
+                        setUploadSuccess(true);
+                        setFiles((prevFileUploads) => [...prevFileUploads, fileData]);
                     }
-                }
-                fetch(apiUrl, {
-                    method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                    body: formData,
                 })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        setLoading(false);
-                        console.log(data);
-                        if (data.data && data.data.length > 0) {
-                            const fileData = data.data[0];
-                            const fileUploadID = fileData.ID;
-                            setReportProblem((prevReportProblem) => ({
-                                ...prevReportProblem,
-                                FileUploadID: fileData.ID,
-                                FileUpload: {
-                                    ...(prevReportProblem.FileUpload || {}),
-                                    ID: fileData.ID,
-                                    name: fileData.name,
-                                    size: fileData.size,
-                                    type: fileData.type,
-                                    CreatedAt: fileData.CreatedAt,
-                                    UpdatedAt: fileData.UpdatedAt,
-                                    content: null,
-                                },
-                            }));
-                            setUploadSuccess(true);
-                            setFiles((prevFileUploads) => [...prevFileUploads, fileData]);
-                        }
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                        setUploadError(true);
-                        setLoading(false);
-                    });
-            }
+                .catch((error) => {
+                    console.log(error);
+                    setUploadError(true);
+                    setLoading(false);
+                });
         }
     };
+
+
+    async function mail() {
+        let data = {
+            email: "jirawatkeng086@gmail.com",
+            password: "awztnitdqwzgbfqx",
+            empemail: "keng-085@hotmail.com",
+        };
+
+        axios.post('http://localhost:8080/Emailupdate', { message, ...data })
+            .then(response => {
+                console.log(response.data);
+                // ทำสิ่งที่คุณต้องการเมื่อส่งอีเมลสำเร็จ
+            })
+            .catch(error => {
+                console.error(error);
+                // ทำสิ่งที่คุณต้องการเมื่อเกิดข้อผิดพลาดในการส่งอีเมล
+            });
+    }
 
     const convertType = (data: string | number | undefined | null) => {
         let val = typeof data === "string" ? parseInt(data) : data;
@@ -313,12 +348,15 @@ export default function ReportProblemUpdate() {
             alert("กรุณากรอกรายละเอียดของปัญหาด้วยนะครับ");
             return;
         }
-        if (!ReportProblem.FileUploadID && fileSelected) {
+
+        if (!ReportProblem.FileUploadID && files.length === 0 && !fileSelected) {
             setShowSnackbar(true);
             setLoading(false);
             return;
         }
-
+        if (submitted) {
+            return;
+        }
         let data = {
             ID: convertType(ReportProblem.ID),
             EmployeeID: emp?.ID,
@@ -329,10 +367,11 @@ export default function ReportProblemUpdate() {
             DepartmentID: convertType(emp?.DepartmentID),
             FileUploadID: convertType(ReportProblem.FileUploadID),
         };
+        console.log(Email);
         console.log("FileUploadID:", ReportProblem.FileUploadID);
         console.log("FileUpload:", ReportProblem.FileUpload);
         console.log(data.FileUploadID);
-        console.log("Data", data)
+        console.log("Data", data);
         const apiUrl = "http://localhost:8080/reportProblem";
         const requestOptions = {
             method: "PATCH",
@@ -347,16 +386,19 @@ export default function ReportProblemUpdate() {
         fetch(apiUrl, requestOptions)
             .then((response) => response.json())
             .then((res) => {
-                console.log("Res", res)
+                console.log("Res", res);
                 if (res.data) {
-                    setErrorMessage("")
+                    setErrorMessage("");
                     setSuccess(true);
+                    setSubmitted(true);
+                    //  mail();
                 } else {
-                    setErrorMessage(res.error)
-                    setError(true)
+                    setErrorMessage(res.error);
+                    setError(true);
                 }
             });
     }
+
 
 
     //ดึงข้อมูล ใส่ combobox
@@ -375,10 +417,12 @@ export default function ReportProblemUpdate() {
     ) {
         return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
     });
+
+
     return (
         <Container maxWidth="lg">
             <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
-                <Alert onClose={handleClose} severity="success">
+                <Alert onClose={handleClose} severity="success" icon={<CheckCircleSharpIcon />} style={{ fontSize: '20px' }}>
                     บันทึกข้อมูลสำเร็จ
                 </Alert>
             </Snackbar>
@@ -392,8 +436,9 @@ export default function ReportProblemUpdate() {
                     onClose={handleClose}
                     severity="success"
                     icon={<DriveFolderUploadRoundedIcon />}
+                    style={{ fontSize: '20px' }} // เพิ่มสไตล์ที่ต้องการตรงนี้
                 >
-                    อัพโหลดไฟล์สำเร็จ
+                    อัพโหลดไฟล์สำเร็จ ต่อไปกดปุ่ม " บันทึกข้อมูล "
                 </Alert>
             </Snackbar>
             <Snackbar open={uploadError} autoHideDuration={6000} onClose={handleClose}>
@@ -406,7 +451,7 @@ export default function ReportProblemUpdate() {
                     message={
                         <span style={{ display: 'flex', alignItems: 'center' }}>
                             <GppMaybeSharpIcon style={{ marginRight: '8px' }} />
-                            เมื่อทำการเลือกไฟล์แล้ว กรุณากดปุ่ม " UPLOAD "  ก่อนกดปุ่ม " บันทึกข้อมูล "
+                            เมื่อทำการเลือกไฟล์แล้ว กรุณากดปุ่ม "UPLOAD" ก่อนกดปุ่ม "บันทึกข้อมูล"
                         </span>
                     }
                 />
@@ -488,7 +533,7 @@ export default function ReportProblemUpdate() {
                         </FormControl>
                     </Grid>
                 </Grid>
-                <Grid container spacing={1}></Grid>
+
                 <div style={{ marginTop: '20px' }}>
                     <form onSubmit={handleSubmit}>
                         <input type="file" name="files" multiple onChange={handleFileChange} />
@@ -497,6 +542,7 @@ export default function ReportProblemUpdate() {
                         </Button>
                     </form>
                 </div>
+
 
 
                 {/* 
@@ -540,6 +586,7 @@ export default function ReportProblemUpdate() {
                             variant="contained"
                             color="primary"
                             onClick={submit}
+                            disabled={submitted}
                         >
                             บันทึกข้อมูล
                         </Button>
