@@ -148,14 +148,15 @@ type Admin struct {
 }
 type FileUpload struct {
 	gorm.Model
-	Name    string `json:"name"`
-	Size    int64  `json:"size"`
-	Type    string `json:"type"`
-	Content []byte `json:"content"`
+	Name     string `json:"name"`
+	Size     int64  `json:"size"`
+	Type     string `json:"type"`
+	Content  []byte `json:"content"`
+	Path     string `json:"path"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	reportProblem []ReportProblem `gorm:"foreignKey:FileUploadID"`
-  }
+}
 
 //   func (rp *ReportProblem) BeforeCreate(tx *gorm.DB) (err error) {
 // 	// Get current date in UTC

@@ -194,7 +194,7 @@ export default function ReportProblemCreate(props: any) {
             setFileSelected(true); // ตั้งค่า fileSelected เป็น true เมื่อมีการเลือกไฟล์
         }
     };
-
+    const [uploadMessage, setUploadMessage] = React.useState("");
     const [uploaded, setUploaded] = React.useState(false);
     const [submitted, setSubmitted] = React.useState(false);
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -248,6 +248,7 @@ export default function ReportProblemCreate(props: any) {
                         setUploadSuccess(true);
                         setUploaded(true); // ตั้งค่า uploaded เป็น true เมื่ออัปโหลดไฟล์สำเร็จ
                         setFiles((prevFileUploads) => [...prevFileUploads, fileData]);
+                        setUploadMessage("อัปโหลดแล้ว"); // ตั้งค่าข้อความ "อัปโหลดแล้ว"
                     }
                 })
                 .catch((error) => {
@@ -358,7 +359,7 @@ export default function ReportProblemCreate(props: any) {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
-            timeout: 5000,
+            timeout: 3000,
         };
 
         fetch(apiUrl, requestOptions)
@@ -370,6 +371,9 @@ export default function ReportProblemCreate(props: any) {
                     setSuccess(true);
                     setSubmitted(true);
                     mail();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 400);
                 } else {
                     setErrorMessage(res.error);
                     setError(true);
@@ -527,6 +531,7 @@ export default function ReportProblemCreate(props: any) {
                             <span style={{ color: 'red' }}>*</span>
                         </Button>
                     </form>
+                    {uploaded && <p>{uploadMessage}</p>} {/* แสดงข้อความ "อัปโหลดแล้ว" หากไฟล์ถูกอัปโหลดสำเร็จ */}
                 </div>
 
 
