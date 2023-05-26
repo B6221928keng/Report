@@ -65,9 +65,9 @@ export default function Admin_Pending(props: any) {
             console.log(Amail)
             let res = await UpdateReportproblem(data);
             setSuccess(true);
-            // setTimeout(() => {
-            //     window.location.reload();
-            // }, 800);
+            setTimeout(() => {
+                window.location.reload();
+            }, 800);
             mail();
         } catch (err) {
             setError(true);
@@ -97,13 +97,15 @@ export default function Admin_Pending(props: any) {
             console.log(err);
         }
     }
+    //pwtoomhvcwsmpxan
+    //yrrpalwosqsnmxvg
     useEffect(() => {
         getreportProblemByID(params);
     }, []);
     async function mail() {
         let data = {
             email: "kengjrw@gmail.com",
-            password: "pwtoomhvcwsmpxan",
+            password: "yrrpalwosqsnmxvg",
             empemail: "jirawatkeng086@gmail.com",
         };
         console.log(data)

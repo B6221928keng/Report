@@ -65,7 +65,7 @@ export default function Report_End(props: any) {
             setTimeout(() => {
                 window.location.reload();
             }, 800);
-            //mail();
+            mail();
         } catch (err) {
             setError(true);
             console.log(err);
@@ -99,9 +99,9 @@ export default function Report_End(props: any) {
     }, []);
     async function mail() {
         let data = {
-            email: "keng-085@hotmail.com",
+            email: "jirawatkeng086@gmail.com",
             password: "awztnitdqwzgbfqx",
-            empemail: "jirawatkeng086@gmail.com",
+            empemail: "kengjrw@gmail.com",
         };
         console.log(data)
         axios.post('http://localhost:8080/EmailEND', data)

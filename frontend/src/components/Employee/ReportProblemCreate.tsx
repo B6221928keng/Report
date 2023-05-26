@@ -194,11 +194,13 @@ export default function ReportProblemCreate(props: any) {
             setFileSelected(true); // ตั้งค่า fileSelected เป็น true เมื่อมีการเลือกไฟล์
         }
     };
+
+    const [uploaded, setUploaded] = React.useState(false);
     const [submitted, setSubmitted] = React.useState(false);
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         setLoading(true);
         event.preventDefault();
-    
+
         // กรณีมีการเลือกไฟล์
         if (fileSelected && files) {
             const apiUrl = "http://localhost:8080/uploadfile";
@@ -207,6 +209,7 @@ export default function ReportProblemCreate(props: any) {
                 setShowSnackbar(true); // แสดง Snackbar เตือนให้อัปโหลดไฟล์
                 return;
             }
+
             const formData = new FormData();
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
@@ -243,6 +246,7 @@ export default function ReportProblemCreate(props: any) {
                             },
                         }));
                         setUploadSuccess(true);
+                        setUploaded(true); // ตั้งค่า uploaded เป็น true เมื่ออัปโหลดไฟล์สำเร็จ
                         setFiles((prevFileUploads) => [...prevFileUploads, fileData]);
                     }
                 })
@@ -257,12 +261,12 @@ export default function ReportProblemCreate(props: any) {
         }
     };
 
-
+    //kengjrw@gmail.com......keng-085@hotmail.com
     async function mail() {
         let data = {
             email: "jirawatkeng086@gmail.com",
             password: "awztnitdqwzgbfqx",
-            empemail: "keng-085@hotmail.com",
+            empemail: "kengjrw@gmail.com",
         };
 
         axios.post('http://localhost:8080/Email', { message, ...data })
@@ -318,18 +322,18 @@ export default function ReportProblemCreate(props: any) {
             alert("กรุณากรอกรายละเอียดของปัญหาด้วยนะครับ");
             return;
         }
-    
+
         if (submitted) {
             return;
         }
-    
+
         // เพิ่มเงื่อนไขเพื่อตรวจสอบว่ามีการเลือกไฟล์หรือไม่
         if (!fileSelected || (fileSelected && files.length === 0)) {
             setLoading(false);
             setShowSnackbar(true); // แสดง Snackbar เตือนให้เลือกไฟล์
             return;
         }
-    
+
         let data = {
             ID: ReportProblem.ID,
             EmployeeID: emp?.ID,
@@ -340,7 +344,7 @@ export default function ReportProblemCreate(props: any) {
             DepartmentID: emp?.DepartmentID,
             FileUploadID: ReportProblem.FileUploadID,
         };
-    
+
         console.log(Email);
         console.log("FileUploadID:", ReportProblem.FileUploadID);
         console.log("FileUpload:", ReportProblem.FileUpload);
@@ -365,7 +369,7 @@ export default function ReportProblemCreate(props: any) {
                     setErrorMessage("");
                     setSuccess(true);
                     setSubmitted(true);
-                    //  mail();
+                    mail();
                 } else {
                     setErrorMessage(res.error);
                     setError(true);
@@ -519,7 +523,8 @@ export default function ReportProblemCreate(props: any) {
                     <form onSubmit={handleSubmit}>
                         <input type="file" name="files" multiple onChange={handleFileChange} />
                         <Button type="submit" variant="contained" color="primary">
-                            Upload*
+                            <span style={{ color: 'black' }}>UPLOAD</span>
+                            <span style={{ color: 'red' }}>*</span>
                         </Button>
                     </form>
                 </div>
@@ -566,14 +571,18 @@ export default function ReportProblemCreate(props: any) {
                             variant="contained"
                             color="primary"
                             onClick={submit}
-                            disabled={submitted || (!fileSelected || (fileSelected && files.length === 0))}
+                            disabled={
+                                submitted ||
+                                (!fileSelected || (fileSelected && files.length === 0)) ||
+                                !uploaded // เพิ่มเงื่อนไขที่ต้องการ
+                            }
                         >
                             บันทึกข้อมูล
                         </Button>
 
                     </Stack>
                 </Grid>
-                <p>
+                <p style={{ marginTop: '20px' }}>
                     <span style={{ color: 'black' }}>หมายเหตุ</span>
                     <span style={{ color: 'red' }}>*</span>
                     <span style={{ color: 'black' }}> ต้องกรอกข้อมูลให้ครบทุกอย่างถึงจะกดบันทึกข้อมูลได้</span>

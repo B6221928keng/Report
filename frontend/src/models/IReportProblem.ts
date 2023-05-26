@@ -2,7 +2,7 @@ import { DepartmentInterface } from "./IDepartment"
 import { FileUploadInterface } from "./IFileUpload"
 import { StatusInterface } from "./IStatus"
 import { UserInterface } from "./IUser"
-
+import { AdminInterface } from "./IAdmin"
 export interface ReportProblemInterface {
 
     ID: number,
@@ -12,6 +12,9 @@ export interface ReportProblemInterface {
     
     EmployeeID: number,
     Employee: UserInterface,
+
+    AdminID: number,
+    Admin: UserInterface,
 
     StatusID: number,
     Status: StatusInterface

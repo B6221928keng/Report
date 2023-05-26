@@ -2,8 +2,10 @@ package main
 
 import (
 	"os"
+	// "time"
 
 	"github.com/B6221928keng/Report/controller"
+	//  "gorm.io/gorm"
 
 	"github.com/B6221928keng/Report/entity"
 	"github.com/gin-gonic/gin"
@@ -37,6 +39,8 @@ func main() {
 	r := gin.Default()
 	r.Use(CORSMiddleware())
 
+	// resetIDDaily()
+
 	//-----------------------------------แจ้งปัญหา------------------------------------
 	r.POST("/reportProblems", controller.CreateReportProblem)
 	r.GET("/reportProblem", controller.ListReportProblem)
@@ -57,6 +61,11 @@ func main() {
 	r.GET("/employeeId/:id", controller.GetEmployeeByUserID)
 	r.GET("/employees", controller.ListEmployee)
 	r.GET("/employeeID/:id", controller.GetEmployee)
+
+	//Admin
+	r.GET("/adminId/:id", controller.GetAdminByUserID)
+	r.GET("/admins", controller.ListAdmin)
+	r.GET("/adminID/:id", controller.GetAdmin)
 
 	//File
 	r.GET("/fileUploads", controller.ListFileUploads)
@@ -91,3 +100,39 @@ func main() {
 
 	r.Run()
 }
+// func resetIDDaily() {
+// 	go func() {
+// 		for {
+// 			now := time.Now()
+// 			nextDay := now.Add(24 * time.Hour)
+// 			nextDay = time.Date(nextDay.Year(), nextDay.Month(), nextDay.Day(), 0, 0, 0, 0, nextDay.Location())
+
+// 			duration := nextDay.Sub(now)
+// 			time.Sleep(duration)
+
+// 			resetID()
+// 		}
+// 	}()
+// }
+// func resetID() {
+// 	db := entity.DB()
+// 	if err := db.Transaction(func(tx *gorm.DB) error {
+// 		// รีเซ็ตค่า ID ใหม่ทุกวัน
+// 		if err := tx.Exec("UPDATE report_problems SET id = 1").Error; err != nil {
+// 			return err
+// 		}
+
+// 		// อัพเดทค่าตัวเลขต่อไปของตาราง report_problems
+// 		if err := tx.Exec("SELECT setval('report_problems_id_seq', (SELECT MAX(id) FROM report_problems))").Error; err != nil {
+// 			return err
+// 		}
+
+// 		return nil
+// 	}); err != nil {
+// 		// การจัดการข้อผิดพลาดในการรีเซ็ตค่า ID
+// 		// คุณสามารถปรับเปลี่ยนการจัดการข้อผิดพลาดตามความเหมาะสม
+// 		// เช่น บันทึกลงไฟล์รายละเอียดข้อผิดพลาด แจ้งเตือนผู้ดูแลระบบ เป็นต้น
+// 		// ตัวอย่างนี้จะแสดงข้อผิดพลาดทางคอนโซลเท่านั้น
+// 		panic(err)
+// 	}
+// }

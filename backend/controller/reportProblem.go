@@ -400,4 +400,3 @@ func UpdateReportProblem(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"data": update})
 }
-

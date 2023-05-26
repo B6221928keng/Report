@@ -190,8 +190,8 @@ func SendEmailEmp(c *gin.Context) {
 	// Email content
 	subject := "แจ้งปัญหา"
 	body := "ได้ส่งข้อมูลของปัญหา: " + "\n" +
-		"หัวข้อ: " +  "\n" +
-		"รายละเอียด: " +  "\n" +
+		" " +  "\n" +
+		" " +  "\n" +
 		"ลิงก์: http://localhost:3000"
 
 	// Construct email message
@@ -311,10 +311,10 @@ func SendEmailEmpUPDATE(c *gin.Context) {
 	to := []string{data.Empemail}
 
 	// Email content
-	subject := "มีการอัพเดตข้อมูลการแจ้งปัญหา"
+	subject := "มีการอัพเดตข้อมูล"
 	body := "ได้ส่งข้อมูลอัพเดตของปัญหา: " + "\n" +
-		"หัวข้อ: " +  "\n" +
-		"รายละเอียด: " +  "\n" +
+		" " +  "\n" +
+		" " +  "\n" +
 		"ลิงก์: http://localhost:3000"
 
 	// Construct email message
@@ -407,7 +407,7 @@ type EmailDataEND struct {
 	Password string `json:"password"`
 	Empemail string `json:"empemail"`
 }
-//จบการทำงาน
+
 func SendEmailEmpEND(c *gin.Context) {
 	var data EmailDataEND
 	err := c.BindJSON(&data)
@@ -428,8 +428,8 @@ func SendEmailEmpEND(c *gin.Context) {
 	// Email content
 	subject := "ใช้งานได้ปกติ"
 	body := "เสร็จสมบูรณ์ Software ใช้งานได้ปกติ " + "\n" +
-		"หัวข้อ: " +  "\n" +
-		"รายละเอียด: " +  "\n" +
+		" " +  "\n" +
+		" " +  "\n" +
 		"ลิงก์: http://localhost:3000"
 
 	// Construct email message
@@ -518,15 +518,16 @@ func SendEmailEmpEND(c *gin.Context) {
 
  //-----------------------Admin-------------------------------
 
-type EmailData1 struct {
-	Role     string `json:"admin"`
-	Email      string `json:"email"`
-	Password   string `json:"password"`
-	Adminemail string `json:"adminemail"`
+//รับข้อมูล
+type EmailAdmin struct {
+	Role     string `json:"employee"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Empemail string `json:"empemail"`
 }
 //กำลังแก้ไข
 func SendEmailAdmin(c *gin.Context) {
-	var data EmailData1
+	var data EmailAdmin
 	err := c.BindJSON(&data)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
@@ -540,21 +541,23 @@ func SendEmailAdmin(c *gin.Context) {
 	password := data.Password
 
 	// Recipient information
-	to := []string{data.Adminemail}
+	to := []string{data.Empemail}
 
 	// Email content
-	subject := "ได้รับข้อมูลเกี่ยวกับปัญหาแล้ว"
-	body := "กำลังดำเนินการแก้ไข http://localhost:3000"
+	subject := "ได้รับข้อมูลแล้ว"
+	body := "กำลังดำเนินการแก้ไข" + "\n" +
+		" " +  "\n" +
+		"" +  "\n" +
+		"ลิงก์: http://localhost:3000"
 
 	// Construct email message
 	message := []byte("To: " + to[0] + "\r\n" +
 		"Subject: " + subject + "\r\n" +
 		"\r\n" +
-		body + "\r\n")
+		body + "\r\n" + "\r\n")
 
 	// TLS configuration
 	tlsConfig := &tls.Config{
-
 		ServerName: smtpHost,
 	}
 
@@ -626,9 +629,11 @@ func SendEmailAdmin(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to quit connection"})
 		return
 	}
+
 	log.Println("Email sent successfully")
 	c.JSON(http.StatusOK, gin.H{"message": "Email sent successfully"})
 }
+
 
 type EmailDataComplete struct {
 	Role     string `json:"employee"`
@@ -655,10 +660,10 @@ func SendEmailAdminComplete(c *gin.Context) {
 	to := []string{data.Empemail}
 
 	// Email content
-	subject := "ทำการแก้ไขแล้ว"
-	body := " ทำการแก้ไขแล้วโปรดตรวจสอบด้วยครับ " + "\n" +
-		"หัวข้อ: " +  "\n" +
-		"รายละเอียด: " +  "\n" +
+	subject := "ทำการแก้ไขเสร็จแล้ว"
+	body := " ทำการแก้ไขเสร็จแล้วโปรดตรวจสอบด้วยครับ " + "\n" +
+		" " +  "\n" +
+		" " +  "\n" +
 		"ลิงก์: http://localhost:3000"
 
 	// Construct email message

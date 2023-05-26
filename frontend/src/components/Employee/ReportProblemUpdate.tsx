@@ -221,16 +221,7 @@ export default function ReportProblemUpdate(props: any) {
     };
 
     const [fileSelected, setFileSelected] = React.useState(false);
-    const [fileUpload, setFileUpload] = useState<{
-        ID: number;
-        name: string;
-        size: number;
-        type: string;
-        CreatedAt: Date;
-        UpdatedAt: Date;
-        content: File;
-    } | null>(null);
-    const [submitted, setSubmitted] = React.useState(false);
+
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
             const newFiles = Array.from(event.target.files).map((file) => {
@@ -247,29 +238,31 @@ export default function ReportProblemUpdate(props: any) {
                 return fileInfo;
             });
             setFiles((prevFiles) => [...prevFiles, ...newFiles]);
-            setFileSelected(true); // ตั้งค่าว่ามีการเลือกไฟล์แล้ว
-            setFileUpload(newFiles[0]); // กำหนดค่า fileUpload เป็นไฟล์แรกที่ถูกเลือก
+            setFileSelected(true); // ตั้งค่า fileSelected เป็น true เมื่อมีการเลือกไฟล์
         }
     };
 
-
+    const [uploaded, setUploaded] = React.useState(false);
+    const [submitted, setSubmitted] = React.useState(false);
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         setLoading(true);
         event.preventDefault();
 
-        if (!ReportProblem.FileUploadID && fileSelected) {
-            event.preventDefault(); // ป้องกันการส่งคำร้องขอฟอร์ม
-            setShowSnackbar(true); // ตั้งค่าให้แสดง Snackbar
-            setLoading(false);
-            return;
-        }
-
         // กรณีมีการเลือกไฟล์
-        const apiUrl = "http://localhost:8080/uploadfile";
-        if (fileUpload) { // เปลี่ยนเงื่อนไขจาก files เป็น fileUpload
+        if (fileSelected && files) {
+            const apiUrl = "http://localhost:8080/uploadfile";
+            if (files.length === 0) {
+                setLoading(false);
+                setShowSnackbar(true); // แสดง Snackbar เตือนให้อัปโหลดไฟล์
+                return;
+            }
             const formData = new FormData();
-            formData.append('files', fileUpload.content); // เปลี่ยน files เป็น fileUpload
-
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.content) {
+                    formData.append('files', file.content);
+                }
+            }
             fetch(apiUrl, {
                 method: "POST",
                 headers: {
@@ -299,6 +292,7 @@ export default function ReportProblemUpdate(props: any) {
                             },
                         }));
                         setUploadSuccess(true);
+                        setUploaded(true); // ตั้งค่า uploaded เป็น true เมื่ออัปโหลดไฟล์สำเร็จ
                         setFiles((prevFileUploads) => [...prevFileUploads, fileData]);
                     }
                 })
@@ -307,15 +301,17 @@ export default function ReportProblemUpdate(props: any) {
                     setUploadError(true);
                     setLoading(false);
                 });
+        } else {
+            setLoading(false);
+            setShowSnackbar(true); // แสดง Snackbar เตือนให้เลือกไฟล์
         }
     };
-
 
     async function mail() {
         let data = {
             email: "jirawatkeng086@gmail.com",
             password: "awztnitdqwzgbfqx",
-            empemail: "keng-085@hotmail.com",
+            empemail: "kengjrw@gmail.com",
         };
 
         axios.post('http://localhost:8080/Emailupdate', { message, ...data })
@@ -336,8 +332,8 @@ export default function ReportProblemUpdate(props: any) {
 
     function submit() {
         setLoading(true);
-        // Validate Heading
-        if (!ReportProblem.Heading) {
+          // Validate Heading
+          if (!ReportProblem.Heading) {
             setLoading(false);
             alert("กรุณากรอกหัวข้อของปัญหาด้วยนะครับ");
             return;
@@ -349,12 +345,14 @@ export default function ReportProblemUpdate(props: any) {
             return;
         }
 
-        if (!ReportProblem.FileUploadID && files.length === 0 && !fileSelected) {
-            setShowSnackbar(true);
-            setLoading(false);
+        if (submitted) {
             return;
         }
-        if (submitted) {
+
+        // เพิ่มเงื่อนไขเพื่อตรวจสอบว่ามีการเลือกไฟล์หรือไม่
+        if (!fileSelected || (fileSelected && files.length === 0)) {
+            setLoading(false);
+            setShowSnackbar(true); // แสดง Snackbar เตือนให้เลือกไฟล์
             return;
         }
         let data = {
@@ -391,7 +389,7 @@ export default function ReportProblemUpdate(props: any) {
                     setErrorMessage("");
                     setSuccess(true);
                     setSubmitted(true);
-                    //  mail();
+                    mail();
                 } else {
                     setErrorMessage(res.error);
                     setError(true);
@@ -449,9 +447,13 @@ export default function ReportProblemUpdate(props: any) {
             <Snackbar open={showSnackbar} autoHideDuration={3000} onClose={() => setShowSnackbar(false)}>
                 <SnackbarContent
                     message={
-                        <span style={{ display: 'flex', alignItems: 'center' }}>
+                        <span style={{ display: 'flex', alignItems: 'center', fontSize: '20px' }}>
                             <GppMaybeSharpIcon style={{ marginRight: '8px' }} />
-                            เมื่อทำการเลือกไฟล์แล้ว กรุณากดปุ่ม "UPLOAD" ก่อนกดปุ่ม "บันทึกข้อมูล"
+                            {fileSelected && !files ? (
+                                'กรุณากดปุ่ม "UPLOAD" ก่อนกดปุ่ม "บันทึกข้อมูล"'
+                            ) : (
+                                'กรุณาเลือกไฟล์ก่อน "UPLOAD" และกดปุ่ม "บันทึกข้อมูล"'
+                            )}
                         </span>
                     }
                 />
@@ -538,7 +540,8 @@ export default function ReportProblemUpdate(props: any) {
                     <form onSubmit={handleSubmit}>
                         <input type="file" name="files" multiple onChange={handleFileChange} />
                         <Button type="submit" variant="contained" color="primary">
-                            Upload*
+                            <span style={{ color: 'black' }}>UPLOAD</span>
+                            <span style={{ color: 'red' }}>*</span>
                         </Button>
                     </form>
                 </div>
@@ -586,14 +589,22 @@ export default function ReportProblemUpdate(props: any) {
                             variant="contained"
                             color="primary"
                             onClick={submit}
-                            disabled={submitted}
+                            disabled={
+                                submitted ||
+                                (!fileSelected || (fileSelected && files.length === 0)) ||
+                                !uploaded // เพิ่มเงื่อนไขที่ต้องการ
+                            }
                         >
                             บันทึกข้อมูล
                         </Button>
 
                     </Stack>
                 </Grid>
-
+                <p style={{ marginTop: '20px' }}>
+                    <span style={{ color: 'black' }}>หมายเหตุ</span>
+                    <span style={{ color: 'red' }}>*</span>
+                    <span style={{ color: 'black' }}> ต้องกรอกข้อมูลให้ครบทุกอย่างถึงจะกดบันทึกข้อมูลได้</span>
+                </p>
             </Paper>
         </Container>
 

@@ -8,7 +8,7 @@ import (
 
 type ReportProblem struct {
 	gorm.Model
-	ID               int
+	ID               uint   `gorm:"primaryKey"`
 	NotificationDate time.Time
 	lastID int
 	Heading          string   `validate:"required"`

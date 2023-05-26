@@ -202,7 +202,7 @@ function ReportProblem() {
         if (contentDisposition === null) {
             return null;
         }
-    
+
         const regex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
         const matches = regex.exec(contentDisposition);
         if (matches != null && matches[1]) {
@@ -308,7 +308,7 @@ function ReportProblem() {
                                 <TableCell align="center" width="5%">
                                     ID
                                 </TableCell>
-                                <TableCell align="left" width="20%">
+                                <TableCell align="center" width="20%">
                                     ผู้รายงาน
                                 </TableCell>
                                 {/* <TableCell align="left" width="25%">
@@ -339,16 +339,18 @@ function ReportProblem() {
                         </TableHead>
 
                         <TableBody>
-                            {reportProblem.map((reportProblem: ReportProblemInterface) => (
-                                <TableRow key={reportProblem.ID}>
-                                    <TableCell align="center" width="15">  {moment(reportProblem.NotificationDate).format('DDMMYY')}|{reportProblem.ID}            </TableCell>
-                                    <TableCell align="left" width="medium"> {emp?.EmployeeName}           </TableCell>
-                                    {/* <TableCell align="left" width="medium"> {reportProblem.Department.DepartmentName} </TableCell>  */}
-                                    <TableCell align="center" width="15%"> {reportProblem.Heading}      </TableCell>
-                                    <TableCell align="left" width="20%"> {reportProblem.Description}           </TableCell>
-                                    <TableCell align="center" width="5%" > {moment(reportProblem.NotificationDate).format('HH:mm ')}     </TableCell>
+                            {reportProblem
+                                .sort((a, b) => b.ID - a.ID) // เรียงลำดับตาม ID จากมากไปน้อย
+                                .map((reportProblem: ReportProblemInterface) => (
+                                    <TableRow key={reportProblem.ID}>
+                                        <TableCell align="center" width="15">  {moment(reportProblem.NotificationDate).format('DDMMYY')}|{reportProblem.ID}            </TableCell>
+                                        <TableCell align="center" width="medium"> {emp?.EmployeeName}           </TableCell>
+                                        {/* <TableCell align="left" width="medium"> {reportProblem.Department.DepartmentName} </TableCell>  */}
+                                        <TableCell align="center" width="15%"> {reportProblem.Heading}      </TableCell>
+                                        <TableCell align="left" width="20%"> {reportProblem.Description}           </TableCell>
+                                        <TableCell align="center" width="5%" > {moment(reportProblem.NotificationDate).format('HH:mm ')}     </TableCell>
 
-                                    {/* <TableCell align="center" width="medium">
+                                        {/* <TableCell align="center" width="medium">
                                         {reportProblem.FileUpload?.name ? (
                                             <a href={`http://localhost:8080/downloadFile/${reportProblem.FileUpload.ID}`} download>
                                                 <IconButton size="small">
@@ -358,28 +360,28 @@ function ReportProblem() {
                                             </a>
                                         ) : "-"}
                                     </TableCell> */}
-                                    <TableCell align="left">
-                                        <IconButton onClick={() => handleDownloadFile(reportProblem.ID, reportProblem.FileUpload.name)}>
-                                            <GetAppRoundedIcon />
-                                        </IconButton>
-                                        {reportProblem.FileUpload.name} {/* เพิ่มคำสั่งนี้เพื่อแสดงชื่อไฟล์ */}
-                                    </TableCell>
+                                        <TableCell align="left">
+                                            <IconButton onClick={() => handleDownloadFile(reportProblem.ID, reportProblem.FileUpload.name)}>
+                                                <GetAppRoundedIcon />
+                                            </IconButton>
+                                            {reportProblem.FileUpload.name} {/* เพิ่มคำสั่งนี้เพื่อแสดงชื่อไฟล์ */}
+                                        </TableCell>
 
-                                    <TableCell align="center">
-                                        <Button
+                                        <TableCell align="center">
+                                            <Button
 
-                                            component={RouterLink}
-                                            to={"/ReportProblemUpdate/" + reportProblem.ID}
-                                            variant='contained'
-                                            color="primary"
+                                                component={RouterLink}
+                                                to={"/ReportProblemUpdate/" + reportProblem.ID}
+                                                variant='contained'
+                                                color="primary"
 
-                                        >
-                                            แก้ไขข้อมูล
-                                        </Button>
-                                    </TableCell>
-                                    <TableCell align="center" size="medium"> {reportProblem.Status.StatusName}           </TableCell>
-                                </TableRow>
-                            ))}
+                                            >
+                                                แก้ไขข้อมูล
+                                            </Button>
+                                        </TableCell>
+                                        <TableCell align="center" size="medium"> {reportProblem.Status.StatusName}           </TableCell>
+                                    </TableRow>
+                                ))}
 
                         </TableBody>
 

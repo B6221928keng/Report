@@ -64,7 +64,7 @@ export default function Admin_Complete(props: any) {
             setTimeout(() => {
                 window.location.reload();
             }, 800);
-            //mail();
+            mail();
         } catch (err) {
             setError(true);
             console.log(err);
@@ -98,8 +98,8 @@ export default function Admin_Complete(props: any) {
     }, []);
     async function mail() {
         let data = {
-            email: "keng-085@hotmail.com",
-            password: "awztnitdqwzgbfqx",
+            email: "kengjrw@gmail.com",
+            password: "yrrpalwosqsnmxvg",
             empemail: "jirawatkeng086@gmail.com",
         };
         console.log(data)

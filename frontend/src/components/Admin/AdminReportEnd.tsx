@@ -78,10 +78,10 @@ function AdminReportEnd() {
         // เพิ่มหัวข้อตาราง
         worksheet.columns = [
             { header: 'ID', key: 'id', width: 10 },
-            { header: 'ชื่อ', key: 'Employee', width: 20 },
+            { header: 'ชื่อผู้แจ้งปัญหา', key: 'Employee', width: 20 },
             { header: 'แผนก', key: 'Department', width: 20 },
             { header: 'หัวข้อ', key: 'heading', width: 20 },
-            { header: 'แผนก', key: 'description', width: 20 },
+            { header: 'รายละเอียด', key: 'description', width: 20 },
             { header: 'สถานะ', key: 'Status', width: 20 },
             { header: 'เวลา', key: 'NotificationDate', width: 15 },
             { header: 'ไฟล์', key: 'FileUpload', width: 20 }
@@ -110,7 +110,7 @@ function AdminReportEnd() {
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = url;
-                link.download = 'my-workbook.xlsx';
+                link.download = 'Report software problem.xlsx';
                 link.click();
                 URL.revokeObjectURL(url);
             })
