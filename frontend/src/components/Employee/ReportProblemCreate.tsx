@@ -454,7 +454,7 @@ export default function ReportProblemCreate(props: any) {
 
                         <Button style={{ float: "right" }}
                             component={RouterLink}
-                            to="/reportProblem"
+                            to="/reportProblemData"
                             variant="contained"
                             color="error">
                             <SourceIcon />ข้อมูลการแจ้งปัญหา Software
@@ -525,13 +525,17 @@ export default function ReportProblemCreate(props: any) {
 
                 <div style={{ marginTop: '20px' }}>
                     <form onSubmit={handleSubmit}>
-                        <input type="file" name="files" multiple onChange={handleFileChange} />
-                        <Button type="submit" variant="contained" color="primary">
-                            <span style={{ color: 'black' }}>UPLOAD</span>
-                            <span style={{ color: 'red' }}>*</span>
-                        </Button>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <input type="file" name="files" multiple onChange={handleFileChange} />
+                            <Button type="submit" variant="contained" color="primary">
+                                <span style={{ color: 'black' }}>UPLOAD</span>
+                                <span style={{ color: 'red' }}>*</span>
+                            </Button>
+                            {uploadMessage && (
+                                <div style={{ color: 'green', marginLeft: '20px' }}>{uploadMessage}</div>
+                            )}
+                        </div>
                     </form>
-                    {uploaded && <p>{uploadMessage}</p>} {/* แสดงข้อความ "อัปโหลดแล้ว" หากไฟล์ถูกอัปโหลดสำเร็จ */}
                 </div>
 
 

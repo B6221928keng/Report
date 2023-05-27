@@ -53,7 +53,8 @@ export default function DrawerBar({ role, drawerWidth, handleDrawerClose, open, 
         
         const menuemployee = [
             { name: " กรอกข้อมูล", icon: <ReportIcon />, path: "/reportProblemCreate" },
-            { name: " ข้อมูล", icon: <FormatListNumberedIcon />, path: "/reportProblem" },
+            // { name: " ข้อมูล", icon: <FormatListNumberedIcon />, path: "/reportProblem" },
+            { name: " ข้อมูล", icon: <FormatListNumberedIcon />, path: "/reportProblemdata" },
             { name: " ตรวจสอบการใช้งาน", icon: <ChecklistRtlIcon />, path: "/reportProblemComplete" },
           ]
           const menuadmin = [

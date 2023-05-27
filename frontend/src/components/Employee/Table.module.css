@@ -1,0 +1,44 @@
+.table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .header {
+    background-color: #b62d07;
+    color: rgb(255, 251, 251);
+    padding: 10px;
+  }
+  
+  .cell {
+    padding: 10px;
+    border: 1px solid #4c4848;
+    background-color: #f5e6e6; 
+  }
+  
+  .table-container {
+    overflow-x: auto;
+  }
+  
+  .cell:nth-child(even) {
+    background-color: #ffffff;
+  }
+  
+  .cell:nth-child(odd) {
+    background-color: #ebebeb;
+  }
+  
+  .table tr:not(:last-child) .cell {
+    border-bottom: 1px solid #070606; /* เส้นแบ่งระหว่างแถว */
+  }
+  
+  .table tr > :not(:last-child) {
+    border-right: 1px solid #1e1a1a; /* เส้นแบ่งระหว่างคอลัมน์ */
+  }
+  
+  /* ------------------ReportProblemdata------------------------------------------ */
+  .header-red {
+    background-color: red !important;
+  }
+  .highlighted-row {
+    background-color: yellow; /* สีเหลือง */
+  }

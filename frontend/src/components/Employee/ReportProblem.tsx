@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from "react";
 import Container from '@mui/material/Container'
 import TableCell from '@mui/material/TableCell';
-import { Box, Grid, Select, TextField, Typography, Table, TableHead, TableRow, TableBody } from '@mui/material'
+import { Box, Grid, Select,Paper, TextField, Typography, Table, TableHead, TableRow, TableBody, TableRowProps } from '@mui/material'
 import Button from '@mui/material/Button'
+import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarColumnsButton, GridToolbarFilterButton } from '@mui/x-data-grid';
 import { Link as RouterLink } from "react-router-dom";
 import TableContainer from '@mui/material/TableContainer';
 import moment from 'moment';
 import axios from 'axios';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 import PhotoIcon from '@mui/icons-material/Photo';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import Snackbar from '@mui/material/Snackbar'
+import EditIcon from '@mui/icons-material/Edit';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { ReportProblemInterface } from "../../models/IReportProblem";
 import { EmployeeInterface } from "../../models/IEmployee";
@@ -20,6 +24,8 @@ import { set } from "date-fns";
 import GetAppRoundedIcon from '@mui/icons-material/GetAppRounded';
 import { UserInterface } from "../../models/IUser";
 import { upload } from "@testing-library/user-event/dist/upload";
+import styles from './Table.module.css';
+
 function ReportProblem() {
     const [emp, setEmp] = React.useState<EmployeeInterface>();
     const [Department, setDepartment] = React.useState<DepartmentInterface>();
@@ -210,8 +216,11 @@ function ReportProblem() {
         }
         return null;
     }
-
-
+    const handleButtonClick = () => {
+        setTimeout(() => {
+            window.location.reload();
+        }, 400);
+    };
 
     useEffect(() => {
         getEmployee();
@@ -237,161 +246,108 @@ function ReportProblem() {
         setSuccess(false);
         setError(false);
     };
-
+   
     return (
 
-        <div>
 
-            <Container maxWidth="md">
-                <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
-                    <Alert onClose={handleClose} severity="success">
-                        ลบข้อมูลสำเร็จ
-                    </Alert>
-                </Snackbar>
-                <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
-                    <Alert onClose={handleClose} severity="error">
-                        ลบข้อมูลไม่สำเร็จ: {ErrorMessage}
-                    </Alert>
-                </Snackbar>
+        <Container maxWidth="md">
+            <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="success">
+                    ลบข้อมูลสำเร็จ
+                </Alert>
+            </Snackbar>
+            <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="error">
+                    ลบข้อมูลไม่สำเร็จ: {ErrorMessage}
+                </Alert>
+            </Snackbar>
 
-                <Box
-
-                    display="flex"
-
-                    sx={{
-
-                        marginTop: 2,
-
-                    }}
-
-                >
-
-                    <Box flexGrow={1}>
-
-                        <Typography
-                            component="h2"
-                            variant="h6"
-                            color="error"
-                            gutterBottom
-                        >
-                            ข้อมูลรายงานปัญหาSoftware
-                        </Typography>
-                    </Box>
-                    <Box>
-
-                        <Button
-
-                            component={RouterLink}
-
-                            to="/reportProblemCreate"
-
-                            variant="contained"
-
-                            color="error"
-
-                        >
-
-                            เพิ่มข้อมูลปัญหาSoftware
-
-                        </Button>
-
-                    </Box>
-
+            <Box
+                display="flex"
+                sx={{
+                    marginTop: 2,
+                }}
+            >
+                <Box flexGrow={1}>
+                    <Typography component="h2" variant="h6" color="error" gutterBottom>
+                        ข้อมูลรายงานปัญหา Software
+                    </Typography>
                 </Box>
+                <Box>
+                    <Button
+                        component={RouterLink}
+                        to="/reportProblemCreate"
+                        variant="contained"
+                        color="error"
+                    >
+                        เพิ่มข้อมูลปัญหา Software
+                    </Button>
+                </Box>
+            </Box>
 
-                <TableContainer >
-
-                    <Table aria-label="simple table">
-
-                        <TableHead>
-                            <TableRow>
-                                <TableCell align="center" width="5%">
-                                    ID
-                                </TableCell>
-                                <TableCell align="center" width="20%">
-                                    ผู้รายงาน
-                                </TableCell>
-                                {/* <TableCell align="left" width="25%">
-                                    แผนก
-                                </TableCell> */}
-                                <TableCell align="center" width="20%">
-                                    หัวข้อ
-                                </TableCell>
-
-                                <TableCell align="left" width="20%">
-                                    รายละเอียด
-                                </TableCell>
-                                <TableCell align="center" width="5%">
-                                    เวลา
-                                </TableCell>
-                                <TableCell align="center" width="10%">
-                                    ดาวน์โหลด
-                                </TableCell>
-                                <TableCell align="center" width="10%">
-
-                                </TableCell>
-                                <TableCell align="center" width="6%">
-                                    สถานะ
-                                </TableCell>
-
-                            </TableRow>
-
-                        </TableHead>
-
-                        <TableBody>
+            <TableContainer className="table-container">
+                <div className="mb-4" style={{ marginTop: '20px' }}>
+                    <Table className="table" aria-label="simple table">
+                        <thead>
+                            <tr>
+                                <th className={styles.header}>ID</th>
+                                <th className={styles.header}>ชื่อ</th>
+                                <th className={styles.header}>หัวข้อ</th>
+                                <th className={styles.header}>รายละเอียด</th>
+                                <th className={styles.header}>เวลา</th>
+                                <th className={styles.header}>ดาวน์โหลด</th>
+                                <th className={styles.header}></th>
+                                <th className={styles.header}>สถานะ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                             {reportProblem
-                                .sort((a, b) => b.ID - a.ID) // เรียงลำดับตาม ID จากมากไปน้อย
+                                .sort((a, b) => b.ID - a.ID)
                                 .map((reportProblem: ReportProblemInterface) => (
-                                    <TableRow key={reportProblem.ID}>
-                                        <TableCell align="center" width="15">  {moment(reportProblem.NotificationDate).format('DDMMYY')}|{reportProblem.ID}            </TableCell>
-                                        <TableCell align="center" width="medium"> {emp?.EmployeeName}           </TableCell>
-                                        {/* <TableCell align="left" width="medium"> {reportProblem.Department.DepartmentName} </TableCell>  */}
-                                        <TableCell align="center" width="15%"> {reportProblem.Heading}      </TableCell>
-                                        <TableCell align="left" width="20%"> {reportProblem.Description}           </TableCell>
-                                        <TableCell align="center" width="5%" > {moment(reportProblem.NotificationDate).format('HH:mm ')}     </TableCell>
-
-                                        {/* <TableCell align="center" width="medium">
-                                        {reportProblem.FileUpload?.name ? (
-                                            <a href={`http://localhost:8080/downloadFile/${reportProblem.FileUpload.ID}`} download>
-                                                <IconButton size="small">
-                                                    <GetAppRoundedIcon />
-                                                </IconButton>
-                                                {reportProblem.FileUpload.name}
-                                            </a>
-                                        ) : "-"}
-                                    </TableCell> */}
-                                        <TableCell align="left">
+                                    <TableRow component="tr" key={reportProblem.ID}>
+                                        <TableCell align="center" width="15" className={styles.cell}>
+                                            {moment(reportProblem.NotificationDate).format('DDMMYY')}|{reportProblem.ID}
+                                        </TableCell>
+                                        <TableCell align="center" width="medium" className={styles.cell}>
+                                            {emp?.EmployeeName}
+                                        </TableCell>
+                                        <TableCell align="center" width="15%" className={styles.cell}>
+                                            {reportProblem.Heading}
+                                        </TableCell>
+                                        <TableCell align="center" width="20%" className={styles.cell}>
+                                            {reportProblem.Description}
+                                        </TableCell>
+                                        <TableCell align="center" width="5%" className={styles.cell}>
+                                            {moment(reportProblem.NotificationDate).format('HH:mm')}
+                                        </TableCell>
+                                        <TableCell align="left" className={styles.cell}>
                                             <IconButton onClick={() => handleDownloadFile(reportProblem.ID, reportProblem.FileUpload.name)}>
                                                 <GetAppRoundedIcon />
                                             </IconButton>
-                                            {reportProblem.FileUpload.name} {/* เพิ่มคำสั่งนี้เพื่อแสดงชื่อไฟล์ */}
+                                            {reportProblem.FileUpload.name}
                                         </TableCell>
-
-                                        <TableCell align="center">
+                                        <TableCell align="center" className={styles.cell}>
                                             <Button
-
                                                 component={RouterLink}
                                                 to={"/ReportProblemUpdate/" + reportProblem.ID}
-                                                variant='contained'
+                                                variant="contained"
                                                 color="primary"
-
                                             >
                                                 แก้ไขข้อมูล
                                             </Button>
                                         </TableCell>
-                                        <TableCell align="center" size="medium"> {reportProblem.Status.StatusName}           </TableCell>
+                                        <TableCell align="center" size="medium" className={styles.cell}>
+                                            {reportProblem.Status.StatusName}
+                                        </TableCell>
                                     </TableRow>
                                 ))}
-
-                        </TableBody>
-
+                        </tbody>
                     </Table>
+                </div>
+            </TableContainer>
+            
+        </Container>
 
-                </TableContainer>
-
-            </Container>
-
-        </div>
     );
 }
 

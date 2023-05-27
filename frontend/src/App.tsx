@@ -21,6 +21,7 @@ import Admin_Pending from './components/Admin/Admin_Pending';
 import AdminReportEnd from './components/Admin/AdminReportEnd';
 import ProblemShow from './components/Admin/AdminReportPm';
 import Admin_Complete from './components/Admin/Admin_Complete';
+import ReportProblemdata from './components/Employee/ReportProblemdata';
 
 const drawerWidth = 240;
 
@@ -141,7 +142,7 @@ function App() {
                   <Route path="/reportProblemCreate" element={<ReportProblemCreate />} />
                   <Route path="/reportProblem" element={<ReportProblem />} />
                   <Route path="/reportProblemComplete" element={<ReportProblemComplete />} />
-
+                  <Route path="/reportProblemdata" element={<ReportProblemdata />} />
                 </>
 
               )}
