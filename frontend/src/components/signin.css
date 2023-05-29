@@ -1,32 +1,32 @@
-.from-box{
+.from-box {
     left: 0vw;
     height: 100vh;
     display: flex;
     flex-direction: row;
+    justify-content: center;
+    background-size: cover; /* ปรับขนาดของ background ได้ที่นี่ */
 }
 
-.form-page{
-    width: 70vw;
+
+.form-page {
+    width: 58vw;
     display: flex;
     align-items: center;
     justify-content: center;
-    
 }
 
-
-
-.img-box{
+.img-box {
     height: 100vh;
-    width: 30vw;
     object-fit: cover;
 }
 
-.form-in{
+.form-in {
     display: flex;
     flex-direction: column;
-    gap:10px
+    gap: 20px
 }
-.logo{
+
+.logo {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -40,24 +40,45 @@
 
 
 
-@media screen and (max-width: 1200px ) {
-    .form-page{
+@media screen and (max-width: 1200px) {
+    /* .form-page {
         width: 50vw;
     }
-    
-    .img-box{
+
+    .img-box {
         width: 50vw;
+    } */
+}
+
+@media screen and (max-width: 800px) {
+    /* .img-box {
+        display: none;
+    } */
+
+    .form-page {
+        width: 100vw;
+    }
+
+    .from-frame {
+        width: 20rem;
+    }
+}
+
+.img {
+    width: 900px;
+    height: auto;
+    margin-bottom: 50px;
+    /* เพื่อให้รูปภาพปรับขนาดสัมพันธ์กับความกว้างของพื้นที่ที่รูปอยู่ */
+}
+
+@media screen and (max-width: 1200px) {
+    .img {
+        width: 10%;
     }
 }
 
 @media screen and (max-width: 800px) {
-    .img-box{
+    .img {
         display: none;
-    }
-    .form-page{
-        width: 100vw;
-    }
-    .from-frame{
-        width: 20rem;
     }
 }

@@ -174,6 +174,7 @@ export default function ReportProblemCreate(props: any) {
             });
     };
     const [fileSelected, setFileSelected] = React.useState(false);
+    const [SelectedMessage, setSelectedMessage] = React.useState("");
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
@@ -190,8 +191,10 @@ export default function ReportProblemCreate(props: any) {
                 console.log(fileInfo); // แสดงข้อมูลใน Console
                 return fileInfo;
             });
+
             setFiles((prevFiles) => [...prevFiles, ...newFiles]);
             setFileSelected(true); // ตั้งค่า fileSelected เป็น true เมื่อมีการเลือกไฟล์
+            setSelectedMessage("กดปุ่มUPLOAD");
         }
     };
     const [uploadMessage, setUploadMessage] = React.useState("");
@@ -442,7 +445,7 @@ export default function ReportProblemCreate(props: any) {
                     }
                 />
             </Snackbar>
-            <Paper sx={{ p: 4, pb: 10 }}  >
+            <Paper sx={{ p: 4, pb: 6 }}  >
                 <Box display="flex" > <Box flexGrow={1}>
                     <Typography
                         component="h2"
@@ -517,18 +520,19 @@ export default function ReportProblemCreate(props: any) {
                                     size="medium"
                                     placeholder="กรอกรายละเอียด"
                                     onChange={handleInputChange}
+                                    multiline
+                                    rows={6} // กำหนดจำนวนบรรทัดที่แสดงใน TextField
                                 />
                             </FormControl>
                         </FormControl>
                     </Grid>
                 </Grid>
-
                 <div style={{ marginTop: '20px' }}>
                     <form onSubmit={handleSubmit}>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                             <input type="file" name="files" multiple onChange={handleFileChange} />
-                            <Button type="submit" variant="contained" color="primary">
-                                <span style={{ color: 'black' }}>UPLOAD</span>
+                            <Button type="submit" variant="contained" color={fileSelected ? "secondary" : "primary"}>
+                                <span style={{ color: fileSelected ? 'yellow' : 'black' }}>UPLOAD</span>
                                 <span style={{ color: 'red' }}>*</span>
                             </Button>
                             {uploadMessage && (
@@ -591,12 +595,13 @@ export default function ReportProblemCreate(props: any) {
 
                     </Stack>
                 </Grid>
-                <p style={{ marginTop: '20px' }}>
-                    <span style={{ color: 'black' }}>หมายเหตุ</span>
-                    <span style={{ color: 'red' }}>*</span>
-                    <span style={{ color: 'black' }}> ต้องกรอกข้อมูลให้ครบทุกอย่างถึงจะกดบันทึกข้อมูลได้</span>
-                </p>
+
             </Paper>
+            <p style={{ marginTop: '20px' }}>
+                <span style={{ color: 'black' }}>หมายเหตุ</span>
+                <span style={{ color: 'red' }}>*</span>
+                <span style={{ color: 'black' }}> ต้องกรอกข้อมูลให้ครบทุกอย่างถึงจะกดบันทึกข้อมูลได้</span>
+            </p>
         </Container>
 
 

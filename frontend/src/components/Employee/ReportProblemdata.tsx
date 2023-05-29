@@ -3,11 +3,11 @@ import React, { useEffect, useState } from "react";
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { Box, Button, Container, IconButton, Paper, Typography } from '@mui/material';
 import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarColumnsButton, GridToolbarFilterButton } from '@mui/x-data-grid';
-import EditIcon from '@mui/icons-material/Edit';
-import {  ReportProblem2Interface, ReportProblemInterface } from '../../models/IReportProblem';
-import {  ListAdminReportProblem3 } from '../../service/Servics';
+import { ReportProblem2Interface, ReportProblemInterface } from '../../models/IReportProblem';
+import { ListAdminReportProblem3 } from '../../service/Servics';
 import moment from 'moment';
 import GetAppRoundedIcon from '@mui/icons-material/GetAppRounded';
+import EditIcon from '@mui/icons-material/Edit';
 import './color.css';
 
 function ReportProblemdata() {
@@ -100,7 +100,7 @@ function ReportProblemdata() {
                 return <>{params.row.Description}</>;
             },
         },
-       
+
         { field: "NotificationDate", headerName: "เวลา", type: "date", width: 100, headerAlign: "center", align: "center", valueFormatter: (params) => moment(params?.value).format("HH:mm") },
 
         {
@@ -113,8 +113,8 @@ function ReportProblemdata() {
             renderCell: (params: GridRenderCellParams<any>) => {
                 return (
                     <IconButton onClick={() => handleDownloadFile(params.row.ID, params.row.FileUpload.name)}>
-                         <GetAppRoundedIcon style={{ color: 'green' }} />
-                        <span style={{ fontSize: 'small', color: 'green'  }}>{params.row.FileUpload.name}</span>
+                        <GetAppRoundedIcon style={{ color: 'green' }} />
+                        <span style={{ fontSize: 'small', color: 'green' }}>{params.row.FileUpload.name}</span>
                     </IconButton>
                 );
             },
@@ -152,7 +152,7 @@ function ReportProblemdata() {
             renderCell: (params: GridRenderCellParams<any>) => {
                 return (
                     <IconButton >
-                         <span style={{ fontSize: 'small', color: 'orange' }}>{params.row.Status.StatusName}</span>
+                        <span style={{ fontSize: 'small', color: 'orange' }}>{params.row.Status.StatusName}</span>
                     </IconButton>
                 );
             },
@@ -184,7 +184,16 @@ function ReportProblemdata() {
                                 ข้อมูลการแจ้งปัญหาSoftware
                             </Typography>
                         </Box>
-                        
+                        <Box>
+                            <Button
+                                component={RouterLink}
+                                to="/reportProblemCreate"
+                                variant="contained"
+                                color="error"
+                            >
+                                เพิ่มข้อมูลปัญหา Software
+                            </Button>
+                        </Box>
                     </Box>
 
                     <Box sx={{ borderRadius: 30 }}>
@@ -194,7 +203,7 @@ function ReportProblemdata() {
                             columns={columns}
                             autoHeight={true}
                             density={'comfortable'}
-                            sx={{ mt: 2, backgroundColor: '#eeeeee' }}
+                            sx={{ mt: 2, backgroundColor: '#feffd9' }}
                         />
                     </Box>
                 </Paper>

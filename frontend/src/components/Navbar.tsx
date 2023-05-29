@@ -124,7 +124,7 @@ export default function Navbar({ open, onClick }: any) {
                     <Typography
                         style={{
                             textAlign: 'right',
-                            backgroundColor: "errorColor",
+                            backgroundColor: "#f1c232",
                             color: 'white',
                             padding: '5px 10px',
                             border: '0.5px solid white',

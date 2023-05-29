@@ -220,7 +220,7 @@ export default function ReportProblemUpdate(props: any) {
             });
     };
 
-    const [fileSelected, setFileSelected] = React.useState(false);
+   const [fileSelected, setFileSelected] = React.useState(false);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
@@ -241,7 +241,7 @@ export default function ReportProblemUpdate(props: any) {
             setFileSelected(true); // ตั้งค่า fileSelected เป็น true เมื่อมีการเลือกไฟล์
         }
     };
-
+    const [uploadMessage, setUploadMessage] = React.useState("");
     const [uploaded, setUploaded] = React.useState(false);
     const [submitted, setSubmitted] = React.useState(false);
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -256,6 +256,7 @@ export default function ReportProblemUpdate(props: any) {
                 setShowSnackbar(true); // แสดง Snackbar เตือนให้อัปโหลดไฟล์
                 return;
             }
+
             const formData = new FormData();
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
@@ -294,6 +295,7 @@ export default function ReportProblemUpdate(props: any) {
                         setUploadSuccess(true);
                         setUploaded(true); // ตั้งค่า uploaded เป็น true เมื่ออัปโหลดไฟล์สำเร็จ
                         setFiles((prevFileUploads) => [...prevFileUploads, fileData]);
+                        setUploadMessage("อัปโหลดแล้ว"); // ตั้งค่าข้อความ "อัปโหลดแล้ว"
                     }
                 })
                 .catch((error) => {
@@ -332,8 +334,8 @@ export default function ReportProblemUpdate(props: any) {
 
     function submit() {
         setLoading(true);
-          // Validate Heading
-          if (!ReportProblem.Heading) {
+        // Validate Heading
+        if (!ReportProblem.Heading) {
             setLoading(false);
             alert("กรุณากรอกหัวข้อของปัญหาด้วยนะครับ");
             return;
@@ -355,6 +357,7 @@ export default function ReportProblemUpdate(props: any) {
             setShowSnackbar(true); // แสดง Snackbar เตือนให้เลือกไฟล์
             return;
         }
+
         let data = {
             ID: convertType(ReportProblem.ID),
             EmployeeID: emp?.ID,
@@ -390,6 +393,9 @@ export default function ReportProblemUpdate(props: any) {
                     setSuccess(true);
                     setSubmitted(true);
                     mail();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 400);
                 } else {
                     setErrorMessage(res.error);
                     setError(true);
@@ -458,7 +464,7 @@ export default function ReportProblemUpdate(props: any) {
                     }
                 />
             </Snackbar>
-            <Paper sx={{ p: 4, pb: 10 }}  >
+            <Paper sx={{ p: 4, pb: 6 }}  >
                 <Box display="flex" > <Box flexGrow={1}>
                     <Typography
                         component="h2"
@@ -470,7 +476,7 @@ export default function ReportProblemUpdate(props: any) {
 
                         <Button style={{ float: "right" }}
                             component={RouterLink}
-                            to="/reportProblem"
+                            to="/reportProblemData"
                             variant="contained"
                             color="error">
                             <SourceIcon />
@@ -520,16 +526,20 @@ export default function ReportProblemUpdate(props: any) {
                 <Grid container spacing={1}>
                     <Grid item xs={5}>
                         <FormControl fullWidth variant="outlined" style={{ width: '150%', float: 'left' }}>
-                            <p>รายละเอียด</p>
+                            <p>
+                                <span style={{ color: 'black' }}>รายละเอียด</span>
+                                <span style={{ color: 'red' }}>*</span>
+                            </p>
                             <FormControl fullWidth variant="outlined">
                                 <TextField
                                     id="Description"
                                     variant="outlined"
-                                    value={ReportProblem.Description}
                                     type="string"
                                     size="medium"
                                     placeholder="กรอกรายละเอียด"
                                     onChange={handleInputChange}
+                                    multiline
+                                    rows={6} // กำหนดจำนวนบรรทัดที่แสดงใน TextField
                                 />
                             </FormControl>
                         </FormControl>
@@ -538,11 +548,16 @@ export default function ReportProblemUpdate(props: any) {
 
                 <div style={{ marginTop: '20px' }}>
                     <form onSubmit={handleSubmit}>
-                        <input type="file" name="files" multiple onChange={handleFileChange} />
-                        <Button type="submit" variant="contained" color="primary">
-                            <span style={{ color: 'black' }}>UPLOAD</span>
-                            <span style={{ color: 'red' }}>*</span>
-                        </Button>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <input type="file" name="files" multiple onChange={handleFileChange} />
+                            <Button type="submit" variant="contained" color={fileSelected ? "secondary" : "primary"}>
+                                <span style={{ color: fileSelected ? 'yellow' : 'black' }}>UPLOAD</span>
+                                <span style={{ color: 'red' }}>*</span>
+                            </Button>
+                            {uploadMessage && (
+                                <div style={{ color: 'green', marginLeft: '20px' }}>{uploadMessage}</div>
+                            )}
+                        </div>
                     </form>
                 </div>
 
@@ -600,12 +615,13 @@ export default function ReportProblemUpdate(props: any) {
 
                     </Stack>
                 </Grid>
-                <p style={{ marginTop: '20px' }}>
+               
+            </Paper>
+            <p style={{ marginTop: '20px' }}>
                     <span style={{ color: 'black' }}>หมายเหตุ</span>
                     <span style={{ color: 'red' }}>*</span>
                     <span style={{ color: 'black' }}> ต้องกรอกข้อมูลให้ครบทุกอย่างถึงจะกดบันทึกข้อมูลได้</span>
                 </p>
-            </Paper>
         </Container>
 
 
