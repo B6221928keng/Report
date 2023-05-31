@@ -63,15 +63,13 @@ func main() {
 	r.GET("/employeeID/:id", controller.GetEmployee)
 
 	//Admin
-	r.GET("/adminId/:id", controller.GetAdminByUserID)
-	r.GET("/admins", controller.ListAdmin)
-	r.GET("/adminID/:id", controller.GetAdmin)
-
+	
 	//File
 	r.GET("/fileUploads", controller.ListFileUploads)
 	r.GET("/downloadFile/:id", controller.DownloadFile)
 	r.POST("/uploadfile", controller.UploadFile)
-
+	r.PATCH("/updateFile/:id", controller.UpdateUploadFile)
+	r.DELETE("/fileUploads/:id", controller.DeleteFileUpload)
 	//role
 	r.GET("/roles", controller.ListRole)
 

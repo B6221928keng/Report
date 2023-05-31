@@ -5,7 +5,8 @@ import (
 	// "io"
 	"io/ioutil"
 	"net/http"
-	
+	"os"
+
 	"time"
 
 	"github.com/B6221928keng/Report/entity"
@@ -101,7 +102,7 @@ func CreateReportProblem(c *gin.Context) {
 		}
 		reportProblem.FileUpload = fileUpload
 	}
-	
+
 	// Create ReportProblem entity
 	wv := entity.ReportProblem{
 		NotificationDate: reportProblem.NotificationDate,
@@ -114,21 +115,18 @@ func CreateReportProblem(c *gin.Context) {
 		// FileUploadID:     reportProblem.FileUploadID,
 	}
 
-	
-
 	// Validate entity
 	if _, err := govalidator.ValidateStruct(wv); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	
-	
+
 	// Save entity to database
 	if err := entity.DB().Create(&wv).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	
+
 	c.JSON(http.StatusOK, gin.H{"data": wv})
 }
 
@@ -226,114 +224,58 @@ func ListAdminReportProblem(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": output})
 }
 
-// PATCH /reportProblem
-// func UpdateReportProblem(c *gin.Context) {
-// 	var reportProblem entity.ReportProblem
-// 	var newreportProblem entity.ReportProblem1
-// 	var Employee entity.Employee
-// 	var status entity.Status
-// 	var department entity.Department
+func UpdateFile(c *gin.Context) {
+	fileID := c.Param("id")
 
-// 	// var fileUpload entity.FileUpload
+	var reportProblem entity.ReportProblem
+	if err := entity.DB().Preload("FileUpload").First(&reportProblem, fileID).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-// 	if err := c.ShouldBindJSON(&newreportProblem); err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-// 		return
-// 	}
-// 	if _, err := govalidator.ValidateStruct(&newreportProblem); err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{
-// 			"error": err.Error(),
-// 		})
-// 		return
-// 	}
-// 	if tx := entity.DB().Where("id = ?", newreportProblem.ID).First(&reportProblem); tx.RowsAffected == 0 {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": "reportProblem not found"})
-// 		return
-// 	}
-// 	// ค้นหา employee ด้วย id
-// 	if newreportProblem.EmployeeID != nil {
-// 		if tx := entity.DB().Where("id = ?", newreportProblem.EmployeeID).First(&Employee); tx.RowsAffected == 0 {
-// 			c.JSON(http.StatusBadRequest, gin.H{"error": "employees not found"})
-// 			return
-// 		}
-// 		fmt.Print("NOT NULL")
-// 		newreportProblem.Employee = Employee
-// 	} else {
-// 		if tx := entity.DB().Where("id = ?", newreportProblem.EmployeeID).First(&Employee); tx.RowsAffected == 0 {
-// 			c.JSON(http.StatusBadRequest, gin.H{"error": "not found employee"})
-// 			return
-// 		}
-// 		fmt.Print("NULL")
-// 		newreportProblem.Employee = Employee
-// 	}
-// 	// ค้นหา status ด้วย id
-// 	if newreportProblem.StatusID != nil {
-// 		if tx := entity.DB().Where("id = ?", newreportProblem.StatusID).First(&status); tx.RowsAffected == 0 {
-// 			c.JSON(http.StatusBadRequest, gin.H{"error": "statuses not found"})
-// 			return
-// 		}
-// 		newreportProblem.Status = status
-// 	} else {
-// 		if tx := entity.DB().Where("id = ?", newreportProblem.StatusID).First(&status); tx.RowsAffected == 0 {
-// 			c.JSON(http.StatusBadRequest, gin.H{"error": "not found statuses"})
-// 			return
-// 		}
-// 		newreportProblem.Status = status
-// 	}
-// 	// ค้นหา department ด้วย id
-// 	if newreportProblem.DepartmentID != nil {
-// 		if tx := entity.DB().Where("id = ?", newreportProblem.DepartmentID).First(&department); tx.RowsAffected == 0 {
-// 			c.JSON(http.StatusBadRequest, gin.H{"error": "departments not found"})
-// 			return
-// 		}
-// 		newreportProblem.Department = department
-// 	} else {
-// 		if tx := entity.DB().Where("id = ?", newreportProblem.DepartmentID).First(&department); tx.RowsAffected == 0 {
-// 			c.JSON(http.StatusBadRequest, gin.H{"error": " not found departments"})
-// 			return
-// 		}
-// 		newreportProblem.Department = department
-// 	}
+	file, err := c.FormFile("file")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-// 	// ค้นหา file ด้วย id
-// 	// if newreportProblem.FileUploadID != nil {
-// 	// 	if tx := entity.DB().Where("id = ?", newreportProblem.FileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
-// 	// 		c.JSON(http.StatusBadRequest, gin.H{"error": "fileUploads not found"})
-// 	// 		return
-// 	// 	}
-// 	// 	newreportProblem.FileUpload = fileUpload
-// 	// } else {
-// 	// 	if tx := entity.DB().Where("id = ?", newreportProblem.FileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
-// 	// 		c.JSON(http.StatusBadRequest, gin.H{"error": " not found fileUploads"})
-// 	// 		return
-// 	// 	}
-// 	// 	newreportProblem.FileUpload = fileUpload
-// 	// }
+	src, err := file.Open()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	defer src.Close()
 
-// 	reportProblem.Status = newreportProblem.Status
+	content, err := ioutil.ReadAll(src)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-// 	update := entity.ReportProblem{
-// 		NotificationDate: reportProblem.NotificationDate,
-// 		Employee:         Employee,
-// 		Department:       reportProblem.Department,
-// 		Status:           reportProblem.Status,
-// 		Heading:          reportProblem.Heading,
-// 		Description:      reportProblem.Description,
-// 		FileUpload:       reportProblem.FileUpload,
-// 	}
-// 	// ขั้นตอนการ validate
-// 	if _, err := govalidator.ValidateStruct(update); err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-// 		return
-// 	}
+	fileUpload := entity.FileUpload{
+		Name:    file.Filename,
+		Size:    file.Size,
+		Type:    file.Header.Get("Content-Type"),
+		Content: content,
+	}
 
-// 	if err := entity.DB().Where("id = ?", reportProblem.ID).Updates(&reportProblem).Error; err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-// 		return
-// 	}
+	// Remove old file
+	if reportProblem.FileUpload.ID != 0 {
+		if err := os.Remove(reportProblem.FileUpload.Path); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+	}
 
-//		c.JSON(http.StatusOK, gin.H{"data": update})
-//	}
+	// Update file upload
+	if err := entity.DB().Model(&reportProblem.FileUpload).Updates(&fileUpload).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": fileUpload})
+}
+
 func UpdateReportProblem(c *gin.Context) {
 	var reportProblem entity.ReportProblem
 	var employee entity.Employee
@@ -341,7 +283,7 @@ func UpdateReportProblem(c *gin.Context) {
 	var department entity.Department
 	var fileUpload entity.FileUpload
 
-	if err := c.ShouldBindJSON(&reportProblem); err != nil {
+	if err := c.ShouldBind(&reportProblem); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -357,6 +299,7 @@ func UpdateReportProblem(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ไม่พบแผนก"})
 		return
 	}
+	
 	if reportProblem.FileUploadID != nil {
 		fileUploadID := *reportProblem.FileUploadID
 		if tx := entity.DB().Where("id = ?", fileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
@@ -364,11 +307,13 @@ func UpdateReportProblem(c *gin.Context) {
 			return
 		}
 		reportProblem.FileUpload = fileUpload
-	}
-	if reportProblem.FileUploadID == nil && reportProblem.FileUpload.ID != 0 {
-		// Delete old file upload from the database
-		if err := entity.DB().Delete(&reportProblem.FileUpload).Error; err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+
+		// Update the FileUploadID in the reportProblem entity
+		reportProblem.FileUploadID = &fileUpload.ID
+
+		// Update the file upload in the database
+		if err := entity.DB().Save(&fileUpload).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 	}
@@ -395,4 +340,3 @@ func UpdateReportProblem(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"data": update})
 }
-

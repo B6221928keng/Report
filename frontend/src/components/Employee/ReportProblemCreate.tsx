@@ -175,7 +175,7 @@ export default function ReportProblemCreate(props: any) {
     };
     const [fileSelected, setFileSelected] = React.useState(false);
     const [SelectedMessage, setSelectedMessage] = React.useState("");
-
+    const [fileIDs, setFileIDs] = React.useState<number[]>([]);
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
             const newFiles = Array.from(event.target.files).map((file) => {
@@ -373,7 +373,7 @@ export default function ReportProblemCreate(props: any) {
                     setErrorMessage("");
                     setSuccess(true);
                     setSubmitted(true);
-                    mail();
+                    //mail();
                     setTimeout(() => {
                         window.location.reload();
                     }, 400);

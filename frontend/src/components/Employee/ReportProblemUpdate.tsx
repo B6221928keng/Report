@@ -392,10 +392,10 @@ export default function ReportProblemUpdate(props: any) {
                     setErrorMessage("");
                     setSuccess(true);
                     setSubmitted(true);
-                    mail();
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 400);
+                    //mail();
+                    // setTimeout(() => {
+                    //     window.location.reload();
+                    // }, 400);
                 } else {
                     setErrorMessage(res.error);
                     setError(true);
@@ -534,6 +534,7 @@ export default function ReportProblemUpdate(props: any) {
                                 <TextField
                                     id="Description"
                                     variant="outlined"
+                                    value={ReportProblem.Description}
                                     type="string"
                                     size="medium"
                                     placeholder="กรอกรายละเอียด"

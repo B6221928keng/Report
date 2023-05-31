@@ -16,9 +16,6 @@ type ReportProblem struct {
 	EmployeeID *uint
 	Employee   Employee
 
-	AdminID *uint
-	Admin   Admin `gorm:"references:id" valid:"-"`
-
 	StatusID *uint
 	Status   Status `gorm:"references:id" valid:"-"`
 
@@ -39,9 +36,6 @@ type ReportProblem1 struct {
 	EmployeeID *uint
 	Employee   Employee `gorm:"references:id" valid:"-"`
 
-	AdminID *uint
-	Admin   Admin `gorm:"references:id" valid:"-"`
-
 	StatusID *uint
 	Status   Status `gorm:"references:id" valid:"-"`
 
@@ -61,9 +55,6 @@ type ReportProblem2 struct {
 	EmployeeID *uint
 	Employee   Employee `gorm:"references:id" valid:"-"`
 
-	AdminID *uint
-	Admin   Admin `gorm:"references:id" valid:"-"`
-
 	StatusID *uint
 	Status   Status `gorm:"references:id" valid:"-"`
 
@@ -82,9 +73,6 @@ type ReportProblem3 struct {
 
 	EmployeeID *uint
 	Employee   Employee `gorm:"references:id" valid:"-"`
-
-	AdminID *uint
-	Admin   Admin `gorm:"references:id" valid:"-"`
 
 	StatusID *uint
 	Status   Status `gorm:"references:id" valid:"-"`
@@ -129,23 +117,7 @@ type Employee struct {
 
 	reportProblem []ReportProblem `gorm:"foreignKey:EmployeeID"`
 }
-type Admin struct {
-	gorm.Model
 
-	AdminName string `gorm:"uniqueIndex"`
-	Email        string
-
-	UserID *uint
-	User   User
-
-	RoleID *uint
-	Role   Role
-
-	DepartmentID *uint
-	Department   Department
-
-	reportProblem []ReportProblem `gorm:"foreignKey:AdminID"`
-}
 type FileUpload struct {
 	gorm.Model
 	Name     string `json:"name"`

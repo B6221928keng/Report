@@ -9,9 +9,14 @@ import moment from 'moment';
 import GetAppRoundedIcon from '@mui/icons-material/GetAppRounded';
 import EditIcon from '@mui/icons-material/Edit';
 import './color.css';
-
+import { FileUploadInterface } from "../../models/IFileUpload";
+import DeleteIcon from '@mui/icons-material/Delete';
 function ReportProblemdata() {
     const [reportlistdata, setReportlistdata] = useState<ReportProblemInterface[]>([])
+    const [reportfile, setReportfile] = useState<FileUploadInterface[]>([])
+    const [success, setSuccess] = useState(false);
+    const [error, setError] = useState(false);
+    const [ErrorMessage, setErrorMessage] = React.useState("");
     const getReportProblem = async () => {
         const apiUrl = "http://localhost:8080/reportProblem";
         const requestOptions = {
@@ -30,6 +35,24 @@ function ReportProblemdata() {
                 }
             });
     };
+    const getFileUpload = async () => {
+        const apiUrl = "http://localhost:8080/fileUploads";
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+        };
+        fetch(apiUrl, requestOptions)
+            .then((response) => response.json())
+            .then((res) => {
+                console.log(res.data);
+                if (res.data) {
+                    setReportfile(res.data);
+                }
+            });
+    };
     const apiUrl = "http://localhost:8080";
     function handleDownloadFile(id: number, filename: string) {
         const requestOptions = {
@@ -39,24 +62,25 @@ function ReportProblemdata() {
                 "Content-Type": "application/json",
             },
         };
-
+    
         fetch(`${apiUrl}/downloadFile/${id}`, requestOptions)
             .then((response) => {
                 const contentDisposition = response.headers.get('Content-Disposition');
                 const Filename = getFilenameFromResponseHeaders(contentDisposition) || filename;
-
+    
                 return response.blob().then((blob) => {
                     const url = window.URL.createObjectURL(blob);
                     const link = document.createElement("a");
                     link.href = url;
-                    link.setAttribute("download", filename);
-                    link.innerHTML = filename;
+                    link.setAttribute("download", filename); // ใช้ตัวแปร filename ตามเดิม
+                    link.innerHTML = filename; // ใช้ตัวแปร filename ตามเดิม
                     document.body.appendChild(link);
                     link.click();
                 });
             })
             .catch((error) => console.log(error));
     }
+    
 
     function getFilenameFromResponseHeaders(contentDisposition: string | null) {
         if (contentDisposition === null) {
@@ -70,8 +94,43 @@ function ReportProblemdata() {
         }
         return null;
     }
+    const DeleteFileUpload = async (id: string | number | undefined) => {
+        const apiUrl = "http://localhost:8080";
+        const requestOptions = {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        };
+      
+        fetch(`${apiUrl}/fileUploads/${id}`, requestOptions)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(response.statusText);
+            }
+            return response.json();
+          })
+          .then((res) => {
+            if (res.data) {
+              setSuccess(true);
+              console.log("ลบสำเร็จ");
+              setErrorMessage("");
+            } else {
+              setErrorMessage(res.error);
+              setError(true);
+              console.log("ลบไม่สำเร็จ");
+            }
+            getFileUpload();
+          })
+          .catch((error) => {
+            console.error("เกิดข้อผิดพลาดในการลบ:", error);
+            // ดำเนินการอื่น ๆ ที่เกี่ยวข้องกับข้อผิดพลาด
+          });
+      };
     useEffect(() => {
         getReportProblem()
+        getFileUpload()
     }, []);
 
     const columns: GridColDef[] = [
@@ -115,6 +174,23 @@ function ReportProblemdata() {
                     <IconButton onClick={() => handleDownloadFile(params.row.ID, params.row.FileUpload.name)}>
                         <GetAppRoundedIcon style={{ color: 'green' }} />
                         <span style={{ fontSize: 'small', color: 'green' }}>{params.row.FileUpload.name}</span>
+                    </IconButton>
+                );
+            },
+        },
+
+        {
+            field: 'Delete',
+            headerName: 'ลบ',
+            sortable: false,
+            width: 150,
+            headerAlign: 'center',
+            align: 'left',
+            renderCell: (params: GridRenderCellParams<any>) => {
+                return (
+                    <IconButton onClick={() => DeleteFileUpload(params.row.ID)}>
+                        <DeleteIcon style={{ color: 'red' }} />
+                        <span style={{ fontSize: 'small', color: 'red' }}>{params.row.FileUpload.name}</span>
                     </IconButton>
                 );
             },
