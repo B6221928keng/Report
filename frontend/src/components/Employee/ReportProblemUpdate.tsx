@@ -220,7 +220,7 @@ export default function ReportProblemUpdate(props: any) {
             });
     };
 
-   const [fileSelected, setFileSelected] = React.useState(false);
+    const [fileSelected, setFileSelected] = React.useState(false);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
@@ -547,18 +547,24 @@ export default function ReportProblemUpdate(props: any) {
                     </Grid>
                 </Grid>
 
+
                 <div style={{ marginTop: '20px' }}>
                     <form onSubmit={handleSubmit}>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <input type="file" name="files" multiple onChange={handleFileChange} />
-                            <Button type="submit" variant="contained" color={fileSelected ? "secondary" : "primary"}>
-                                <span style={{ color: fileSelected ? 'yellow' : 'black' }}>UPLOAD</span>
-                                <span style={{ color: 'red' }}>*</span>
-                            </Button>
-                            {uploadMessage && (
-                                <div style={{ color: 'green', marginLeft: '20px' }}>{uploadMessage}</div>
-                            )}
-                        </div>
+                        <input type="file" name="files" multiple onChange={handleFileChange} />
+                        <Button type="submit" variant="contained" color={fileSelected ? "secondary" : "primary"}>
+                            <span style={{ color: fileSelected ? 'yellow' : 'black' }}>UPLOAD</span>
+                            <span style={{ color: 'red' }}>*</span>
+                        </Button>
+                        {files.length > 0 && (
+                            <div>
+                                <h4>Selected Files:</h4>
+                                <ul>
+                                    {files.map((file, index) => (
+                                        <li key={index}>{file.ID}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
                     </form>
                 </div>
 
@@ -616,13 +622,13 @@ export default function ReportProblemUpdate(props: any) {
 
                     </Stack>
                 </Grid>
-               
+
             </Paper>
             <p style={{ marginTop: '20px' }}>
-                    <span style={{ color: 'black' }}>หมายเหตุ</span>
-                    <span style={{ color: 'red' }}>*</span>
-                    <span style={{ color: 'black' }}> ต้องกรอกข้อมูลให้ครบทุกอย่างถึงจะกดบันทึกข้อมูลได้</span>
-                </p>
+                <span style={{ color: 'black' }}>หมายเหตุ</span>
+                <span style={{ color: 'red' }}>*</span>
+                <span style={{ color: 'black' }}> ต้องกรอกข้อมูลให้ครบทุกอย่างถึงจะกดบันทึกข้อมูลได้</span>
+            </p>
         </Container>
 
 

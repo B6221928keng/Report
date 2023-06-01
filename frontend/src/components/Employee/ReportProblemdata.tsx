@@ -68,18 +68,19 @@ function ReportProblemdata() {
                 const contentDisposition = response.headers.get('Content-Disposition');
                 const Filename = getFilenameFromResponseHeaders(contentDisposition) || filename;
     
-                return response.blob().then((blob) => {
-                    const url = window.URL.createObjectURL(blob);
+                // Check if the response contains an updated file
+                if (response.status === 200 && response.url) {
                     const link = document.createElement("a");
-                    link.href = url;
-                    link.setAttribute("download", filename); // ใช้ตัวแปร filename ตามเดิม
-                    link.innerHTML = filename; // ใช้ตัวแปร filename ตามเดิม
+                    link.href = response.url;
+                    link.setAttribute("download", Filename);
+                    link.innerHTML = Filename;
                     document.body.appendChild(link);
                     link.click();
-                });
+                }
             })
             .catch((error) => console.log(error));
     }
+    
     
 
     function getFilenameFromResponseHeaders(contentDisposition: string | null) {
@@ -164,14 +165,14 @@ function ReportProblemdata() {
 
         {
             field: 'Download',
-            headerName: 'ไฟล์',
+            headerName: 'ดาวน์โหลด',
             sortable: false,
             width: 150,
             headerAlign: 'center',
             align: 'left',
             renderCell: (params: GridRenderCellParams<any>) => {
                 return (
-                    <IconButton onClick={() => handleDownloadFile(params.row.ID, params.row.FileUpload.name)}>
+                    <IconButton onClick={() => handleDownloadFile(params.row.FileUploadID, params.row.FileUpload.name)}>
                         <GetAppRoundedIcon style={{ color: 'green' }} />
                         <span style={{ fontSize: 'small', color: 'green' }}>{params.row.FileUpload.name}</span>
                     </IconButton>
@@ -179,22 +180,22 @@ function ReportProblemdata() {
             },
         },
 
-        {
-            field: 'Delete',
-            headerName: 'ลบ',
-            sortable: false,
-            width: 150,
-            headerAlign: 'center',
-            align: 'left',
-            renderCell: (params: GridRenderCellParams<any>) => {
-                return (
-                    <IconButton onClick={() => DeleteFileUpload(params.row.ID)}>
-                        <DeleteIcon style={{ color: 'red' }} />
-                        <span style={{ fontSize: 'small', color: 'red' }}>{params.row.FileUpload.name}</span>
-                    </IconButton>
-                );
-            },
-        },
+        // {
+        //     field: 'Delete',
+        //     headerName: 'ลบ',
+        //     sortable: false,
+        //     width: 150,
+        //     headerAlign: 'center',
+        //     align: 'left',
+        //     renderCell: (params: GridRenderCellParams<any>) => {
+        //         return (
+        //             <IconButton onClick={() => DeleteFileUpload(params.row.ID)}>
+        //                 <DeleteIcon style={{ color: 'red' }} />
+        //                 <span style={{ fontSize: 'small', color: 'red' }}>{params.row.FileUpload.name}</span>
+        //             </IconButton>
+        //         );
+        //     },
+        // },
 
         {
             field: 'ReportProblemUpdate',

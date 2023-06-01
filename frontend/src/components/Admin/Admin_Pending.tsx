@@ -58,17 +58,17 @@ export default function Admin_Pending(props: any) {
                 Heading: reportProblem?.Heading,
                 Description: reportProblem?.Description,
                 NotificationDate: new Date(),
-                FileUploadID: reportProblem?.FileUploadID,
+                FileUploadID: reportProblem.FileUploadID,
             };
             console.log(data)
             console.log(params)
             console.log(Amail)
             let res = await UpdateReportproblem(data);
             setSuccess(true);
-            setTimeout(() => {
-                window.location.reload();
-            }, 800);
-            mail();
+            // setTimeout(() => {
+            //     window.location.reload();
+            // }, 800);
+            //mail();
         } catch (err) {
             setError(true);
             console.log(err);

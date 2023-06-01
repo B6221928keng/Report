@@ -28,21 +28,21 @@ function AdminReportComplete() {
                 "Content-Type": "application/json",
             },
         };
-
+    
         fetch(`${apiUrl}/downloadFile/${id}`, requestOptions)
             .then((response) => {
                 const contentDisposition = response.headers.get('Content-Disposition');
                 const Filename = getFilenameFromResponseHeaders(contentDisposition) || filename;
-
-                return response.blob().then((blob) => {
-                    const url = window.URL.createObjectURL(blob);
+    
+                // Check if the response contains an updated file
+                if (response.status === 200 && response.url) {
                     const link = document.createElement("a");
-                    link.href = url;
-                    link.setAttribute("download", filename);
-                    link.innerHTML = filename;
+                    link.href = response.url;
+                    link.setAttribute("download", Filename);
+                    link.innerHTML = Filename;
                     document.body.appendChild(link);
                     link.click();
-                });
+                }
             })
             .catch((error) => console.log(error));
     }
