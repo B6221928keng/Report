@@ -58,50 +58,7 @@ function ReportProblem() {
                 }
             });
     };
-    // function getUser() {
-    //     const UserID = localStorage.getItem("uid")
-    //     const apiUrl = `http://localhost:8080/users/${UserID}`;
-    //     const requestOptions = {
-    //         method: "GET",
-    //         headers: {
-    //             Authorization: `Bearer ${localStorage.getItem("token")}`,
-    //             "Content-Type": "application/json",
-    //         },
-    //     };
-    //     fetch(apiUrl, requestOptions)
-    //         .then((response) => response.json())
-    //         .then((res) => {
-    //             console.log("Combobox_User", res)
-    //             if (res.data) {
-    //                 setUser(res.data);
-    //             } else {
-    //                 console.log("else");
-    //             }
-    //         });
-    // }
-    // function getDepartment() {
-    //     const UserID = localStorage.getItem("uid")
-    //     const apiUrl = `http://localhost:8080/employeeUId/${UserID}`;
-    //     const requestOptions = {
-    //         method: "GET",
-    //         headers: {
-    //             Authorization: `Bearer ${localStorage.getItem("token")}`,
-    //             "Content-Type": "application/json",
-    //         },
-    //     };
-    //     fetch(apiUrl, requestOptions)
-    //         .then((response) => response.json())
-    //         .then((res) => {
-
-    //             console.log("Combobox_Department", res)
-    //             if (res.data) {
-    //                 console.log(res.data)
-    //                 setDepartment(res.data);
-    //             } else {
-    //                 console.log("else");
-    //             }
-    //         });
-    // }
+  
     function getEmployee() {
         const UserID = localStorage.getItem("uid")
         const apiUrl = `http://localhost:8080/employeeId/${UserID}`;

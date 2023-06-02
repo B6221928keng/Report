@@ -10,7 +10,10 @@ type ReportProblem struct {
 	gorm.Model
 	ID               uint   `gorm:"primaryKey"`
 	NotificationDate time.Time
-	lastID int
+	PendingDate time.Time//ค่าเวลาตรวจงาน
+    CompleteDate time.Time //ค่าเวลาทำงาน
+    EndDate  time.Time //ค่าเวลาเสร็จงาน
+	
 	Heading          string   `validate:"required"`
 	Description      string   
 	EmployeeID *uint
@@ -30,6 +33,9 @@ type ReportProblem1 struct {
 	gorm.Model
 	ID int
 	NotificationDate time.Time
+	PendingDate time.Time//ค่าเวลาตรวจงาน
+    CompleteDate time.Time //ค่าเวลาทำงาน
+    EndDate  time.Time //ค่าเวลาเสร็จงาน
 	Heading          string
 	Description      string
 
@@ -49,6 +55,9 @@ type ReportProblem2 struct {
 	gorm.Model
 	ID int
 	NotificationDate time.Time
+	PendingDate time.Time//ค่าเวลาตรวจงาน
+    CompleteDate time.Time //ค่าเวลาทำงาน
+    EndDate  time.Time //ค่าเวลาเสร็จงาน
 	Heading          string
 	Description      string
 
@@ -68,6 +77,9 @@ type ReportProblem3 struct {
 	gorm.Model
 	ID int
 	NotificationDate time.Time
+	PendingDate time.Time//ค่าเวลาตรวจงาน
+    CompleteDate time.Time //ค่าเวลาทำงาน
+    EndDate  time.Time //ค่าเวลาเสร็จงาน
 	Heading          string `valid:"required"`
 	Description      string
 

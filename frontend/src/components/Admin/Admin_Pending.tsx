@@ -62,7 +62,6 @@ export default function Admin_Pending(props: any) {
             };
             console.log(data)
             console.log(params)
-            console.log(Amail)
             let res = await UpdateReportproblem(data);
             setSuccess(true);
             // setTimeout(() => {

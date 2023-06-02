@@ -9,7 +9,9 @@ export interface ReportProblemInterface {
     Heading:         string,
 	Description:     string,
     NotificationDate: Date | null,
-    
+    PendingDate:  Date | null, //ค่าเวลาตรวจงาน
+    CompleteDate:  Date | null, //ค่าเวลาทำงาน
+    EndDate:  Date | null, //ค่าเวลาเสร็จงาน
     EmployeeID: number,
     Employee: UserInterface,
 
@@ -26,12 +28,15 @@ export interface ReportProblemInterface {
     FileUpload: FileUploadInterface,
 
 }
-export interface ReportProblem1Interface{
+export interface ReportProblem1Interface {
     id?: number;
     EmpEmail: string;
     AdminEmail: string;
     EmployeeName?: number;
-	NotificationDate?:    Date | null;
+    NotificationDate?: Date | null;
+    PendingDate:  Date | null, //ค่าเวลาตรวจงาน
+    CompleteDate:  Date | null, //ค่าเวลาทำงาน
+    EndDate:  Date | null, //ค่าเวลาเสร็จงาน
     Heading?: string;
     Description?: string;
     Status?: string;
@@ -46,6 +51,9 @@ export interface ReportProblem2Interface{
     AdminEmail: string;
     EmployeeName?: number;
 	NotificationDate?:    Date | null;
+    PendingDate:  Date | null, //ค่าเวลาตรวจงาน
+    CompleteDate:  Date | null, //ค่าเวลาทำงาน
+    EndDate:  Date | null, //ค่าเวลาเสร็จงาน
     Heading?: string;
     Description?: string;
     Status?: string;
@@ -61,6 +69,9 @@ export interface ReportProblem3Interface{
     AdminEmail: string;
     EmployeeName?: number;
 	NotificationDate?:    Date | null;
+    PendingDate:  Date | null, //ค่าเวลาตรวจงาน
+    CompleteDate:  Date | null, //ค่าเวลาทำงาน
+    EndDate:  Date | null, //ค่าเวลาเสร็จงาน
     Heading?: string;
     Description?: string;
     

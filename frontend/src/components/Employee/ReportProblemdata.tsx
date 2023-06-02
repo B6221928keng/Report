@@ -17,6 +17,7 @@ function ReportProblemdata() {
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(false);
     const [ErrorMessage, setErrorMessage] = React.useState("");
+    const [notificationDate, setNotificationDate] = useState<Date | null>(null);
     const getReportProblem = async () => {
         const apiUrl = "http://localhost:8080/reportProblem";
         const requestOptions = {
@@ -81,8 +82,6 @@ function ReportProblemdata() {
             .catch((error) => console.log(error));
     }
     
-    
-
     function getFilenameFromResponseHeaders(contentDisposition: string | null) {
         if (contentDisposition === null) {
             return null;
@@ -95,6 +94,7 @@ function ReportProblemdata() {
         }
         return null;
     }
+
     const DeleteFileUpload = async (id: string | number | undefined) => {
         const apiUrl = "http://localhost:8080";
         const requestOptions = {
@@ -129,9 +129,11 @@ function ReportProblemdata() {
             // ดำเนินการอื่น ๆ ที่เกี่ยวข้องกับข้อผิดพลาด
           });
       };
+      const [currentTime, setCurrentTime] = useState<Date | null>(null);
     useEffect(() => {
         getReportProblem()
         getFileUpload()
+        setCurrentTime(new Date());
     }, []);
 
     const columns: GridColDef[] = [

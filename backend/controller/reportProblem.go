@@ -302,12 +302,12 @@ func UpdateReportProblem(c *gin.Context) {
     }
 
     if reportProblem.FileUploadID != nil {
-        fileUploadID := *reportProblem.FileUploadID
-        if tx := entity.DB().Where("id = ?", fileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
-            c.JSON(http.StatusBadRequest, gin.H{"error": "ไม่พบไฟล์"})
-            return
-        }
-        reportProblem.FileUpload = fileUpload
+		fileUploadID := *reportProblem.FileUploadID
+		if tx := entity.DB().Where("id = ?", fileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "ไม่พบไฟล์"})
+			return
+		}
+		reportProblem.FileUpload = fileUpload
 
         // Update the FileUploadID in the reportProblem entity
         reportProblem.FileUploadID = &fileUpload.ID
@@ -319,24 +319,26 @@ func UpdateReportProblem(c *gin.Context) {
         }
     }
 
-    update := entity.ReportProblem{
-        NotificationDate: reportProblem.NotificationDate,
-        Employee:         employee,
-        Department:       reportProblem.Department,
-        Status:           reportProblem.Status,
-        Heading:          reportProblem.Heading,
-        Description:      reportProblem.Description,
-        FileUpload:       reportProblem.FileUpload,
-		
-    }
+    if err := entity.DB().Model(&reportProblem).Updates(&entity.ReportProblem{
+		NotificationDate: reportProblem.NotificationDate,
+		Employee:         employee,
+		Department:       department,
+		Status:           status,
+		Heading:          reportProblem.Heading,
+		Description:      reportProblem.Description,
+		FileUpload:       fileUpload,
+	}).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
     // ขั้นตอนการ validate
-    if _, err := govalidator.ValidateStruct(update); err != nil {
+    if _, err := govalidator.ValidateStruct(reportProblem); err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
         return
     }
 
     // Update the report problem in the database
-    if err := entity.DB().Where("id = ?", reportProblem.ID).Updates(&update).Error; err != nil {
+    if err := entity.DB().Where("id = ?", reportProblem.ID).Updates(&reportProblem).Error; err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
         return
     }
@@ -347,7 +349,7 @@ func UpdateReportProblem(c *gin.Context) {
         return
     }
 
-    c.JSON(http.StatusOK, gin.H{"data": update, "fileUpload": fileUpload})
+    c.JSON(http.StatusOK, gin.H{"data": reportProblem, "fileUpload": fileUpload})
 }
 
 

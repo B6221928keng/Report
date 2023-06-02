@@ -22,35 +22,7 @@ export default function DrawerBar({ role, drawerWidth, handleDrawerClose, open, 
         justifyContent: 'flex-end',
     }));
     const Listitemlink = () => {
-        var menu: any[] = [];
-        // if (role === "employee") {
-        //     menu = [
-        //         { name: "กรอกข้อมูล", 
-        //         icon: <ReportIcon />, 
-        //         link: "/reportProblemCreate",
-        //     },
-                
-        //         { name: "ข้อมูล",     
-        //         icon: <FormatListNumberedIcon />,  
-        //         link: "/reportProblem"},
-
-        //     ]
-        // } else if (role === "admin") {
-        //     menu = [
-                
-        //         { name: "ข้อมูลรอตรวจสอบ", 
-        //         icon: <ErrorOutlineIcon />, 
-        //         link: "/adminReportProblem"
-        //     },
-
-        //         { name: "ทำการแก้ไข",     
-        //         icon: <ChecklistIcon />, 
-        //         link: "/adminReportComplete/:id"},
-
-        //     ]
-        // } 
-
-        
+        var menu: any[] = [];  
         const menuemployee = [
             { name: " กรอกข้อมูล", icon: <ReportIcon />, path: "/reportProblemCreate" },
             // { name: " ข้อมูล", icon: <FormatListNumberedIcon />, path: "/reportProblem" },
@@ -63,7 +35,7 @@ export default function DrawerBar({ role, drawerWidth, handleDrawerClose, open, 
             { name: " เสร็จสิ้น", icon: < CheckCircleOutlineIcon  />, path: "/adminReportEnd/:id" },
             // { name: " ทดลอง", icon: < CheckCircleOutlineIcon  />, path: "/adminReportProblem" },
           ]
-        
+
           var menu: any[];
           switch (role) {
             case "employee":
