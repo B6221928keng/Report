@@ -154,17 +154,7 @@ function ProblemShow() {
                                 รายการแจ้งปัญหาSoftware
                             </Typography>
                         </Box>
-                        {/* <Box>
-                        <Button
-                            component={RouterLink}
-                            to="/history"
-                            variant="contained"
-                            color="primary"
-                            sx={{ borderRadius: 20, '&:hover': { color: '#065D95', backgroundColor: '#e3f2fd' } }}
-                        >
-                            ประวัติอนุมัติ
-                        </Button>
-                    </Box> */}
+                     
                     </Box>
 
                     <Box sx={{ borderRadius: 20 }}>
