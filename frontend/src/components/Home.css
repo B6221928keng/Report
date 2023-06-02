@@ -12,8 +12,18 @@
   .custom-table th {
     background-color: #96b2fe; /* กำหนดสีพื้นหลังส่วนหัวตาราง */
   }
+  .custom-table1 th {
+    background-color: #f7a9b6; /* กำหนดสีพื้นหลังส่วนหัวตาราง */
+  
+  }
   .custom-table .table-divider {
     border-bottom: 1px solid #0c0b0b; /* สีเส้นคั้นแถว */
+    border-radius: "20px" 
+  }
+
+  .Thasadith{
+    font-family: 'Trirong', serif;
+    font-size: 45px;
   }
 
   

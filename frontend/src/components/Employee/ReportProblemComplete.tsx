@@ -150,7 +150,7 @@ function ReportProblemComplete() {
                                 sx={{ fontWeight: 'bold' }}
                                 gutterBottom
                             >
-                                รายการแจ้งปัญหาSoftware
+                                รายการตรวจสอบการใช้งานSoftware
                             </Typography>
                         </Box>
                         {/* <Box>

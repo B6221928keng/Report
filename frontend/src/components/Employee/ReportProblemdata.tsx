@@ -17,7 +17,6 @@ function ReportProblemdata() {
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(false);
     const [ErrorMessage, setErrorMessage] = React.useState("");
-    const [notificationDate, setNotificationDate] = useState<Date | null>(null);
     const getReportProblem = async () => {
         const apiUrl = "http://localhost:8080/reportProblem";
         const requestOptions = {
@@ -205,7 +204,7 @@ function ReportProblemdata() {
             sortable: false,
             width: 110,
             headerAlign: 'center',
-            align: 'left',
+            align: 'center',
             renderCell: (params: GridRenderCellParams<any>) => {
                 return (
                     <Button
@@ -227,7 +226,7 @@ function ReportProblemdata() {
             type: "string",
             width: 110,
             headerAlign: 'center',
-            align: 'left',
+            align: 'center',
             renderCell: (params: GridRenderCellParams<any>) => {
                 return (
                     <IconButton >

@@ -126,7 +126,7 @@ export default function Navbar({ open, onClick }: any) {
                             textAlign: 'right',
                             backgroundColor: "#f1c232",
                             color: 'white',
-                            padding: '5px 10px',
+                            padding: '5px 20px',
                             border: '0.5px solid white',
                             borderRadius: '20px',
                             display: 'inline-block'
