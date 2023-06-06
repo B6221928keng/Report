@@ -1,10 +1,13 @@
-import { Alert, Box, Typography, Button, Snackbar, TextField } from "@mui/material";
+import { Alert, Box, Typography, Button, Snackbar, TextField, Link, Grid } from "@mui/material";
 import { useState } from "react";
 import './signin.css';
+import { Link as RouterLink } from 'react-router-dom';
 import { SigninInterface } from "../models/ISignin";
 import frame from './image/frame.svg';
 import img from './image/logo.jpg';
 import background from './image/background.jpg';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import CraeteAdmin from "./CraeteAdmin";
 // import logo from './../image/logo.png'
 export default function Signin() {
     const [success, setSuccess] = useState<boolean>(false);
@@ -84,7 +87,7 @@ export default function Signin() {
                     </div>
                     <div className="form-page">
                         <div className="from-frame">
-                            <div style={{ fontSize: "23px", fontWeight: "bold", color: "#999999", paddingTop: "0px", fontFamily: "Rahong Regular" }}>
+                            <div style={{ fontSize: "23px", fontWeight: "bold", color: "#0b0d94", paddingTop: "0px", fontFamily: "Rahong Regular" }}>
                                 ระบบแจ้งปัญหาการใช้งานSoftware
                             </div>
                             <form noValidate className="form-in">
@@ -133,6 +136,12 @@ export default function Signin() {
                                 >
                                     Sign In
                                 </Button>
+
+                                <Grid item style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                    <Link href="/craeteAdmin" variant="body2">
+                                        {"Don't have an account? Sign Up"}
+                                    </Link>
+                                </Grid>
                             </form>
                         </div>
                     </div>

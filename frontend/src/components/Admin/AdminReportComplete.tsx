@@ -94,7 +94,7 @@ function AdminReportComplete() {
                 return <>{params.row.Status.StatusName}</>;
             },
         },
-        { field: "NotificationDate", headerName: "เวลา", type: "date", width: 100, headerAlign: "center", align: "center", valueFormatter: (params) => moment(params?.value).format("HH:mm") },
+        { field: "PendingDate", headerName: "เวลา", type: "date", width: 100, headerAlign: "center", align: "center", valueFormatter: (params) => moment(params?.value).format("HH:mm") },
 
         {
             field: 'Download',

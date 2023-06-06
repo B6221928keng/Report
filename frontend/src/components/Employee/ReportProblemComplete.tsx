@@ -12,6 +12,7 @@ import Report_End from "./Report_End";
 
 function ReportProblemComplete() {
     const [reportlistRcom, setReportlist] = useState<ReportProblem2Interface[]>([])
+    const [isReportEndClicked, setIsReportEndClicked] = useState(false); // เพิ่มตัวแปร state
     const getreportListReportComplete = async () => {
         let res = await ListAdminReportProblem3();
         if (res.data) {
@@ -59,10 +60,12 @@ function ReportProblemComplete() {
         }
         return null;
     }
+    
     useEffect(() => {
         getreportListReportComplete()
+   
     }, []);
-
+ 
     const columns: GridColDef[] = [
         {
             field: "id", headerName: "ID", type: "number", width: 120, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
@@ -94,7 +97,7 @@ function ReportProblemComplete() {
                 return <>{params.row.Status.StatusName}</>;
             },
         },
-        { field: "NotificationDate", headerName: "เวลา", type: "date", width: 100, headerAlign: "center", align: "center", valueFormatter: (params) => moment(params?.value).format("HH:mm") },
+        { field: "CompleteDate", headerName: "เวลา", type: "date", width: 100, headerAlign: "center", align: "center", valueFormatter: (params) => moment(params?.value).format("HH:mm") },
 
         {
             field: 'Download',
@@ -119,7 +122,6 @@ function ReportProblemComplete() {
             headerAlign: "center",
             width: 120,
             renderCell: (params: GridRenderCellParams<any>) => {
-                <EditIcon />
                 return <Report_End params={params.row.ID} />;
             },
             sortable: false,

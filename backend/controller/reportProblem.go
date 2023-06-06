@@ -320,13 +320,16 @@ func UpdateReportProblem(c *gin.Context) {
     }
 
     if err := entity.DB().Model(&reportProblem).Updates(&entity.ReportProblem{
-		NotificationDate: reportProblem.NotificationDate,
 		Employee:         employee,
 		Department:       department,
 		Status:           status,
 		Heading:          reportProblem.Heading,
 		Description:      reportProblem.Description,
 		FileUpload:       fileUpload,
+		NotificationDate: reportProblem.NotificationDate,
+		PendingDate: reportProblem.PendingDate,
+		CompleteDate: reportProblem.CompleteDate,
+		EndDate: reportProblem.EndDate,
 	}).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

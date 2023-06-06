@@ -37,7 +37,7 @@ export default function Report_End(props: any) {
     };
 
     const [reportProblem, setReportProblem] = React.useState<Partial<ReportProblemInterface>>({
-        NotificationDate: new Date(),
+        EndDate: new Date(),
     });
     const getreportProblemByID = async (id: any) => {
         let res = await GetReportproblemByID(id);
@@ -56,7 +56,7 @@ export default function Report_End(props: any) {
                 DepartmentID: reportProblem?.DepartmentID,
                 Heading: reportProblem?.Heading,
                 Description: reportProblem?.Description,
-                NotificationDate: new Date(),
+                EndDate: new Date(),
                 FileUploadID: reportProblem?.FileUploadID,
             };
             console.log(data)

@@ -10,9 +10,12 @@ import moment from 'moment';
 import GetAppRoundedIcon from '@mui/icons-material/GetAppRounded';
 import Report_End from "../Employee/Report_End";
 import * as ExcelJS from 'exceljs';
+import { EmployeeInterface } from "../../models/IEmployee";
 function AdminReportEnd() {
     const [reportlistRcom, setReportlist] = useState<ReportProblem3Interface[]>([])
     const [filterDate, setFilterDate] = useState("");
+    const [empName, setEmpName] = useState("");
+    const [emp, setEmp] = React.useState<EmployeeInterface>();
     const handleFilterDateChange = (event: any) => {
         const selectedDate = event.target.value;
         const formattedDate = moment(selectedDate).format('YYYY-MM');
@@ -26,6 +29,28 @@ function AdminReportEnd() {
             console.log(res.data)
         }
     };
+    function getEmployee() {
+        const UserID = localStorage.getItem("uid")
+        const apiUrl = `http://localhost:8080/employeeId/${UserID}`;
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+        };
+        fetch(apiUrl, requestOptions)
+    .then((response) => response.json())
+    .then((res) => {
+        console.log("Combobox_employee", res);
+        if (res.data) {
+            setEmp(res.data);
+            setEmpName(res.data.EmployeeName); // เพิ่มบรรทัดนี้
+        } else {
+            console.log("else");
+        }
+    });
+}
     const apiUrl = "http://localhost:8080";
     function handleDownloadFile(id: number, filename: string) {
         const requestOptions = {
@@ -35,12 +60,12 @@ function AdminReportEnd() {
                 "Content-Type": "application/json",
             },
         };
-    
+
         fetch(`${apiUrl}/downloadFile/${id}`, requestOptions)
             .then((response) => {
                 const contentDisposition = response.headers.get('Content-Disposition');
                 const Filename = getFilenameFromResponseHeaders(contentDisposition) || filename;
-    
+
                 // Check if the response contains an updated file
                 if (response.status === 200 && response.url) {
                     const link = document.createElement("a");
@@ -68,6 +93,7 @@ function AdminReportEnd() {
     }
     useEffect(() => {
         getreportListAdminEnd()
+        getEmployee()
     }, []);
 
     async function handleExportExcel() {
@@ -83,13 +109,17 @@ function AdminReportEnd() {
             { header: 'หัวข้อ', key: 'heading', width: 20 },
             { header: 'รายละเอียด', key: 'description', width: 20 },
             { header: 'สถานะ', key: 'Status', width: 20 },
-            { header: 'เวลา', key: 'NotificationDate', width: 15 },
-            { header: 'ไฟล์', key: 'FileUpload', width: 20 }
+            { header: 'ไฟล์', key: 'FileUpload', width: 25 },
+            { header: 'เวลาที่แจ้งปัญหา', key: 'NotificationDate', width: 20 },
+            { header: 'เวลารับแจ้งปัญหา', key: 'PendingDate', width: 20 },
+            { header: 'เวลาแก้ไขเสร็จ', key: 'CompleteDate', width: 20 },
+            { header: 'เสร็จสิ้นการทำงาน', key: 'EndDate', width: 20},
+            { header: 'ผู้แก้ไข', key: 'emp', width: 20 }
         ];
 
         // เพิ่มข้อมูลลงในตาราง
         reportlistRcom.forEach(row => {
-            const { ID, Employee, Department, Heading, Description, Status, NotificationDate, FileUpload } = row;
+            const { ID, Employee, Department, Heading, Description, Status, FileUpload, NotificationDate, PendingDate, CompleteDate, EndDate,  } = row;
             worksheet.addRow({
                 id: `${moment(NotificationDate).format('DDMMYY')}|${ID}`,
                 Employee: Employee.EmployeeName,
@@ -97,9 +127,12 @@ function AdminReportEnd() {
                 heading: Heading,
                 description: Description,
                 Status: Status?.StatusName,
-                NotificationDate: moment(NotificationDate).format("HH:mm"),
-                FileUpload: FileUpload?.name
-
+                FileUpload: FileUpload?.name,
+                NotificationDate: moment(NotificationDate).format("HH:mm | DD.MM.YY"),
+                PendingDate: moment(PendingDate).format("HH:mm | DD.MM.YY"),
+                CompleteDate: moment(CompleteDate).format("HH:mm | DD.MM.YY"),
+                EndDate: moment(EndDate).format("HH:mm | DD.MM.YY"),
+                emp: emp?.EmployeeName
             });
         });
 
@@ -150,7 +183,7 @@ function AdminReportEnd() {
                 return <>{params.row.Status.StatusName}</>;
             },
         },
-        { field: "NotificationDate", headerName: "เวลา", type: "date", width: 100, headerAlign: "center", align: "center", valueFormatter: (params) => moment(params?.value).format("HH:mm") },
+        { field: "EndDate", headerName: "เวลา", type: "date", width: 100, headerAlign: "center", align: "center", valueFormatter: (params) => moment(params?.value).format("HH:mm") },
 
         {
             field: 'Download',

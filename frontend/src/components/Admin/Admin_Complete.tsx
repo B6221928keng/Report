@@ -36,7 +36,9 @@ export default function Admin_Complete(props: any) {
         setError(false)
     };
 
-    const [reportProblem, setReportProblem] = useState<ReportProblemInterface>();
+    const [reportProblem, setReportProblem] = React.useState<Partial<ReportProblemInterface>>({
+        CompleteDate: new Date(),
+    });
     const getreportProblemByID = async (id: any) => {
         let res = await GetReportproblemByID(id);
         if (res) {
@@ -54,7 +56,7 @@ export default function Admin_Complete(props: any) {
                 DepartmentID: reportProblem?.DepartmentID,
                 Heading: reportProblem?.Heading,
                 Description: reportProblem?.Description,
-                NotificationDate: new Date(),
+                CompleteDate: new Date(),
                 FileUploadID: reportProblem?.FileUploadID,
 
             };

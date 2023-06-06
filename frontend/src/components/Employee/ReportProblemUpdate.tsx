@@ -547,8 +547,21 @@ export default function ReportProblemUpdate(props: any) {
                     </Grid>
                 </Grid>
 
-
                 <div style={{ marginTop: '20px' }}>
+                    <form onSubmit={handleSubmit}>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <input type="file" name="files" multiple onChange={handleFileChange} />
+                            <Button type="submit" variant="contained" color={fileSelected ? "secondary" : "primary"}>
+                                <span style={{ color: fileSelected ? 'yellow' : 'black' }}>UPLOAD</span>
+                                <span style={{ color: 'red' }}>*</span>
+                            </Button>
+                            {uploadMessage && (
+                                <div style={{ color: 'green', marginLeft: '20px' }}>{uploadMessage}</div>
+                            )}
+                        </div>
+                    </form>
+                </div>
+                {/* <div style={{ marginTop: '20px' }}>
                     <form onSubmit={handleSubmit}>
                         <input type="file" name="files" multiple onChange={handleFileChange} />
                         <Button type="submit" variant="contained" color={fileSelected ? "secondary" : "primary"}>
@@ -566,7 +579,7 @@ export default function ReportProblemUpdate(props: any) {
                             </div>
                         )}
                     </form>
-                </div>
+                </div> */}
 
 
 
@@ -616,6 +629,8 @@ export default function ReportProblemUpdate(props: any) {
                                 (!fileSelected || (fileSelected && files.length === 0)) ||
                                 !uploaded // เพิ่มเงื่อนไขที่ต้องการ
                             }
+                            component={RouterLink}
+                            to="/reportProblemData"
                         >
                             บันทึกข้อมูล
                         </Button>

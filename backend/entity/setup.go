@@ -99,8 +99,6 @@ func SetupDatabase() {
 		return
 	}
 
-	
-
 	userEmployee := User{
 		UserName:   "B111",
 		Password:   string(password1),

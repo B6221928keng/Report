@@ -22,6 +22,7 @@ import AdminReportEnd from './components/Admin/AdminReportEnd';
 import ProblemShow from './components/Admin/AdminReportPm';
 import Admin_Complete from './components/Admin/Admin_Complete';
 import ReportProblemdata from './components/Employee/ReportProblemdata';
+import CraeteAdmin from './components/CraeteAdmin';
 
 const drawerWidth = 240;
 
@@ -132,33 +133,36 @@ function App() {
 
             <Main open={open}>
               <DrawerHeader />
-              <Routes>{role === "employee" && (
-                <>
 
-                  {/* <Route path="/" element={<Emp  />} />
-                  <Route path="/form" element={<Form  />} /> */}
-                  <Route path="/" element={<Home />} />
-                  <Route path="/ReportProblemUpdate/:id" element={<ReportProblemUpdate />} />
-                  <Route path="/reportProblemCreate" element={<ReportProblemCreate />} />
-                  <Route path="/reportProblem" element={<ReportProblem />} />
-                  <Route path="/reportProblemComplete" element={<ReportProblemComplete />} />
-                  <Route path="/reportProblemdata" element={<ReportProblemdata />} />
-                </>
-
-              )}
-                {role === "admin" && (
+              <Routes>
+                {role === "employee" && (
                   <>
 
+                    {/* <Route path="/" element={<Emp  />} />
+                  <Route path="/form" element={<Form  />} /> */}
+                    <Route path="/" element={<Home />} />
+                    <Route path="/ReportProblemUpdate/:id" element={<ReportProblemUpdate />} />
+                    <Route path="/reportProblemCreate" element={<ReportProblemCreate />} />
+                    <Route path="/reportProblem" element={<ReportProblem />} />
+                    <Route path="/reportProblemComplete" element={<ReportProblemComplete />} />
+                    <Route path="/reportProblemdata" element={<ReportProblemdata />} />
+
+                  </>
+
+                )}
+                {role === "admin" && (
+                  <>
                     <Route path="/" element={<Home />} />
                     <Route path="/adminReportProblem" element={<AdminReportProblem />} />
                     <Route path="/adminReportPending/:id" element={<Admin_Pending />} />
                     <Route path="/adminReportComplete:id" element={<Admin_Complete />} />
                     <Route path="/adminReportComplete/:id" element={<AdminReportComplete />} />
-                    <Route path="/adminReportProblems"  element={<ProblemShow /> } />     
+                    <Route path="/adminReportProblems" element={<ProblemShow />} />
                     <Route path="/adminReportEnd/:id" element={<AdminReportEnd />} />
 
                   </>
                 )}
+                <Route path="/craeteAdmin" element={<CraeteAdmin />} />
               </Routes>
             </Main>
 
