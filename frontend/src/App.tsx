@@ -22,7 +22,7 @@ import AdminReportEnd from './components/Admin/AdminReportEnd';
 import ProblemShow from './components/Admin/AdminReportPm';
 import Admin_Complete from './components/Admin/Admin_Complete';
 import ReportProblemdata from './components/Employee/ReportProblemdata';
-import CraeteAdmin from './components/CraeteAdmin';
+import CreateAdmin from './components/CreateAdmin';
 
 const drawerWidth = 240;
 
@@ -162,7 +162,8 @@ function App() {
 
                   </>
                 )}
-                <Route path="/craeteAdmin" element={<CraeteAdmin />} />
+                <Route path="/createAdmin" element={<CreateAdmin />} />
+                
               </Routes>
             </Main>
 

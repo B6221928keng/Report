@@ -2,7 +2,7 @@ import { SetStateAction, useState } from "react";
 import { Box, Button, TextField, Snackbar, Typography } from "@mui/material";
 import axios from "axios";
 
-export default function CraeteAdmin() {
+export default function CreateAdmin() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [employeeName, setEmployeeName] = useState("");

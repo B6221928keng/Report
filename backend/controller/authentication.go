@@ -168,16 +168,6 @@ func SendEmailEmp(c *gin.Context) {
 		return
 	}
 
-	// Get report problem ID from the request
-	// reportProblemID := c.Param("id")
-
-	// Get report problem details
-	// reportProblem, err := GetReportProblemByID(reportProblemID)
-	// if err != nil {
-	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	// 	return
-	// }
-
 	// SMTP server information
 	smtpHost := "smtp.gmail.com"
 	smtpPort := "465"

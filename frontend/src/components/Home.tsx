@@ -115,7 +115,7 @@ function Home() {
             padding: 1,
             borderRadius: 0,
           }}>
-          <Table className="custom-table" align="center" style={{ width: "70%", height: "90px" }}> {/* เพิ่มคลาส CSS */}
+          <Table className="custom-table" align="center"  style={{ boxShadow: "10px 10px 10px rgba(10, 10, 10, 0.15)", borderRadius: "20px", backgroundColor: "#f4f4f4", width: "90%", height: "90px" }}> {/* เพิ่มคลาส CSS */}
             <TableHead>
               <TableRow className="table-divider">
                 <TableCell align="center" width="15">ID</TableCell>
@@ -146,7 +146,7 @@ function Home() {
       )}
       {localStorage.getItem("role") === "admin" && (
         <TableContainer component={Paper}>
-          <Table className="custom-table1" align="center" style={{ boxShadow: "10px 10px 10px rgba(10, 5, 10, 0.15)", borderRadius: "20px", backgroundColor: "#f4f4f4", width: "70%", height: "90px" }}>
+          <Table className="custom-table1" align="center" style={{ boxShadow: "10px 10px 10px rgba(10, 5, 10, 0.15)", borderRadius: "20px", backgroundColor: "#f4f4f4", width: "90%", height: "90px" }}>
             <TableHead style={{ borderRadius: "20px" }}>
               <TableRow className="table-divider">
                 <TableCell align="center" width="15">ID</TableCell>

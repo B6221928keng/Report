@@ -110,10 +110,10 @@ function AdminReportEnd() {
             { header: 'รายละเอียด', key: 'description', width: 20 },
             { header: 'สถานะ', key: 'Status', width: 20 },
             { header: 'ไฟล์', key: 'FileUpload', width: 25 },
-            { header: 'เวลาที่แจ้งปัญหา', key: 'NotificationDate', width: 20 },
-            { header: 'เวลารับแจ้งปัญหา', key: 'PendingDate', width: 20 },
-            { header: 'เวลาแก้ไขเสร็จ', key: 'CompleteDate', width: 20 },
-            { header: 'เสร็จสิ้นการทำงาน', key: 'EndDate', width: 20},
+            { header: 'แจ้งปัญหา', key: 'NotificationDate', width: 20 },
+            { header: 'รับแก้ไข', key: 'PendingDate', width: 20 },
+            { header: 'แก้ไขเสร็จ', key: 'CompleteDate', width: 20 },
+            { header: 'เสร็จสิ้น', key: 'EndDate', width: 20},
             { header: 'ผู้แก้ไข', key: 'emp', width: 20 }
         ];
 

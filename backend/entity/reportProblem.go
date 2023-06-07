@@ -106,7 +106,7 @@ type Status struct {
 
 type Department struct {
 	gorm.Model
-
+	
 	DepartmentName string `gorm:"uniqueIndex"`
 
 	reportProblem []ReportProblem `gorm:"foreignKey:DepartmentID"`

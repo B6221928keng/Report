@@ -7,7 +7,7 @@ import frame from './image/frame.svg';
 import img from './image/logo.jpg';
 import background from './image/background.jpg';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import CraeteAdmin from "./CraeteAdmin";
+import CreateAdmin from "./CreateAdmin";
 // import logo from './../image/logo.png'
 export default function Signin() {
     const [success, setSuccess] = useState<boolean>(false);
@@ -138,7 +138,7 @@ export default function Signin() {
                                 </Button>
 
                                 <Grid item style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                                    <Link href="/craeteAdmin" variant="body2">
+                                    <Link href="/createAdmin" variant="body2">
                                         {"Don't have an account? Sign Up"}
                                     </Link>
                                 </Grid>

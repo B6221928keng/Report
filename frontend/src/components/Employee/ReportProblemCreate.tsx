@@ -374,9 +374,9 @@ export default function ReportProblemCreate(props: any) {
                     setSuccess(true);
                     setSubmitted(true);
                     //mail();
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 400);
+                    // setTimeout(() => {
+                    //     window.location.reload();
+                    // }, 400);
                 } else {
                     setErrorMessage(res.error);
                     setError(true);
@@ -589,6 +589,8 @@ export default function ReportProblemCreate(props: any) {
                                 (!fileSelected || (fileSelected && files.length === 0)) ||
                                 !uploaded // เพิ่มเงื่อนไขที่ต้องการ
                             }
+                            component={RouterLink}
+                            to="/reportProblemData"
                         >
                             บันทึกข้อมูล
                         </Button>
