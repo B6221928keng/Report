@@ -8,6 +8,7 @@ import { ReportProblemInterface } from "../../models/IReportProblem";
 import React from "react";
 import moment from "moment";
 import axios from "axios";
+import { EmployeeInterface } from "../../models/IEmployee";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -16,11 +17,13 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 export default function Admin_Pending(props: any) {
-    const { params, Amail, Email } = props;
+    const { params, Amail, Email,EmployeeName,empName  } = props;
     const [open, setOpen] = useState(false);
     const [alertmessage, setAlertMessage] = useState("");
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(false);
+    const [emp, setEmp] = useState<EmployeeInterface>();
+    const [empName1, setEmpName] = useState("");
     const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === "clickaway") {
             return;
@@ -47,6 +50,29 @@ export default function Admin_Pending(props: any) {
             console.log(res)
         }
     }
+    function getEmployee() {
+        const UserID = localStorage.getItem("uid")
+        const apiUrl = `http://localhost:8080/employeeId/${UserID}`;
+        const requestOptions = {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        };
+        fetch(apiUrl, requestOptions)
+          .then((response) => response.json())
+          .then((res) => {
+            console.log("Combobox_employee", res);
+            if (res.data) {
+              setEmp(res.data);
+              setEmpName(res.data.EmployeeName); // เพิ่มบรรทัดนี้
+            } else {
+              console.log("else");
+            }
+          });
+      }
+      
     const navigator = useNavigate();
     async function approvereport() {
         try {
@@ -59,6 +85,8 @@ export default function Admin_Pending(props: any) {
                 Description: reportProblem?.Description,
                 PendingDate: new Date(),
                 FileUploadID: reportProblem.FileUploadID,
+                EmployeeName: emp?.EmployeeName,
+                AdminID: emp?.ID
             };
             console.log(data)
             console.log(params)
@@ -83,6 +111,7 @@ export default function Admin_Pending(props: any) {
                 Heading: reportProblem?.Heading,
                 Description: reportProblem?.Description,
                 NotificationDate: reportProblem?.NotificationDate
+
             };
             console.log(data)
             let res = await UpdateReportproblem(data);
@@ -100,6 +129,7 @@ export default function Admin_Pending(props: any) {
     //yrrpalwosqsnmxvg
     useEffect(() => {
         getreportProblemByID(params);
+        getEmployee(); 
     }, []);
     async function mail() {
         let data = {

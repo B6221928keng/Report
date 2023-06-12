@@ -9,6 +9,7 @@ import moment from 'moment';
 import GetAppRoundedIcon from '@mui/icons-material/GetAppRounded';
 import EditIcon from '@mui/icons-material/Edit';
 import './color.css';
+import CheckIcon from '@mui/icons-material/Check';
 import { FileUploadInterface } from "../../models/IFileUpload";
 import DeleteIcon from '@mui/icons-material/Delete';
 function ReportProblemdata() {
@@ -62,12 +63,12 @@ function ReportProblemdata() {
                 "Content-Type": "application/json",
             },
         };
-    
+
         fetch(`${apiUrl}/downloadFile/${id}`, requestOptions)
             .then((response) => {
                 const contentDisposition = response.headers.get('Content-Disposition');
                 const Filename = getFilenameFromResponseHeaders(contentDisposition) || filename;
-    
+
                 // Check if the response contains an updated file
                 if (response.status === 200 && response.url) {
                     const link = document.createElement("a");
@@ -80,7 +81,7 @@ function ReportProblemdata() {
             })
             .catch((error) => console.log(error));
     }
-    
+
     function getFilenameFromResponseHeaders(contentDisposition: string | null) {
         if (contentDisposition === null) {
             return null;
@@ -97,38 +98,38 @@ function ReportProblemdata() {
     const DeleteFileUpload = async (id: string | number | undefined) => {
         const apiUrl = "http://localhost:8080";
         const requestOptions = {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
         };
-      
+
         fetch(`${apiUrl}/fileUploads/${id}`, requestOptions)
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(response.statusText);
-            }
-            return response.json();
-          })
-          .then((res) => {
-            if (res.data) {
-              setSuccess(true);
-              console.log("ลบสำเร็จ");
-              setErrorMessage("");
-            } else {
-              setErrorMessage(res.error);
-              setError(true);
-              console.log("ลบไม่สำเร็จ");
-            }
-            getFileUpload();
-          })
-          .catch((error) => {
-            console.error("เกิดข้อผิดพลาดในการลบ:", error);
-            // ดำเนินการอื่น ๆ ที่เกี่ยวข้องกับข้อผิดพลาด
-          });
-      };
-      const [currentTime, setCurrentTime] = useState<Date | null>(null);
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(response.statusText);
+                }
+                return response.json();
+            })
+            .then((res) => {
+                if (res.data) {
+                    setSuccess(true);
+                    console.log("ลบสำเร็จ");
+                    setErrorMessage("");
+                } else {
+                    setErrorMessage(res.error);
+                    setError(true);
+                    console.log("ลบไม่สำเร็จ");
+                }
+                getFileUpload();
+            })
+            .catch((error) => {
+                console.error("เกิดข้อผิดพลาดในการลบ:", error);
+                // ดำเนินการอื่น ๆ ที่เกี่ยวข้องกับข้อผิดพลาด
+            });
+    };
+    const [currentTime, setCurrentTime] = useState<Date | null>(null);
     useEffect(() => {
         getReportProblem()
         getFileUpload()
@@ -228,9 +229,27 @@ function ReportProblemdata() {
             headerAlign: 'center',
             align: 'center',
             renderCell: (params: GridRenderCellParams<any>) => {
+                let statusColor = '';
+                let statusIcon = null;
+
+                if (params.row.Status.StatusName === "Send request") {
+                    statusColor = 'red';
+                } else if (params.row.Status.StatusName === "Pending") {
+                    statusColor = 'orange';
+                } else if (params.row.Status.StatusName === "Complete") {
+                    statusColor = 'green';
+                } else if (params.row.Status.StatusName === "End") {
+                    statusColor = 'darkgreen';
+                    statusIcon = <CheckIcon style={{ fontSize: 'small' }} />;
+                }
+
+
                 return (
-                    <IconButton >
-                        <span style={{ fontSize: 'small', color: 'orange' }}>{params.row.Status.StatusName}</span>
+                    <IconButton>
+                        <span style={{ fontSize: 'small', color: statusColor }}>
+                            {params.row.Status.StatusName}
+                            {statusIcon}
+                        </span>
                     </IconButton>
                 );
             },

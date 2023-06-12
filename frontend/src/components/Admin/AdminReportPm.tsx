@@ -18,7 +18,7 @@ function ProblemShow() {
             console.log(res.data)
         }
     };
-   
+    const [empName, setEmpName] = useState("");
 
     const apiUrl = "http://localhost:8080";
     function handleDownloadFile(id: number, filename: string) {
@@ -29,12 +29,12 @@ function ProblemShow() {
                 "Content-Type": "application/json",
             },
         };
-    
+
         fetch(`${apiUrl}/downloadFile/${id}`, requestOptions)
             .then((response) => {
                 const contentDisposition = response.headers.get('Content-Disposition');
                 const Filename = getFilenameFromResponseHeaders(contentDisposition) || filename;
-    
+
                 // Check if the response contains an updated file
                 if (response.status === 200 && response.url) {
                     const link = document.createElement("a");
@@ -120,8 +120,13 @@ function ProblemShow() {
             headerAlign: "center",
             width: 100,
             renderCell: (params: GridRenderCellParams<any>) => {
-
-                return <Admin_Pending params={params.row.ID} />;
+                return (
+                    <Admin_Pending
+                        params={params.row.ID}
+                        EmployeeName={params.row.Employee.EmployeeName}
+                        empName={empName} // ส่งค่า empName เข้าไปใน props
+                    />
+                );
             },
             sortable: false,
             description: "Status",
@@ -154,7 +159,7 @@ function ProblemShow() {
                                 รายการแจ้งปัญหาSoftware
                             </Typography>
                         </Box>
-                     
+
                     </Box>
 
                     <Box sx={{ borderRadius: 20 }}>

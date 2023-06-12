@@ -114,7 +114,7 @@ function AdminReportEnd() {
             { header: 'รับแก้ไข', key: 'PendingDate', width: 20 },
             { header: 'แก้ไขเสร็จ', key: 'CompleteDate', width: 20 },
             { header: 'เสร็จสิ้น', key: 'EndDate', width: 20},
-            { header: 'ผู้แก้ไข', key: 'emp', width: 20 }
+            { header: 'IT', key: 'emp', width: 20 }
         ];
 
         // เพิ่มข้อมูลลงในตาราง
@@ -128,10 +128,10 @@ function AdminReportEnd() {
                 description: Description,
                 Status: Status?.StatusName,
                 FileUpload: FileUpload?.name,
-                NotificationDate: moment(NotificationDate).format("HH:mm | DD.MM.YY"),
-                PendingDate: moment(PendingDate).format("HH:mm | DD.MM.YY"),
-                CompleteDate: moment(CompleteDate).format("HH:mm | DD.MM.YY"),
-                EndDate: moment(EndDate).format("HH:mm | DD.MM.YY"),
+                NotificationDate: moment(NotificationDate).format("HH:mm | DD/MM/YY"),
+                PendingDate: moment(PendingDate).format("HH:mm | DD/MM/YY"),
+                CompleteDate: moment(CompleteDate).format("HH:mm | DD/MM/YY"),
+                EndDate: moment(EndDate).format("HH:mm | DD/MM/YY"),
                 emp: emp?.EmployeeName
             });
         });

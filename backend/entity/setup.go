@@ -114,7 +114,13 @@ func SetupDatabase() {
 		Department: Department5,
 	}
 	db.Model(&User{}).Create(&userAdmin)
-
+	userAdmin1 := User{
+		UserName:   "B333",
+		Password:   string(password2),
+		Role:       role2,
+		Department: Department5,
+	}
+	db.Model(&User{}).Create(&userAdmin1)
 	Employee1 := Employee{
 		EmployeeName: "Jirawat",
 		Email:        "jirawatkeng086@gmail.com",
@@ -125,14 +131,21 @@ func SetupDatabase() {
 	db.Model(&Employee{}).Create(&Employee1)
 
 	Admin := Employee{
-		EmployeeName: "จิรวัฒน์",
+		EmployeeName: "arthur",
 		Email:        "keng-085@hotmail.com",
 		User:         userAdmin,
 		Role:         role2,
 		Department:   Department5,
 	}
 	db.Model(&Employee{}).Create(&Admin)
-
+	Admin1 := Employee{
+		EmployeeName: "Thomas",
+		Email:        "kengjrw@gmail.com",
+		User:         userAdmin1,
+		Role:         role2,
+		Department:   Department5,
+	}
+	db.Model(&Employee{}).Create(&Admin1)
 	FileUpload1 := FileUpload{
 		Name:    "file1.txt",
 		Size:    1000,

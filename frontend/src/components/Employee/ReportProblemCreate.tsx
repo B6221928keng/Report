@@ -347,6 +347,7 @@ export default function ReportProblemCreate(props: any) {
             NotificationDate: ReportProblem.NotificationDate,
             DepartmentID: emp?.DepartmentID,
             FileUploadID: ReportProblem.FileUploadID,
+            AdminID: 0,
         };
 
         console.log(Email);
