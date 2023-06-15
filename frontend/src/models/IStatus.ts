@@ -1,5 +1,5 @@
 export interface StatusInterface {
 
-    ID: number,
+    StID: number,
     StatusName: string,
 }

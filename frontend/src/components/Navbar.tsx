@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { EmployeeInterface } from "../models/IEmployee";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import { createTheme, styled, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from "react-router-dom";
@@ -8,12 +7,12 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { Link as RouterLink } from "react-router-dom";
 import { IconButton, Toolbar, Typography, Button, Box, Badge } from "@mui/material";
-import { UserInterface } from "../models/IUser";
+import { User1Interface, UserInterface } from "../models/IUser";
 import { DepartmentInterface } from "../models/IDepartment";
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 const drawerWidth = 240;
 export default function Navbar({ open, onClick }: any) {
-    const [emp, setEmp] = React.useState<EmployeeInterface>();
+    const [emp, setEmp] = React.useState<User1Interface>();
     const [department, setDepartment] = React.useState<DepartmentInterface>();
     const [user, setUser] = React.useState<Partial<UserInterface>>({});
     interface AppBarProps extends MuiAppBarProps {
@@ -44,7 +43,7 @@ export default function Navbar({ open, onClick }: any) {
     //ดึงพนักงาน
     function getEmployee() {
         const UserID = localStorage.getItem("uid")
-        const apiUrl = `http://localhost:8080/employeeId/${UserID}`;
+        const apiUrl = `http://localhost:8080/users/${UserID}`;
         const requestOptions = {
             method: "GET",
             headers: {
@@ -65,33 +64,30 @@ export default function Navbar({ open, onClick }: any) {
             });
     }
     //ดึงข้อมูลแผนก
-    function getDepartment() {
-        const UserID = localStorage.getItem("uid")
-        const apiUrl = `http://localhost:8080/employeeUId/${UserID}`;
+    const apiUrl = "http://localhost:8080";
+    async function ListDepartments() {
         const requestOptions = {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
         };
-        fetch(apiUrl, requestOptions)
-            .then((response) => response.json())
-            .then((res) => {
-
-                console.log("Combobox_department", res)
-                if (res.data) {
-                    console.log(res.data)
-                    setDepartment(res.data);
-                } else {
-                    console.log("else");
-                }
-            });
-    }
+      
+        let res = await fetch(`${apiUrl}/departments`, requestOptions)
+          .then((response) => response.json())
+          .then((res) => {
+            if (res) {
+              return res;
+            } 
+          });
+      
+        return res;
+      }
 
     useEffect(() => {
         getEmployee()
-        getDepartment()
+        ListDepartments()
 
     }, [])
     return (
@@ -133,7 +129,7 @@ export default function Navbar({ open, onClick }: any) {
                         }}
                     >
                         <AccountCircleRoundedIcon style={{ verticalAlign: 'middle', marginRight: '5px', color: "DarkBlue" }} />
-                        User: {emp?.EmployeeName} | {localStorage.getItem('did')}
+                        User: {emp?.UserLname} | {emp?.DepName} 
                     </Typography>
 
 

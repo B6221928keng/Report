@@ -48,7 +48,7 @@ func main() {
 	r.GET("/reportProblemstatus2", controller.ListReportProblemStatusID2)
 	r.GET("/reportProblemstatus3", controller.ListReportProblemStatusID3)
 	r.GET("/reportProblemstatus4", controller.ListReportProblemStatusID4)
-	r.GET("/reportProblem/:id", controller.GetReportProblem)
+	r.GET("/reportProblem/:id", controller.GetReportProblem1)
 	r.GET("/adminReportProblem/:id", controller.ListAdminReportProblem)
 	r.PATCH("/reportProblem", controller.UpdateReportProblem)
 	r.DELETE("/reportProblems/:id", controller.DeleteReportProblem)
@@ -57,28 +57,23 @@ func main() {
 
 	//-----------------------------------ระบบ------------------------------------
 
-	//Employee
-	r.GET("/employeeId/:id", controller.GetEmployeeByUserID)
-	r.GET("/employees", controller.ListEmployee)
-	r.GET("/employeeID/:id", controller.GetEmployee)
-
-	//Admin
-	
 	//File
 	r.GET("/fileUploads", controller.ListFileUploads)
 	r.GET("/downloadFile/:id", controller.DownloadFile)
 	r.POST("/uploadfile", controller.UploadFile)
 	r.PATCH("/updateFile/:id", controller.UpdateUploadFile)
 	r.DELETE("/fileUploads/:id", controller.DeleteFileUpload)
-	//role
-	r.GET("/roles", controller.ListRole)
+
+	// r.GET("/employeeId/:id", controller.GetEmployeeByUserID)
+	// r.GET("/employees", controller.ListEmployee)
+	// r.GET("/employeeID/:id", controller.GetEmployee)
 
 	//Department
 	r.GET("/departments", controller.ListDepartment)
-	r.GET("/employeeUId/:id", controller.GetEmployeeByUserID)
+	r.GET("/department/:id", controller.GetDepartment)
 
 	// User
-	r.POST("/user", controller.CreateUser)
+	// r.POST("/user", controller.CreateUser)
 	r.GET("/users", controller.ListUser)
 	r.GET("/users/:id", controller.GetUser)
 	r.POST("/signin", controller.Signin)
@@ -98,39 +93,3 @@ func main() {
 
 	r.Run()
 }
-// func resetIDDaily() {
-// 	go func() {
-// 		for {
-// 			now := time.Now()
-// 			nextDay := now.Add(24 * time.Hour)
-// 			nextDay = time.Date(nextDay.Year(), nextDay.Month(), nextDay.Day(), 0, 0, 0, 0, nextDay.Location())
-
-// 			duration := nextDay.Sub(now)
-// 			time.Sleep(duration)
-
-// 			resetID()
-// 		}
-// 	}()
-// }
-// func resetID() {
-// 	db := entity.DB()
-// 	if err := db.Transaction(func(tx *gorm.DB) error {
-// 		// รีเซ็ตค่า ID ใหม่ทุกวัน
-// 		if err := tx.Exec("UPDATE report_problems SET id = 1").Error; err != nil {
-// 			return err
-// 		}
-
-// 		// อัพเดทค่าตัวเลขต่อไปของตาราง report_problems
-// 		if err := tx.Exec("SELECT setval('report_problems_id_seq', (SELECT MAX(id) FROM report_problems))").Error; err != nil {
-// 			return err
-// 		}
-
-// 		return nil
-// 	}); err != nil {
-// 		// การจัดการข้อผิดพลาดในการรีเซ็ตค่า ID
-// 		// คุณสามารถปรับเปลี่ยนการจัดการข้อผิดพลาดตามความเหมาะสม
-// 		// เช่น บันทึกลงไฟล์รายละเอียดข้อผิดพลาด แจ้งเตือนผู้ดูแลระบบ เป็นต้น
-// 		// ตัวอย่างนี้จะแสดงข้อผิดพลาดทางคอนโซลเท่านั้น
-// 		panic(err)
-// 	}
-// }

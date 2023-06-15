@@ -38,10 +38,10 @@ export default function DrawerBar({ role, drawerWidth, handleDrawerClose, open, 
 
           var menu: any[];
           switch (role) {
-            case "employee":
+            case "1":
               menu = menuemployee;
               break;
-              case "admin":
+              case "2":
               menu = menuadmin;
               break;
             

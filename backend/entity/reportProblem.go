@@ -1,172 +1,174 @@
 package entity
 
 import (
-	
 	"time"
-	"gorm.io/gorm"
 )
-
 type ReportProblem struct {
-	gorm.Model
+	ID               uint        `gorm:"primaryKey"`
+	NotificationDate *time.Time
+	PendingDate      *time.Time
+	CompleteDate     *time.Time
+	EndDate          *time.Time
+
+	Heading        string         `validate:"required"`
+	Description    string
+
+	AdminID        uint
+
+	UserSerial     uint           `gorm:"column:user_serial"`
+	UserAuthen     UserAuthen     `gorm:"foreignKey:UserSerial"`
+
+	StID           uint           `gorm:"column:StID"`
+	Status         Status         `gorm:"foreignKey:StID"`
+
+	DepID          uint           `gorm:"column:dep_id"`
+	Department     Department     `gorm:"foreignKey:DepID"`
+
+	FileUploadID   *uint          `gorm:"column:file_upload_id"`
+	FileUpload     FileUpload     `gorm:"foreignKey:FileUploadID"`
+}
+type ReportPr struct {
 	ID               uint   `gorm:"primaryKey"`
 	NotificationDate time.Time
-	PendingDate time.Time//ค่าเวลาตรวจงาน
-    CompleteDate time.Time //ค่าเวลาทำงาน
-    EndDate  time.Time //ค่าเวลาเสร็จงาน
-	
-	Heading          string   `validate:"required"`
-	Description      string   
-	EmployeeID *uint
-	Employee   Employee
+	PendingDate      time.Time
+	CompleteDate     time.Time
+	EndDate          time.Time
 
-	AdminID *uint
-	Admin	Employee
+	Heading     string `validate:"required"`
+	Description string
+	AdminID uint
 	
-	StatusID *uint
-	Status   Status `gorm:"references:id" valid:"-"`
+	UserSerial *uint `gorm:"column:userserial" valid:"-"`
+	UserName string
+	UserLname string
+	StID     *uint    `gorm:"column:st_id"`
+	StatusName string
+	DepID      *uint       `gorm:"column:dep_id"`
+	DepName string
+	FileUploadID *uint      `gorm:"column:file_upload_id"`
+	Name         string     `json:"name"`
+	Size         int64      `json:"size"`
+	Type         string     `json:"type"`
+	Content      []byte     `json:"content"`
 
-	DepartmentID *uint
-	Department   Department `gorm:"references:id" valid:"-"`
-	
-	FileUploadID   *uint `gorm:"column:file_upload_id"` // ตั้งค่าชื่อคอลัมน์เป็น file_upload_id
-	FileUpload     FileUpload `gorm:"foreignKey:FileUploadID" valid:"-"`
 }
 
 type ReportProblem1 struct {
-	gorm.Model
-	ID int
+	ID               uint   `gorm:"primaryKey"`
 	NotificationDate time.Time
-	PendingDate time.Time//ค่าเวลาตรวจงาน
-    CompleteDate time.Time //ค่าเวลาทำงาน
-    EndDate  time.Time //ค่าเวลาเสร็จงาน
-	Heading          string
-	Description      string
+	PendingDate      time.Time
+	CompleteDate     time.Time
+	EndDate          time.Time
 
-	EmployeeID *uint
-	Employee   Employee `gorm:"references:id" valid:"-"`
+	Heading     string `validate:"required"`
+	Description string
 
-	StatusID *uint
-	Status   Status `gorm:"references:id" valid:"-"`
+	AdminID uint
+	// Admin   User `gorm:"foreignKey:AdminID" valid:"-"`
 
-	DepartmentID *uint
-	Department   Department `gorm:"references:id" valid:"-"`
-	FileUploadID   *uint `gorm:"column:file_upload_id"` // ตั้งค่าชื่อคอลัมน์เป็น file_upload_id
-	FileUpload     FileUpload `gorm:"foreignKey:FileUploadID" valid:"-"`
+	UserSerial *uint `gorm:"column:userserial" valid:"-"`
+	User       User  `gorm:"foreignKey:UserSerial" valid:"-"`
+
+	StID     *uint    `gorm:"column:st_id"`
+	Status   Status   `gorm:"foreignKey:StID" valid:"-"`
+	
+	DepID      *uint       `gorm:"column:dep_id"`
+	Department Department  `gorm:"foreignKey:DepID" valid:"-"`
+	
+	FileUploadID *uint      `gorm:"column:file_upload_id"`
+	FileUpload   FileUpload `gorm:"foreignKey:FileUploadID" valid:"-"`
 
 }
 type ReportProblem2 struct {
-	gorm.Model
-	ID int
+	ID               uint   `gorm:"primaryKey"`
 	NotificationDate time.Time
-	PendingDate time.Time//ค่าเวลาตรวจงาน
-    CompleteDate time.Time //ค่าเวลาทำงาน
-    EndDate  time.Time //ค่าเวลาเสร็จงาน
-	Heading          string
-	Description      string
+	PendingDate      time.Time
+	CompleteDate     time.Time
+	EndDate          time.Time
 
-	EmployeeID *uint
-	Employee   Employee `gorm:"references:id" valid:"-"`
-
-	StatusID *uint
-	Status   Status `gorm:"references:id" valid:"-"`
-
-	DepartmentID *uint
-	Department   Department `gorm:"references:id" valid:"-"`
-
-	FileUploadID   *uint `gorm:"column:file_upload_id"` // ตั้งค่าชื่อคอลัมน์เป็น file_upload_id
-	FileUpload     FileUpload `gorm:"foreignKey:FileUploadID" valid:"-"`
+	Heading     string `validate:"required"`
+	Description string
+	AdminID uint
+	
+	UserSerial *uint `gorm:"column:userserial" valid:"-"`
+	UserName string
+	UserLname string
+	StID     *uint    `gorm:"column:st_id"`
+	StatusName string
+	DepID      *uint       `gorm:"column:dep_id"`
+	DepName string
+	FileUploadID *uint      `gorm:"column:file_upload_id"`
+	Name         string     `json:"name"`
+	Size         int64      `json:"size"`
+	Type         string     `json:"type"`
+	Content      []byte     `json:"content"`
 }
 type ReportProblem3 struct {
-	gorm.Model
-	ID int
+	ID               uint   `gorm:"primaryKey"`
 	NotificationDate time.Time
-	PendingDate time.Time//ค่าเวลาตรวจงาน
-    CompleteDate time.Time //ค่าเวลาทำงาน
-    EndDate  time.Time //ค่าเวลาเสร็จงาน
-	Heading          string `valid:"required"`
-	Description      string
+	PendingDate      time.Time
+	CompleteDate     time.Time
+	EndDate          time.Time
 
-	EmployeeID *uint
-	Employee   Employee `gorm:"references:id" valid:"-"`
-
-	StatusID *uint
-	Status   Status `gorm:"references:id" valid:"-"`
-
-	DepartmentID *uint
-	Department   Department `gorm:"references:id" valid:"-"`
-
-	FileUploadID   *uint `gorm:"column:file_upload_id"` // ตั้งค่าชื่อคอลัมน์เป็น file_upload_id
-	FileUpload     FileUpload `gorm:"foreignKey:FileUploadID" valid:"-"`
+	Heading     string `validate:"required"`
+	Description string
+	AdminID uint
+	
+	UserSerial *uint `gorm:"column:userserial" valid:"-"`
+	UserName string
+	UserLname string
+	StID     *uint    `gorm:"column:st_id"`
+	StatusName string
+	DepID      *uint       `gorm:"column:dep_id"`
+	DepName string
+	FileUploadID *uint      `gorm:"column:file_upload_id"`
+	Name         string     `json:"name"`
+	Size         int64      `json:"size"`
+	Type         string     `json:"type"`
+	Content      []byte     `json:"content"`
 
 }
 type Status struct {
-	gorm.Model
-
-	StatusName string `gorm:"uniqueIndex"`
-
-	reportProblem []ReportProblem `gorm:"foreignKey:StatusID"`
+	StID           uint            `gorm:"primaryKey" db:"st_id"`
+	StatusName     string          `gorm:"uniqueIndex" db:"status_name"`
+	ReportProblem  []ReportProblem `gorm:"foreignKey:StID"`
 }
 
-type Department struct {
-	gorm.Model
-	
-	DepartmentName string `gorm:"uniqueIndex"`
-
-	reportProblem []ReportProblem `gorm:"foreignKey:DepartmentID"`
-}
-
-type Employee struct {
-	gorm.Model
-
-	EmployeeName string `gorm:"uniqueIndex"`
-	Email        string
-
-	UserID *uint
-	User   User
-
-	RoleID *uint
-	Role   Role
-
-	DepartmentID *uint
-	Department   Department
-
-	reportProblem []ReportProblem `gorm:"foreignKey:EmployeeID"`
-}
 
 type FileUpload struct {
-	gorm.Model
-	Name     string `json:"name"`
-	Size     int64  `json:"size"`
-	Type     string `json:"type"`
-	Content  []byte `json:"content"`
-	Path     string `json:"path"`
+	FileUploadID uint       `gorm:"primaryKey" json:"file_upload_id"`
+	Name         string     `json:"name"`
+	Size         int64      `json:"size"`
+	Type         string     `json:"type"`
+	Content      []byte     `json:"content"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	reportProblem []ReportProblem `gorm:"foreignKey:FileUploadID"`
+	ReportProblem []ReportProblem `gorm:"foreignKey:FileUploadID"` 
 }
 
-//   func (rp *ReportProblem) BeforeCreate(tx *gorm.DB) (err error) {
-// 	// Get current date in UTC
-// 	now := time.Now().UTC()
-// 	// Get start of day in UTC
-// 	startOfDay := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC).UTC()
-// 	// Get end of day in UTC
-// 	endOfDay := time.Date(now.Year(), now.Month(), now.Day(), 23, 59, 59, 999999999, time.UTC).UTC()
+// type ReportProblem1 struct {
+// 	ID               uint   `gorm:"primaryKey"`
+// 	NotificationDate time.Time
+// 	PendingDate      time.Time
+// 	CompleteDate     time.Time
+// 	EndDate          time.Time
 
-// 	// Count the number of ReportProblems with IDs created between start and end of day
-// 	var count int64
-// 	if err := tx.Model(&ReportProblem{}).Where("created_at BETWEEN ? AND ?", startOfDay, endOfDay).Count(&count).Error; err != nil {
-// 		return err
-// 	}
+// 	Heading     string `validate:"required"`
+// 	Description string
 
-// 	// Set ID to count + 1
-// 	rp.ID = uint(count + 1)
-// 	return nil
+// 	AdminID uint
+// 	// Admin   User `gorm:"foreignKey:AdminID" valid:"-"`
+
+// 	UserSerial *uint `gorm:"column:userserial" valid:"-"`
+// 	User       User  `gorm:"foreignKey:UserSerial" valid:"-"`
+
+// 	StID     *uint    `gorm:"column:st_id"`
+// 	Status   Status   `gorm:"foreignKey:StID" valid:"-"`
+	
+// 	DepID      *uint       `gorm:"column:dep_id"`
+// 	Department Department  `gorm:"foreignKey:DepID" valid:"-"`
+	
+// 	FileUploadID *uint      `gorm:"column:file_upload_id"`
+// 	FileUpload   FileUpload `gorm:"foreignKey:FileUploadID" valid:"-"`
+
 // }
-
-// // Validate validates the fields of the ReportProblem struct
-// func (rp *ReportProblem) Validate() error {
-// 	_, err := govalidator.ValidateStruct(rp)
-// 	return err
-// }
-

@@ -25,7 +25,7 @@ func CreateStatus(c *gin.Context) {
 // List /Statuss
 func ListStatus(c *gin.Context) {
 	var statuss []entity.Status
-	if err := entity.DB().Raw("SELECT * FROM statuses").Find(&statuss).Error; err != nil {
+	if err := entity.DB().Raw("SELECT * FROM status").Find(&statuss).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -33,14 +33,14 @@ func ListStatus(c *gin.Context) {
 }
 
 // GET /status/:id
-func Getstatus(c *gin.Context) {
+func GetStatus(c *gin.Context) {
 	var status entity.Status
 	id := c.Param("id")
-	if err := entity.DB().Raw("SELECT * FROM statuses WHERE id = ?", id).Find(&status).Error; err != nil {
+	if err := entity.DB().Raw("SELECT * FROM status WHERE st_id = ?", id).Find(&status).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	if status.ID == 0 {
+	if status.StID == 0 {
 		c.JSON(http.StatusNotFound, gin.H{"error": "id not found"})
 		return
 	}

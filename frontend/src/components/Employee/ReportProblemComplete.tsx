@@ -73,13 +73,13 @@ function ReportProblemComplete() {
             },
         },
         {
-            field: "Employee", headerName: "ผู้รายงาน", type: "string", width: 105, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
-                return <>{params.row.Employee?.EmployeeName}</>
+            field: "", headerName: "ผู้รายงาน", type: "string", width: 105, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+                return <>{params.row.UserLname}</>
             },
         },
         {
             field: "Department", headerName: "แผนก", type: "string", width: 105, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
-                return <>{params.row.Department.DepartmentName}</>;
+                return <>{params.row.DepName}</>;
             },
         },
         {
@@ -94,13 +94,13 @@ function ReportProblemComplete() {
         },
         {
             field: "Status", headerName: "สถานะ", type: "string", width: 150, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
-                return <>{params.row.Status.StatusName}</>;
+                return <>{params.row.StatusName}</>;
             },
         },
         { field: "CompleteDate", headerName: "เวลา", type: "date", width: 100, headerAlign: "center", align: "center", valueFormatter: (params) => moment(params?.value).format("HH:mm") },
 
         {
-            field: 'Download',
+            field: 'Name',
             headerName: 'ไฟล์',
             sortable: false,
             width: 110,
@@ -108,9 +108,9 @@ function ReportProblemComplete() {
             align: 'left',
             renderCell: (params: GridRenderCellParams<any>) => {
                 return (
-                    <IconButton onClick={() => handleDownloadFile(params.row.ID, params.row.FileUpload.name)}>
+                    <IconButton onClick={() => handleDownloadFile(params.row.ID, params.row.name)}>
                         <GetAppRoundedIcon />
-                        <span style={{ fontSize: 'small' }}>{params.row.FileUpload.name}</span>
+                        <span style={{ fontSize: 'small' }}>{params.row.name}</span>
                     </IconButton>
                 );
             },

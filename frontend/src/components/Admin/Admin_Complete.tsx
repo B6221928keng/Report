@@ -51,9 +51,9 @@ export default function Admin_Complete(props: any) {
         try {
             let data = {
                 ID: params,
-                EmployeeID: reportProblem?.EmployeeID,
+                EmployeeID: reportProblem?.UserSerial,
                 StatusID: 3,
-                DepartmentID: reportProblem?.DepartmentID,
+                DepartmentID: reportProblem?.DepID,
                 Heading: reportProblem?.Heading,
                 Description: reportProblem?.Description,
                 CompleteDate: new Date(),
@@ -76,9 +76,9 @@ export default function Admin_Complete(props: any) {
         try {
             let data = {
                 ID: params,
-                EmployeeID: reportProblem?.EmployeeID,
+                EmployeeID: reportProblem?.UserSerial,
                 StatusID: 3,
-                DepartmentID: reportProblem?.DepartmentID,
+                DepartmentID: reportProblem?.DepID,
                 Heading: reportProblem?.Heading,
                 Description: reportProblem?.Description,
                 NotificationDate: reportProblem?.NotificationDate

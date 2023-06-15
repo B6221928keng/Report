@@ -43,12 +43,10 @@ export default function Signin() {
             .then((res) => {
                 if (res.data) {
                     setSuccess(true);
-                    localStorage.setItem("token", res.data.Token);
-                    localStorage.setItem("uid", res.data.user_id);
-                    localStorage.setItem("pid", res.data.p_id);
-                    localStorage.setItem("role", res.data.role_name);
-                    localStorage.setItem("did", res.data.department_name);
-                    localStorage.setItem("std", res.data.status_name);
+                    localStorage.setItem("token", res.data.token);
+                    localStorage.setItem("uid", res.data.user_serial);
+                    localStorage.setItem("did", res.data.dep_id);
+                    localStorage.setItem("role", res.data.role);
                     window.location.reload();
                 } else {
                     console.log("error");

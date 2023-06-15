@@ -8,44 +8,75 @@ import moment from 'moment';
 import GetAppRoundedIcon from '@mui/icons-material/GetAppRounded';
 import './Home.css'; // นำเข้าไฟล์ CSS
 import { ListAdminReportProblem4 } from '../service/Servics';
-import { EmployeeInterface } from '../models/IEmployee';
 import Admin_Pending from './Admin/Admin_Pending';
+import { UserInterface } from '../models/IUser';
 function Home() {
   const [reportListData, setReportListData] = useState<ReportProblemInterface[]>([]);
   const [reportlistRcom, setReportlist] = useState<ReportProblem3Interface[]>([])
-  const [emp, setEmp] = React.useState<EmployeeInterface>();
-  const [admin, setadmin] = React.useState<EmployeeInterface>();
+  const [emp, setEmp] = React.useState<UserInterface>();
+  const [admin, setadmin] = React.useState<UserInterface>();
   const [statusChangedBy, setStatusChangedBy] = useState<number | null>(null);
   const [empName, setEmpName] = useState("");
   useEffect(() => {
     getReportProblem();
-    getreportListAdminEnd();
+    // getreportListAdminEnd();
     getEmployee();
     getAdmin();
   }, []);
-
-  const getReportProblem = async () => {
-    const apiUrl = "http://localhost:8080/reportProblem";
-    const requestOptions = {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        "Content-Type": "application/json",
-      },
-    };
-    fetch(apiUrl, requestOptions)
-      .then((response) => response.json())
-      .then((res) => {
-        console.log(res.data);
-        if (res.data) {
-          // Sort the reportListData array based on ID in descending order
-          const sortedData = res.data.sort((a: ReportProblem3Interface, b: ReportProblem3Interface) => b.ID - a.ID);
-          // Get only the first 5 items
-          const latestData = sortedData.slice(0, 5);
-          setReportListData(latestData);
-        }
-      });
+ const UserID = localStorage.getItem("uid");
+const getReportProblem = async () => {
+  const apiUrl = `http://localhost:8080/reportProblem/${UserID}`; // แก้ไข URL ให้ถูกต้อง
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "application/json",
+    },
   };
+  fetch(apiUrl, requestOptions)
+    .then((response) => response.json())
+    .then((res) => {
+      console.log(res.data);
+      if (res.data) {
+        // Sort the reportListData array based on ID in descending order
+        const sortedData = res.data.sort(
+          (a: ReportProblemInterface, b: ReportProblemInterface) => b.ID - a.ID
+        );
+        // Get only the first 5 items
+        const latestData = sortedData.slice(0, 5);
+        setReportListData(latestData);
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+};
+
+  // const getReportProblem = async () => {
+  //   const apiUrl = "http://localhost:8080/reportProblem";
+  //   const requestOptions = {
+  //     method: "GET",
+  //     headers: {
+  //       Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //       "Content-Type": "application/json",
+  //     },
+  //   };
+  //   fetch(apiUrl, requestOptions)
+  //     .then((response) => response.json())
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       if (res.data) {
+  //         // Sort the reportListData array based on ID in descending order
+  //         const sortedData = res.data.sort((a: ReportProblem3Interface, b: ReportProblem3Interface) => b.ID - a.ID);
+  //         // Get only the first 5 items
+  //         const latestData = sortedData.slice(0, 5);
+  //         setReportListData(latestData);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error:", error);
+  //     });
+  // };
 
   const getreportListAdminEnd = async () => {
     let res = await ListAdminReportProblem4();
@@ -68,8 +99,8 @@ function Home() {
     }
   };
   function getEmployee() {
-    const UserID = localStorage.getItem("uid");
-    const apiUrl = `http://localhost:8080/employeeId/${UserID}`;
+    const UserID = localStorage.getItem("uid")
+    const apiUrl = `http://localhost:8080/users/${UserID}`;
     const requestOptions = {
       method: "GET",
       headers: {
@@ -80,10 +111,10 @@ function Home() {
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
       .then((res) => {
-        console.log("Combobox_employee", res);
+
+        console.log("Combobox_employee", res)
         if (res.data) {
           setEmp(res.data);
-          setEmpName(res.data.EmployeeName); // เก็บชื่อพนักงานในตัวแปร empName
         } else {
           console.log("else");
         }
@@ -91,7 +122,7 @@ function Home() {
   }
   function getAdmin() {
     const UserID = localStorage.getItem("uid");
-    const apiUrl = `http://localhost:8080/employeeId/${UserID}`;
+    const apiUrl = `http://localhost:8080/users/${UserID}`;
     const requestOptions = {
       method: "GET",
       headers: {
@@ -170,7 +201,7 @@ function Home() {
           /> */}
         </Typography>
       </Container>
-      {localStorage.getItem("role") === "employee" && (
+      {localStorage.getItem("role") === "1" && (
 
         <TableContainer component={Paper} elevation={6}
           sx={{
@@ -218,7 +249,7 @@ function Home() {
           </Table>
         </TableContainer>
       )}
-      {localStorage.getItem("role") === "admin" && (
+      {localStorage.getItem("role") === "2" && (
         <TableContainer component={Paper}>
           <Table className="custom-table1" align="center" style={{ boxShadow: "10px 10px 10px rgba(10, 5, 10, 0.15)", borderRadius: "20px", backgroundColor: "#f4f4f4", width: "90%", height: "90px" }}>
             <TableHead style={{ borderRadius: "20px" }}>
@@ -238,7 +269,7 @@ function Home() {
                 report.Status.StatusName !== "End" && (
                   <TableRow key={report.ID}>
                     <TableCell align="center" width="15"> {moment(report.NotificationDate).format('DDMMYY')}|{report.ID}</TableCell>
-                    <TableCell align="center" width="15">{report.Employee.EmployeeName}</TableCell>
+                    {/* <TableCell align="center" width="15">{report.Employee.EmployeeName}</TableCell> */}
                     <TableCell align="center" width="15">{report.Heading}</TableCell>
                     <TableCell align="center" width="15">{report.Description}</TableCell>
                     <TableCell align="center" width="15">  {moment(report.NotificationDate).format('HH:mm')}</TableCell>
@@ -257,7 +288,7 @@ function Home() {
                         {report.Status.StatusName === "Send request" ? "Send request" : report.Status.StatusName}
                       </span>
                     </TableCell>
-                    <TableCell align="center" width="15">
+                    {/* <TableCell align="center" width="15">
                       {report.Status.StatusName === "Send request" ? (
                         "ยังไม่มีการตรวจสอบ"
                       ) : (
@@ -268,7 +299,7 @@ function Home() {
                             (report.Admin.EmployeeName)}
                         </span>
                       )}
-                    </TableCell>
+                    </TableCell> */}
                   </TableRow>
                 )
               ))}

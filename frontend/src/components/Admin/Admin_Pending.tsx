@@ -8,8 +8,7 @@ import { ReportProblemInterface } from "../../models/IReportProblem";
 import React from "react";
 import moment from "moment";
 import axios from "axios";
-import { EmployeeInterface } from "../../models/IEmployee";
-
+import { UserInterface } from "../../models/IUser";
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
     ref
@@ -22,7 +21,7 @@ export default function Admin_Pending(props: any) {
     const [alertmessage, setAlertMessage] = useState("");
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(false);
-    const [emp, setEmp] = useState<EmployeeInterface>();
+    const [emp, setEmp] = useState<UserInterface>();
     const [empName1, setEmpName] = useState("");
     const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === "clickaway") {
@@ -52,7 +51,7 @@ export default function Admin_Pending(props: any) {
     }
     function getEmployee() {
         const UserID = localStorage.getItem("uid")
-        const apiUrl = `http://localhost:8080/employeeId/${UserID}`;
+        const apiUrl = `http://localhost:8080/users/${UserID}`;
         const requestOptions = {
           method: "GET",
           headers: {
@@ -78,23 +77,23 @@ export default function Admin_Pending(props: any) {
         try {
             let data = {
                 ID: params,
-                EmployeeID: reportProblem?.EmployeeID,
-                StatusID: 2,
-                DepartmentID: reportProblem?.DepartmentID,
+                EmployeeID: reportProblem?.UserSerial,
+                StID: 2,
+                DepartmentID: reportProblem?.DepID,
                 Heading: reportProblem?.Heading,
                 Description: reportProblem?.Description,
                 PendingDate: new Date(),
                 FileUploadID: reportProblem.FileUploadID,
-                EmployeeName: emp?.EmployeeName,
-                AdminID: emp?.ID
+                EmployeeName: emp?.UserLname,
+                // AdminID: emp?.ID
             };
             console.log(data)
             console.log(params)
             let res = await UpdateReportproblem(data);
             setSuccess(true);
-            setTimeout(() => {
-                window.location.reload();
-            }, 800);
+            // setTimeout(() => {
+            //     window.location.reload();
+            // }, 800);
             //mail();
         } catch (err) {
             setError(true);
@@ -105,9 +104,9 @@ export default function Admin_Pending(props: any) {
         try {
             let data = {
                 ID: params,
-                EmployeeID: reportProblem?.EmployeeID,
+                EmployeeID: reportProblem?.UserSerial,
                 StatusID: 2,
-                DepartmentID: reportProblem?.DepartmentID,
+                DepartmentID: reportProblem?.DepID,
                 Heading: reportProblem?.Heading,
                 Description: reportProblem?.Description,
                 NotificationDate: reportProblem?.NotificationDate

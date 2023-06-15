@@ -3,14 +3,14 @@ import React, { useEffect, useState } from "react";
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { Box, Button, Container, IconButton, Paper, Typography } from '@mui/material';
 import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarColumnsButton, GridToolbarFilterButton } from '@mui/x-data-grid';
-import { ReportProblemInterface } from '../../models/IReportProblem';
+import { ReportPrInterface, ReportProblemInterface } from '../../models/IReportProblem';
 import { ListAdminReportProblem1 } from '../../service/Servics';
 import Admin_Pending from './Admin_Pending';
 import GetAppRoundedIcon from '@mui/icons-material/GetAppRounded';
 import moment from 'moment';
 
 function ProblemShow() {
-    const [reportlist, setReportlist] = useState<ReportProblemInterface[]>([])
+    const [reportlist, setReportlist] = useState<ReportPrInterface[]>([])
     const getreportList = async () => {
         let res = await ListAdminReportProblem1();
         if (res.data) {
@@ -65,18 +65,18 @@ function ProblemShow() {
     }, []);
     const columns: GridColDef[] = [
         {
-            field: "ID", headerName: "ID", type: "number", width: 120, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+            field: "id", headerName: "ID", type: "number", width: 120, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
                 return <>{moment(params.row.NotificationDate).format('DDMMYY')}|{params.row.ID}</>
             },
         },
         {
             field: "Employee", headerName: "ผู้รายงาน", type: "string", width: 105, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
-                return <>{params.row.Employee.EmployeeName}</>
+                return <>{params.row.UserLname}</>
             },
         },
         {
             field: "Department", headerName: "แผนก", type: "string", width: 105, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
-                return <>{params.row.Department.DepartmentName}</>;
+                return <>{params.row.DepName}</>;
             },
         },
         {
@@ -91,13 +91,13 @@ function ProblemShow() {
         },
         {
             field: "Status", headerName: "สถานะ", type: "string", width: 150, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
-                return <>{params.row.Status.StatusName}</>;
+                return <>{params.row.StatusName}</>;
             },
         },
         { field: "NotificationDate", headerName: "เวลา", type: "date", width: 100, headerAlign: "center", align: "center", valueFormatter: (params) => moment(params?.value).format("HH:mm") },
 
         {
-            field: 'Download',
+            field: 'Name',
             headerName: 'ไฟล์',
             sortable: false,
             width: 110,
@@ -105,9 +105,9 @@ function ProblemShow() {
             align: 'left',
             renderCell: (params: GridRenderCellParams<any>) => {
                 return (
-                    <IconButton onClick={() => handleDownloadFile(params.row.ID, params.row.FileUpload.name)}>
+                    <IconButton onClick={() => handleDownloadFile(params.row.FileUploadID, params.row.name)}>
                         <GetAppRoundedIcon />
-                        <span style={{ fontSize: 'small' }}>{params.row.FileUpload.name}</span>
+                        <span style={{ fontSize: 'small' }}>{params.row.name}</span>
                     </IconButton>
                 );
             },
@@ -123,7 +123,7 @@ function ProblemShow() {
                 return (
                     <Admin_Pending
                         params={params.row.ID}
-                        EmployeeName={params.row.Employee.EmployeeName}
+                        EmployeeName={params.row.UserLname}
                         empName={empName} // ส่งค่า empName เข้าไปใน props
                     />
                 );

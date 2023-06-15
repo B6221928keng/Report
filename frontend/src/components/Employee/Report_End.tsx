@@ -51,9 +51,9 @@ export default function Report_End(props: any) {
         try {
             let data = {
                 ID: params,
-                EmployeeID: reportProblem?.EmployeeID,
+                EmployeeID: reportProblem?.UserSerial,
                 StatusID: 4,
-                DepartmentID: reportProblem?.DepartmentID,
+                DepartmentID: reportProblem?.DepID,
                 Heading: reportProblem?.Heading,
                 Description: reportProblem?.Description,
                 EndDate: new Date(),
@@ -75,9 +75,9 @@ export default function Report_End(props: any) {
         try {
             let data = {
                 ID: params,
-                EmployeeID: reportProblem?.EmployeeID,
+                EmployeeID: reportProblem?.UserSerial,
                 StatusID: 4,
-                DepartmentID: reportProblem?.DepartmentID,
+                DepartmentID: reportProblem?.DepID,
                 Heading: reportProblem?.Heading,
                 Description: reportProblem?.Description,
                 NotificationDate: reportProblem?.NotificationDate

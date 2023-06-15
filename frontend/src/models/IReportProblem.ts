@@ -1,30 +1,58 @@
 import { DepartmentInterface } from "./IDepartment"
 import { FileUploadInterface } from "./IFileUpload"
 import { StatusInterface } from "./IStatus"
-import { UserInterface } from "./IUser"
+import { UserAuthenInterface, UserInterface } from "./IUser"
 export interface ReportProblemInterface {
 
     ID: number,
-    Heading:         string,
-	Description:     string,
+    Heading: string,
+    Description: string,
     NotificationDate: Date | null,
-    PendingDate:  Date | null, //ค่าเวลาตรวจงาน
-    CompleteDate:  Date | null, //ค่าเวลาทำงาน
-    EndDate:  Date | null, //ค่าเวลาเสร็จงาน
-    EmployeeID: number,
-    Employee: UserInterface,
+    PendingDate: Date | null, //ค่าเวลาตรวจงาน
+    CompleteDate: Date | null, //ค่าเวลาทำงาน
+    EndDate: Date | null, //ค่าเวลาเสร็จงาน
 
+    UserSerial: number,
+    UserAuthen: UserAuthenInterface,
+  
     AdminID: number,
-    Admin: UserInterface,
+    Admin: UserAuthenInterface,
 
-    StatusID: number,
+    StID: number,
     Status: StatusInterface
 
-    DepartmentID: number,
-	Department: DepartmentInterface
+    DepID: number,
+    Department: DepartmentInterface
 
     FileUploadID: number,
     FileUpload: FileUploadInterface,
+}
+export interface ReportPrInterface {
+
+    ID: number,
+    Heading: string,
+    Description: string,
+    NotificationDate: Date | null,
+    PendingDate: Date | null, //ค่าเวลาตรวจงาน
+    CompleteDate: Date | null, //ค่าเวลาทำงาน
+    EndDate: Date | null, //ค่าเวลาเสร็จงาน
+
+    UserSerial: number,
+    UserName: string,
+    UserLname: string,
+    AdminID: number,
+
+    StID: number,
+    StatusName: string,
+
+    DepID: number,
+    DepName: string,
+
+    FileUploadID: number,
+    Name: string,
+    Size: number,
+    Type: string,
+  
 
 }
 export interface ReportProblem1Interface {
@@ -33,9 +61,9 @@ export interface ReportProblem1Interface {
     AdminEmail: string;
     EmployeeName?: number;
     NotificationDate?: Date | null;
-    PendingDate:  Date | null, //ค่าเวลาตรวจงาน
-    CompleteDate:  Date | null, //ค่าเวลาทำงาน
-    EndDate:  Date | null, //ค่าเวลาเสร็จงาน
+    PendingDate: Date | null, //ค่าเวลาตรวจงาน
+    CompleteDate: Date | null, //ค่าเวลาทำงาน
+    EndDate: Date | null, //ค่าเวลาเสร็จงาน
     Heading?: string;
     Description?: string;
     Status?: string;
@@ -44,36 +72,44 @@ export interface ReportProblem1Interface {
     FileUploadID: number,
     FileUpload: FileUploadInterface,
 }
-export interface ReportProblem2Interface{
-    id?: number;
-    EmpEmail: string;
-    AdminEmail: string;
-    EmployeeName?: number;
-	NotificationDate?:    Date | null;
-    PendingDate:  Date | null, //ค่าเวลาตรวจงาน
-    CompleteDate:  Date | null, //ค่าเวลาทำงาน
-    EndDate:  Date | null, //ค่าเวลาเสร็จงาน
-    Heading?: string;
-    Description?: string;
-    Status?: string;
-    DepartmentName?: number;
-    
+export interface ReportProblem2Interface {
+    ID: number,
+    Heading: string,
+    Description: string,
+    NotificationDate: Date | null,
+    PendingDate: Date | null, //ค่าเวลาตรวจงาน
+    CompleteDate: Date | null, //ค่าเวลาทำงาน
+    EndDate: Date | null, //ค่าเวลาเสร็จงาน
+
+    UserSerial: number,
+    UserName: string,
+    UserLname: string,
+    AdminID: number,
+
+    StID: number,
+    StatusName: string,
+
+    DepID: number,
+    DepName: string,
+
     FileUploadID: number,
-    FileUpload: FileUploadInterface,
+    Name: string,
+    Size: number,
+    Type: string,
 }
-export interface ReportProblem3Interface{
+export interface ReportProblem3Interface {
     ID: number;
     id: number;
     EmpEmail: string;
     AdminEmail: string;
     EmployeeName?: number;
-	NotificationDate?:    Date | null;
-    PendingDate:  Date | null, //ค่าเวลาตรวจงาน
-    CompleteDate:  Date | null, //ค่าเวลาทำงาน
-    EndDate:  Date | null, //ค่าเวลาเสร็จงาน
+    NotificationDate?: Date | null;
+    PendingDate: Date | null, //ค่าเวลาตรวจงาน
+    CompleteDate: Date | null, //ค่าเวลาทำงาน
+    EndDate: Date | null, //ค่าเวลาเสร็จงาน
     Heading?: string;
     Description?: string;
-    
+
     DepartmentName?: number;
     EmployeeID: number,
     Employee: UserInterface,
@@ -82,7 +118,7 @@ export interface ReportProblem3Interface{
     Status: StatusInterface
 
     DepartmentID: number,
-	Department: DepartmentInterface
+    Department: DepartmentInterface
 
     FileUploadID: number,
     FileUpload: FileUploadInterface,

@@ -13,7 +13,6 @@ import moment from 'moment';
 import { UserInterface } from "../../models/IUser";
 import { StatusInterface } from "../../models/IStatus";
 import { ReportProblemInterface } from "../../models/IReportProblem";
-import { EmployeeInterface } from "../../models/IEmployee";
 import { DepartmentInterface } from "../../models/IDepartment";
 import DriveFolderUploadRoundedIcon from '@mui/icons-material/DriveFolderUploadRounded';
 import CheckCircleSharpIcon from '@mui/icons-material/CheckCircleSharp';
@@ -33,7 +32,7 @@ export default function ReportProblemUpdate(props: any) {
     const [error, setError] = React.useState(false);
     const [date, setDate] = React.useState<Date | null>(null);
     const [user, setUser] = React.useState<UserInterface>();
-    const [emp, setEmp] = React.useState<EmployeeInterface>();
+    const [emp, setEmp] = React.useState<UserInterface>();
     const [status, setStatus] = React.useState<StatusInterface[]>([]);
     const [files, setFiles] = React.useState<FileUploadInterface[]>([]);
     const [fileUploads, setFileUploads] = React.useState<FileUploadInterface[]>([]);
@@ -105,7 +104,7 @@ export default function ReportProblemUpdate(props: any) {
     //ดึงพนักงาน
     function getEmployee() {
         const UserID = localStorage.getItem("uid")
-        const apiUrl = `http://localhost:8080/employeeId/${UserID}`;
+        const apiUrl = `http://localhost:8080/users/${UserID}`;
         const requestOptions = {
             method: "GET",
             headers: {
@@ -154,7 +153,7 @@ export default function ReportProblemUpdate(props: any) {
     //ดึงข้อมูลแผนก
     function getDepartment() {
         const UserID = localStorage.getItem("uid")
-        const apiUrl = `http://localhost:8080/employeeUId/${UserID}`;
+        const apiUrl = `http://localhost:8080/users/${UserID}`;
         const requestOptions = {
             method: "GET",
             headers: {
@@ -226,7 +225,7 @@ export default function ReportProblemUpdate(props: any) {
         if (event.target.files) {
             const newFiles = Array.from(event.target.files).map((file) => {
                 const fileInfo = {
-                    ID: 0,
+                    FileUploadID: 0,
                     name: file.name,
                     size: file.size,
                     type: file.type,
@@ -283,7 +282,7 @@ export default function ReportProblemUpdate(props: any) {
                             FileUploadID: fileData.ID,
                             FileUpload: {
                                 ...(prevReportProblem.FileUpload || {}),
-                                ID: fileData.ID,
+                                FileUploadID: fileData.FileUploadID,
                                 name: fileData.name,
                                 size: fileData.size,
                                 type: fileData.type,
@@ -360,12 +359,12 @@ export default function ReportProblemUpdate(props: any) {
 
         let data = {
             ID: convertType(ReportProblem.ID),
-            EmployeeID: emp?.ID,
+            EmployeeID: emp?.UserNo,
             Heading: ReportProblem.Heading ?? "",
             Description: ReportProblem.Description ?? "",
             StatusID: 1,
             NotificationDate: ReportProblem.NotificationDate,
-            DepartmentID: convertType(emp?.DepartmentID),
+            DepartmentID: convertType(emp?.UserAuthenId),
             FileUploadID: convertType(ReportProblem.FileUploadID),
         };
         console.log(Email);

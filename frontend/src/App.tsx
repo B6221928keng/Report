@@ -12,7 +12,6 @@ import { createTheme, CssBaseline, styled, ThemeProvider } from '@mui/material';
 
 
 import ReportProblemCreate from './components/Employee/ReportProblemCreate';
-import ReportProblem from './components/Employee/ReportProblem';
 import ReportProblemComplete from './components/Employee/ReportProblemComplete';
 import ReportProblemUpdate from './components/Employee/ReportProblemUpdate';
 import AdminReportProblem from './components/Admin/AdminReportProblem';
@@ -51,48 +50,21 @@ function App() {
   };
 
   const [token, setToken] = React.useState<String>("");
-  const [statustoken, setStatustoken] = React.useState<boolean>(false);
 
   const [role, setRole] = React.useState<String>("")
   const [open, setOpen] = React.useState<boolean>(false)
 
   useEffect(() => {
-    const validToken = () => {
-      fetch("http://localhost:8080/valid", {
-        method: "GET",
-        headers: {
-          'Content-Type': 'application/json',
-          "Authorization": `Bearer ${token}`
-        }
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data)
-          if (!data.error) {
-            setStatustoken(true)
-          } else {
-            setStatustoken(false)
-            localStorage.clear();
-          }
-        })
-        .catch((err) => {
-          console.log(err)
-          setStatustoken(false)
-        })
-    }
-
     const token: any = localStorage.getItem("token")
     const role: any = localStorage.getItem("role")
     if (token) {
       setToken(token)
       setRole(role)
-      validToken()
     }
 
   }, [])
 
-  if (!token || !statustoken) {
-    console.log(statustoken)
+  if (!token) {
     return <Signin />
   }
 
@@ -135,7 +107,7 @@ function App() {
               <DrawerHeader />
 
               <Routes>
-                {role === "employee" && (
+                {role === "1" && (
                   <>
 
                     {/* <Route path="/" element={<Emp  />} />
@@ -143,14 +115,13 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/ReportProblemUpdate/:id" element={<ReportProblemUpdate />} />
                     <Route path="/reportProblemCreate" element={<ReportProblemCreate />} />
-                    <Route path="/reportProblem" element={<ReportProblem />} />
                     <Route path="/reportProblemComplete" element={<ReportProblemComplete />} />
                     <Route path="/reportProblemdata" element={<ReportProblemdata />} />
 
                   </>
 
                 )}
-                {role === "admin" && (
+                {role === "2" && (
                   <>
                     <Route path="/" element={<Home />} />
                     <Route path="/adminReportProblem" element={<AdminReportProblem />} />

@@ -1,25 +1,23 @@
 package entity
 
-import "gorm.io/gorm"
-
-type Role struct {
-	gorm.Model
-	Name  string
-
-	Employee []Employee `gorm:"foreignKey:RoleID"`
-	Users []User `gorm:"foreignKey:RoleID"`
+type UserAuthen struct {
+	UserSerial uint   `gorm:"primaryKey" db:"user_serial"`
+	UserName   string `db:"user_name"`
+	Password   string `db:"password"`
+	Role       int    `db:"role_id"`
+	DepID      int    `db:"dep_id"`
+	Department Department `gorm:"foreignKey:DepID"`
 }
+
 type User struct {
-	gorm.Model
-	UserName string `gorm:"uniqueIndex"`
-	Password string
-	EmployeeName string
-	Email string
-	Employee []Employee `gorm:"foreignKey:UserID"`
-
-	RoleID *uint
-	Role   Role 
-
-	DepartmentID *uint
-	Department	Department
+	UserSerial       	uint 		`db:"user_no"`
+	UserLname		string		`db:"user_lname"`
+	UserAuthenId	int			`db:"user_serial"`
+}
+type Department struct {	
+	DepID       uint   `gorm:"primaryKey" db:"dep_id"`
+	DepName     string `db:"dep_name"`
+	DepMail     string `db:"dep_mail"`
+	ManagerMail string `db:"manager_mail"`
+	reportProblem []ReportProblem `gorm:"foreignKey:DepID"`
 }

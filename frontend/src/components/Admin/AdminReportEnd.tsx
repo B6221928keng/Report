@@ -10,12 +10,12 @@ import moment from 'moment';
 import GetAppRoundedIcon from '@mui/icons-material/GetAppRounded';
 import Report_End from "../Employee/Report_End";
 import * as ExcelJS from 'exceljs';
-import { EmployeeInterface } from "../../models/IEmployee";
+import { UserInterface } from "../../models/IUser";
 function AdminReportEnd() {
     const [reportlistRcom, setReportlist] = useState<ReportProblem3Interface[]>([])
     const [filterDate, setFilterDate] = useState("");
     const [empName, setEmpName] = useState("");
-    const [emp, setEmp] = React.useState<EmployeeInterface>();
+    const [emp, setEmp] = React.useState<UserInterface>();
     const handleFilterDateChange = (event: any) => {
         const selectedDate = event.target.value;
         const formattedDate = moment(selectedDate).format('YYYY-MM');
@@ -122,8 +122,8 @@ function AdminReportEnd() {
             const { ID, Employee, Department, Heading, Description, Status, FileUpload, NotificationDate, PendingDate, CompleteDate, EndDate,  } = row;
             worksheet.addRow({
                 id: `${moment(NotificationDate).format('DDMMYY')}|${ID}`,
-                Employee: Employee.EmployeeName,
-                Department: Department.DepartmentName,
+                // Employee: Employee.EmployeeName,
+                Department: Department.DepName,
                 heading: Heading,
                 description: Description,
                 Status: Status?.StatusName,
@@ -132,7 +132,7 @@ function AdminReportEnd() {
                 PendingDate: moment(PendingDate).format("HH:mm | DD/MM/YY"),
                 CompleteDate: moment(CompleteDate).format("HH:mm | DD/MM/YY"),
                 EndDate: moment(EndDate).format("HH:mm | DD/MM/YY"),
-                emp: emp?.EmployeeName
+                emp: emp?.UserLname
             });
         });
 

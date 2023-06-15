@@ -1,5 +1,6 @@
 export interface DepartmentInterface {
-
-    ID: number,
-    DepartmentName: string,
+    DepID: number,
+    DepName: string,
+    DepMail: string,
+    ManagerMail: string,
 }

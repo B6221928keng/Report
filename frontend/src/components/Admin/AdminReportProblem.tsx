@@ -14,7 +14,6 @@ import Snackbar from '@mui/material/Snackbar'
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
 import { ReportProblemInterface } from "../../models/IReportProblem";
-import { EmployeeInterface } from "../../models/IEmployee";
 import { set } from "date-fns";
 import { UserInterface } from "../../models/IUser";
 import { DepartmentInterface } from "../../models/IDepartment";
@@ -23,7 +22,7 @@ import { removeEmitHelper } from "typescript";
 import Admin_Pending from "./Admin_Pending";
 
 function AdminReportProblem() {
-    const [emp, setEmp] = React.useState<EmployeeInterface>();
+    const [emp, setEmp] = React.useState<UserInterface>();
     const [user, setUser] = React.useState<UserInterface>();
     const [file, setfile] = useState<File | null>(null);
     const [reportProblem, setReportProblems] = React.useState<ReportProblemInterface[]>([]);
@@ -132,11 +131,11 @@ function AdminReportProblem() {
         setLoading(true)
         let data = {
             ID:  ReportProblem.ID,
-            EmployeeID: emp?.ID,
+            EmployeeID: emp?.UserLname,
             Heading: ReportProblem.Heading,
             Description: ReportProblem.Description,
             StatusID: 2,
-            DepartmentID: convertType(emp?.DepartmentID),
+            DepartmentID: convertType(ReportProblem.DepID),
             NotificationDate: new Date().toISOString(),
         };
         console.log("Data", data);
@@ -276,8 +275,8 @@ function AdminReportProblem() {
                             {reportProblem.map((reportProblem: ReportProblemInterface) => (
                                 <TableRow key={reportProblem.ID}>
                                     <TableCell align="left" width="10"> {reportProblem.ID}            </TableCell>
-                                    <TableCell align="left" width="medium"> {emp?.EmployeeName}           </TableCell>
-                                    <TableCell align="left" width="medium"> {reportProblem.Department.DepartmentName} </TableCell>
+                                    <TableCell align="left" width="medium"> {emp?.UserLname}           </TableCell>
+                                    <TableCell align="left" width="medium"> {reportProblem.Department.DepName} </TableCell>
                                     <TableCell align="left" size="medium"> {reportProblem.Heading}      </TableCell>
                                     <TableCell align="center" size="medium"> {reportProblem.Description}           </TableCell>
                                     <TableCell align="center" size="medium"> {reportProblem.Status.StatusName}           </TableCell>

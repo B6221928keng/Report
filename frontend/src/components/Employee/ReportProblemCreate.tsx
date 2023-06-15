@@ -10,15 +10,15 @@ import { Button, CssBaseline, FormControl, Grid, Select, MenuItem, SelectChangeE
 import { useState } from 'react';
 import SnackbarContent from '@mui/material/SnackbarContent';
 import axios from 'axios';
-import { UserInterface } from "../../models/IUser";
+import { User1Interface, UserInterface } from "../../models/IUser";
 import { StatusInterface } from "../../models/IStatus";
 import { ReportProblemInterface } from "../../models/IReportProblem";
 import DriveFolderUploadRoundedIcon from '@mui/icons-material/DriveFolderUploadRounded';
 import CheckCircleSharpIcon from '@mui/icons-material/CheckCircleSharp';
-import { EmployeeInterface } from "../../models/IEmployee";
 import { DepartmentInterface } from "../../models/IDepartment";
 import { FileUploadInterface } from "../../models/IFileUpload";
 import GppMaybeSharpIcon from '@mui/icons-material/GppMaybeSharp';
+import { reportProblem } from "../../service/Servics";
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
     ref
@@ -31,7 +31,7 @@ export default function ReportProblemCreate(props: any) {
     const [error, setError] = React.useState(false);
     const [date, setDate] = React.useState<Date | null>(null);
     const [user, setUser] = React.useState<UserInterface>();
-    const [emp, setEmp] = React.useState<EmployeeInterface>();
+    const [emp, setEmp] = React.useState<User1Interface>();
     const [status, setStatus] = React.useState<StatusInterface[]>([]);
     const [department, setDepartment] = React.useState<DepartmentInterface>();
     //const [medicineLabel, setMedicineLable] = React.useState<MedicineLabelsInterface[]>([]);
@@ -83,7 +83,7 @@ export default function ReportProblemCreate(props: any) {
     //ดึงพนักงาน
     function getEmployee() {
         const UserID = localStorage.getItem("uid")
-        const apiUrl = `http://localhost:8080/employeeId/${UserID}`;
+        const apiUrl = `http://localhost:8080/users/${UserID}`;
         const requestOptions = {
             method: "GET",
             headers: {
@@ -131,7 +131,7 @@ export default function ReportProblemCreate(props: any) {
     //ดึงข้อมูลแผนก
     function getDepartment() {
         const UserID = localStorage.getItem("uid")
-        const apiUrl = `http://localhost:8080/employeeUId/${UserID}`;
+        const apiUrl = `http://localhost:8080/users/${UserID}`;
         const requestOptions = {
             method: "GET",
             headers: {
@@ -180,7 +180,7 @@ export default function ReportProblemCreate(props: any) {
         if (event.target.files) {
             const newFiles = Array.from(event.target.files).map((file) => {
                 const fileInfo = {
-                    ID: 0,
+                    FileUploadID: 1,
                     name: file.name,
                     size: file.size,
                     type: file.type,
@@ -233,13 +233,12 @@ export default function ReportProblemCreate(props: any) {
                     console.log(data);
                     if (data.data && data.data.length > 0) {
                         const fileData = data.data[0];
-                        const fileUploadID = fileData.ID;
                         setReportProblem((prevReportProblem) => ({
                             ...prevReportProblem,
-                            FileUploadID: fileData.ID,
+                            FileUploadID: fileData.ID, // ไม่ต้องกำหนดค่า FileUploadID ตรงนี้
                             FileUpload: {
                                 ...(prevReportProblem.FileUpload || {}),
-                                ID: fileData.ID,
+                                FileUploadID: fileData.FileUploadID,
                                 name: fileData.name,
                                 size: fileData.size,
                                 type: fileData.type,
@@ -252,6 +251,7 @@ export default function ReportProblemCreate(props: any) {
                         setUploaded(true); // ตั้งค่า uploaded เป็น true เมื่ออัปโหลดไฟล์สำเร็จ
                         setFiles((prevFileUploads) => [...prevFileUploads, fileData]);
                         setUploadMessage("อัปโหลดแล้ว"); // ตั้งค่าข้อความ "อัปโหลดแล้ว"
+                        // loadfile()
                     }
                 })
                 .catch((error) => {
@@ -339,13 +339,12 @@ export default function ReportProblemCreate(props: any) {
         }
 
         let data = {
-            ID: ReportProblem.ID,
-            EmployeeID: emp?.ID,
+            UserSerial: emp?.UserSerial,
             Heading: ReportProblem.Heading ?? "",
             Description: ReportProblem.Description ?? "",
-            StatusID: 1,
+            StID: 1,
             NotificationDate: ReportProblem.NotificationDate,
-            DepartmentID: emp?.DepartmentID,
+            DepID: ReportProblem.DepID,
             FileUploadID: ReportProblem.FileUploadID,
             AdminID: 0,
         };
@@ -385,6 +384,13 @@ export default function ReportProblemCreate(props: any) {
             });
     }
 
+    // const loadfile =async () => {
+    //     React.useEffect(() => {
+    //         getFileUploads()
+
+    //     })
+
+    // }
 
     //ดึงข้อมูล ใส่ combobox
     React.useEffect(() => {
@@ -392,7 +398,6 @@ export default function ReportProblemCreate(props: any) {
         getStatus();
         getUser();
         getEmployee();
-        getFileUploads();
         console.log(localStorage.getItem("did"))
 
     }, []);
@@ -590,8 +595,8 @@ export default function ReportProblemCreate(props: any) {
                                 (!fileSelected || (fileSelected && files.length === 0)) ||
                                 !uploaded // เพิ่มเงื่อนไขที่ต้องการ
                             }
-                            component={RouterLink}
-                            to="/reportProblemData"
+                        // component={RouterLink}
+                        // to="/reportProblemData"
                         >
                             บันทึกข้อมูล
                         </Button>

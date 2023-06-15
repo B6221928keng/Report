@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { Box, Button, Container, IconButton, Paper, Typography } from '@mui/material';
 import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarColumnsButton, GridToolbarFilterButton } from '@mui/x-data-grid';
-import { ReportProblem2Interface, ReportProblemInterface } from '../../models/IReportProblem';
+import { ReportPrInterface, ReportProblem2Interface, ReportProblemInterface } from '../../models/IReportProblem';
 import { ListAdminReportProblem3 } from '../../service/Servics';
 import moment from 'moment';
 import GetAppRoundedIcon from '@mui/icons-material/GetAppRounded';
@@ -13,7 +13,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import { FileUploadInterface } from "../../models/IFileUpload";
 import DeleteIcon from '@mui/icons-material/Delete';
 function ReportProblemdata() {
-    const [reportlistdata, setReportlistdata] = useState<ReportProblemInterface[]>([])
+    const [reportlistdata, setReportlistdata] = useState<ReportPrInterface[]>([])
     const [reportfile, setReportfile] = useState<FileUploadInterface[]>([])
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(false);
@@ -36,24 +36,24 @@ function ReportProblemdata() {
                 }
             });
     };
-    const getFileUpload = async () => {
-        const apiUrl = "http://localhost:8080/fileUploads";
-        const requestOptions = {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },
-        };
-        fetch(apiUrl, requestOptions)
-            .then((response) => response.json())
-            .then((res) => {
-                console.log(res.data);
-                if (res.data) {
-                    setReportfile(res.data);
-                }
-            });
-    };
+    // const getFileUpload = async () => {
+    //     const apiUrl = "http://localhost:8080/fileUploads";
+    //     const requestOptions = {
+    //         method: "GET",
+    //         headers: {
+    //             Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //             "Content-Type": "application/json",
+    //         },
+    //     };
+    //     fetch(apiUrl, requestOptions)
+    //         .then((response) => response.json())
+    //         .then((res) => {
+    //             console.log(res.data);
+    //             if (res.data) {
+    //                 setReportfile(res.data);
+    //             }
+    //         });
+    // };
     const apiUrl = "http://localhost:8080";
     function handleDownloadFile(id: number, filename: string) {
         const requestOptions = {
@@ -95,44 +95,44 @@ function ReportProblemdata() {
         return null;
     }
 
-    const DeleteFileUpload = async (id: string | number | undefined) => {
-        const apiUrl = "http://localhost:8080";
-        const requestOptions = {
-            method: "DELETE",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },
-        };
+    // const DeleteFileUpload = async (id: string | number | undefined) => {
+    //     const apiUrl = "http://localhost:8080";
+    //     const requestOptions = {
+    //         method: "DELETE",
+    //         headers: {
+    //             Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //             "Content-Type": "application/json",
+    //         },
+    //     };
 
-        fetch(`${apiUrl}/fileUploads/${id}`, requestOptions)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(response.statusText);
-                }
-                return response.json();
-            })
-            .then((res) => {
-                if (res.data) {
-                    setSuccess(true);
-                    console.log("ลบสำเร็จ");
-                    setErrorMessage("");
-                } else {
-                    setErrorMessage(res.error);
-                    setError(true);
-                    console.log("ลบไม่สำเร็จ");
-                }
-                getFileUpload();
-            })
-            .catch((error) => {
-                console.error("เกิดข้อผิดพลาดในการลบ:", error);
-                // ดำเนินการอื่น ๆ ที่เกี่ยวข้องกับข้อผิดพลาด
-            });
-    };
+    //     fetch(`${apiUrl}/fileUploads/${id}`, requestOptions)
+    //         .then((response) => {
+    //             if (!response.ok) {
+    //                 throw new Error(response.statusText);
+    //             }
+    //             return response.json();
+    //         })
+    //         .then((res) => {
+    //             if (res.data) {
+    //                 setSuccess(true);
+    //                 console.log("ลบสำเร็จ");
+    //                 setErrorMessage("");
+    //             } else {
+    //                 setErrorMessage(res.error);
+    //                 setError(true);
+    //                 console.log("ลบไม่สำเร็จ");
+    //             }
+    //             getFileUpload();
+    //         })
+    //         .catch((error) => {
+    //             console.error("เกิดข้อผิดพลาดในการลบ:", error);
+    //             // ดำเนินการอื่น ๆ ที่เกี่ยวข้องกับข้อผิดพลาด
+    //         });
+    // };
     const [currentTime, setCurrentTime] = useState<Date | null>(null);
     useEffect(() => {
         getReportProblem()
-        getFileUpload()
+        // getFileUpload()
         setCurrentTime(new Date());
     }, []);
 
@@ -143,13 +143,13 @@ function ReportProblemdata() {
             },
         },
         {
-            field: "Employee", headerName: "ผู้รายงาน", type: "string", width: 105, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
-                return <>{params.row.Employee?.EmployeeName}</>
+            field: "", headerName: "ผู้รายงาน", type: "string", width: 105, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+                return <>{params.row.UserLname}</>
             },
         },
         {
             field: "Department", headerName: "แผนก", type: "string", width: 105, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
-                return <>{params.row.Department.DepartmentName}</>;
+                return <>{params.row.DepName}</>;
             },
         },
         {
@@ -165,18 +165,19 @@ function ReportProblemdata() {
 
         { field: "NotificationDate", headerName: "เวลา", type: "date", width: 100, headerAlign: "center", align: "center", valueFormatter: (params) => moment(params?.value).format("HH:mm") },
 
+
         {
-            field: 'Download',
-            headerName: 'ดาวน์โหลด',
+            field: 'Name',
+            headerName: 'ไฟล์',
             sortable: false,
-            width: 150,
+            width: 110,
             headerAlign: 'center',
             align: 'left',
             renderCell: (params: GridRenderCellParams<any>) => {
                 return (
-                    <IconButton onClick={() => handleDownloadFile(params.row.FileUploadID, params.row.FileUpload.name)}>
-                        <GetAppRoundedIcon style={{ color: 'green' }} />
-                        <span style={{ fontSize: 'small', color: 'green' }}>{params.row.FileUpload.name}</span>
+                    <IconButton onClick={() => handleDownloadFile(params.row.FileUploadID, params.row.name)}>
+                        <GetAppRoundedIcon />
+                        <span style={{ fontSize: 'small' }}>{params.row.name}</span>
                     </IconButton>
                 );
             },
@@ -221,7 +222,7 @@ function ReportProblemdata() {
         },
 
         {
-            field: 'Status',
+            field: 'StatusName',
             headerName: 'สถานะ',
             sortable: false,
             type: "string",
@@ -232,13 +233,13 @@ function ReportProblemdata() {
                 let statusColor = '';
                 let statusIcon = null;
 
-                if (params.row.Status.StatusName === "Send request") {
+                if (params.row.StatusName === "Send request") {
                     statusColor = 'red';
-                } else if (params.row.Status.StatusName === "Pending") {
+                } else if (params.row.StatusName === "Pending") {
                     statusColor = 'orange';
-                } else if (params.row.Status.StatusName === "Complete") {
+                } else if (params.row.StatusName === "Complete") {
                     statusColor = 'green';
-                } else if (params.row.Status.StatusName === "End") {
+                } else if (params.row.StatusName === "End") {
                     statusColor = 'darkgreen';
                     statusIcon = <CheckIcon style={{ fontSize: 'small' }} />;
                 }
@@ -247,7 +248,7 @@ function ReportProblemdata() {
                 return (
                     <IconButton>
                         <span style={{ fontSize: 'small', color: statusColor }}>
-                            {params.row.Status.StatusName}
+                            {params.row.StatusName}
                             {statusIcon}
                         </span>
                     </IconButton>

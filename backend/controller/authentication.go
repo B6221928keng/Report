@@ -17,26 +17,17 @@ type LoginPayload struct {
 	Password string `json:"password"`
 }
 
-type EmployeeResponse struct {
-	Token          string
-	UserID         uint   `json:"user_id"`
-	EmpID          uint   `json:"p_id"`
-	RoleName       string `json:"role_name"`
-	DepartmentName string `json:"department_name"`
-}
-type AdminResponse struct {
-	Token          string
-	UserID         uint   `json:"user_id"`
-	EmpID          uint   `json:"p_id"`
-	RoleName       string `json:"role_name"`
-	DepartmentName string `json:"department_name"`
+type UserResponse struct {
+	Token    	string	`json:"token"`
+	UserSerial  uint   	`json:"user_serial"`
+	DepID 		uint 	`json:"dep_id"`
+	Role 	int 	`json:"role"`
 }
 // POST /signin
 func Signin(c *gin.Context) {
 	var payload LoginPayload
-	var login entity.User
-	var role entity.Role
-	var dep entity.Department
+	var login entity.UserAuthen
+	var dep		entity.Department
 
 	if err := c.ShouldBindJSON(&payload); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -44,71 +35,41 @@ func Signin(c *gin.Context) {
 	}
 
 	//ค้นหา login ด้วย Username ที่ผู้ใช้กรอกมา
-	if err := entity.DB().Raw("SELECT * FROM users WHERE user_name = ?", payload.User).Scan(&login).Error; err != nil {
+	if err := entity.DB().Raw("SELECT * FROM userauthen WHERE user_name = ?", payload.User).Scan(&login).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
+	
 	//ตรวจสอบ Password
 	err := services.VerifyPassword(login.Password, payload.Password)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid user credentials"})
 		return
 	}
-
-	//ค้นหา Role ด้วย role_id
-	if err := entity.DB().Raw("SELECT * FROM roles WHERE id = ?", login.RoleID).Scan(&role).Error; err != nil {
+	//ค้นหา Department ด้วย did
+	if err := entity.DB().Raw("SELECT * FROM department WHERE dep_id = ?", login.DepID).Scan(&dep).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	//ค้นหา Department ด้วย role_id
-	if err := entity.DB().Raw("SELECT * FROM departments WHERE id = ?", login.DepartmentID).Scan(&dep).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
 	jwtWrapper := services.JwtWrapper{
 		SecretKey:      "Secret",
 		Issuer:         "AuthService",
 		ExpirationHour: 24,
 	}
 
-	signedToken, err := jwtWrapper.GenerateToken(login.ID, role.Name)
+	signedToken, err := jwtWrapper.GenerateToken(login.UserSerial, login.Role)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "error signing token"})
 		return
 	}
-	if role.Name == "employee"{
-		var emp entity.Employee
-		if tx := entity.DB().
-			Raw("SELECT * FROM employees WHERE user_id = ?", login.ID).Find(&emp); tx.RowsAffected == 0 {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "employees not found"})
-			return
-		}
-		tokenResponse := EmployeeResponse{
+		tokenResponse := UserResponse{
 			Token:    signedToken,
-			UserID:   login.ID,
-			EmpID: emp.ID,
-			RoleName: role.Name,
-			DepartmentName: dep.DepartmentName,
+			UserSerial:  login.UserSerial,
+			DepID: dep.DepID,
+			Role: login.Role,
 		}
 		c.JSON(http.StatusOK, gin.H{"data": tokenResponse})
-	}else if role.Name == "admin"{
-		var admin entity.Employee
-		if tx := entity.DB().
-			Raw("SELECT * FROM employees WHERE user_id = ?", login.ID).Find(&admin); tx.RowsAffected == 0 {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "employees not found"})
-			return
-		}
-		tokenResponse := AdminResponse{
-			Token:    signedToken,
-			UserID:   login.ID,
-			EmpID: admin.ID,
-			RoleName: role.Name,
-			DepartmentName: dep.DepartmentName,
-		}
-		c.JSON(http.StatusOK, gin.H{"data": tokenResponse})
-	}
+	
 }
 
 // GET /valid
@@ -159,7 +120,7 @@ type EmailData struct {
 	Empemail string `json:"empemail"`
 }
 
-//สร้างข้อมูล
+// สร้างข้อมูล
 func SendEmailEmp(c *gin.Context) {
 	var data EmailData
 	err := c.BindJSON(&data)
@@ -180,8 +141,8 @@ func SendEmailEmp(c *gin.Context) {
 	// Email content
 	subject := "แจ้งปัญหา"
 	body := "ได้ส่งข้อมูลของปัญหา: " + "\n" +
-		" " +  "\n" +
-		" " +  "\n" +
+		" " + "\n" +
+		" " + "\n" +
 		"ลิงก์: http://localhost:3000"
 
 	// Construct email message
@@ -282,7 +243,8 @@ type EmailDataUPDATE struct {
 	Password string `json:"password"`
 	Empemail string `json:"empemail"`
 }
-//อัพเดพข้อมูล
+
+// อัพเดพข้อมูล
 func SendEmailEmpUPDATE(c *gin.Context) {
 	var data EmailDataUPDATE
 	err := c.BindJSON(&data)
@@ -303,8 +265,8 @@ func SendEmailEmpUPDATE(c *gin.Context) {
 	// Email content
 	subject := "มีการอัพเดตข้อมูล"
 	body := "ได้ส่งข้อมูลอัพเดตของปัญหา: " + "\n" +
-		" " +  "\n" +
-		" " +  "\n" +
+		" " + "\n" +
+		" " + "\n" +
 		"ลิงก์: http://localhost:3000"
 
 	// Construct email message
@@ -390,7 +352,8 @@ func SendEmailEmpUPDATE(c *gin.Context) {
 	log.Println("Email sent successfully")
 	c.JSON(http.StatusOK, gin.H{"message": "Email sent successfully"})
 }
-//จบการทำงาน
+
+// จบการทำงาน
 type EmailDataEND struct {
 	Role     string `json:"employee"`
 	Email    string `json:"email"`
@@ -418,8 +381,8 @@ func SendEmailEmpEND(c *gin.Context) {
 	// Email content
 	subject := "ใช้งานได้ปกติ"
 	body := "เสร็จสมบูรณ์ Software ใช้งานได้ปกติ " + "\n" +
-		" " +  "\n" +
-		" " +  "\n" +
+		" " + "\n" +
+		" " + "\n" +
 		"ลิงก์: http://localhost:3000"
 
 	// Construct email message
@@ -506,16 +469,17 @@ func SendEmailEmpEND(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Email sent successfully"})
 }
 
- //-----------------------Admin-------------------------------
+//-----------------------Admin-------------------------------
 
-//รับข้อมูล
+// รับข้อมูล
 type EmailAdmin struct {
 	Role     string `json:"employee"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	Empemail string `json:"empemail"`
 }
-//กำลังแก้ไข
+
+// กำลังแก้ไข
 func SendEmailAdmin(c *gin.Context) {
 	var data EmailAdmin
 	err := c.BindJSON(&data)
@@ -536,8 +500,8 @@ func SendEmailAdmin(c *gin.Context) {
 	// Email content
 	subject := "ได้รับข้อมูลแล้ว"
 	body := "กำลังดำเนินการแก้ไข" + "\n" +
-		" " +  "\n" +
-		"" +  "\n" +
+		" " + "\n" +
+		"" + "\n" +
 		"ลิงก์: http://localhost:3000"
 
 	// Construct email message
@@ -624,14 +588,14 @@ func SendEmailAdmin(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Email sent successfully"})
 }
 
-
 type EmailDataComplete struct {
 	Role     string `json:"employee"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	Empemail string `json:"empemail"`
 }
-//แก้ไขเสร็จ
+
+// แก้ไขเสร็จ
 func SendEmailAdminComplete(c *gin.Context) {
 	var data EmailDataComplete
 	err := c.BindJSON(&data)
@@ -652,8 +616,8 @@ func SendEmailAdminComplete(c *gin.Context) {
 	// Email content
 	subject := "ทำการแก้ไขเสร็จแล้ว"
 	body := " ทำการแก้ไขเสร็จแล้วโปรดตรวจสอบด้วยครับ " + "\n" +
-		" " +  "\n" +
-		" " +  "\n" +
+		" " + "\n" +
+		" " + "\n" +
 		"ลิงก์: http://localhost:3000"
 
 	// Construct email message
