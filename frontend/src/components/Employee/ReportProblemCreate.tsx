@@ -398,6 +398,7 @@ export default function ReportProblemCreate(props: any) {
         getStatus();
         getUser();
         getEmployee();
+        getFileUploads();
         console.log(localStorage.getItem("did"))
 
     }, []);

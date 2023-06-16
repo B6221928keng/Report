@@ -3,7 +3,7 @@ package controller
 import (
 	// "fmt"
 	// "io"
-	"io/ioutil"
+	// "io/ioutil"
 
 	"github.com/B6221928keng/Report/entity"
 	"github.com/asaskevich/govalidator"
@@ -42,48 +42,6 @@ func CreateReportProblem(c *gin.Context) {
 		return
 	}
 
-	// Check if file is uploaded
-	form, err := c.MultipartForm()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	files := form.File["file"]
-
-	if len(files) > 0 {
-		// Open file
-		src, err := files[0].Open()
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		defer src.Close()
-
-		// Read file content
-		content, err := ioutil.ReadAll(src)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		// Create file upload entity
-		fileUpload := entity.FileUpload{
-			Name:    files[0].Filename,
-			Size:    files[0].Size,
-			Type:    files[0].Header.Get("Content-Type"),
-			Content: content,
-		}
-
-		// Save file uploads to database
-		if err := entity.DB().Create(&fileUpload).Error; err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		reportproblem.FileUploadID = &fileUpload.FileUploadID
-
-	}
-
 	// สร้าง FileUpload และบันทึกลงฐานข้อมูล
 	if reportproblem.FileUploadID != nil {
 		if tx := entity.DB().Table("fileupload").Where("FileUploadID = ?", *reportproblem.FileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
@@ -103,17 +61,15 @@ func CreateReportProblem(c *gin.Context) {
 		Heading:          reportproblem.Heading,
 		Description:      reportproblem.Description,
 		UserSerial:       reportproblem.UserSerial,
-		Status:           status,
-		Department:       department,
-		FileUpload:       fileUpload,
+		Status:           reportproblem.Status,
+		Department:       reportproblem.Department,
+		FileUpload:       reportproblem.FileUpload,
 	}
-
 	// Validate entity
 	if _, err := govalidator.ValidateStruct(wv); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
 	// Save entity to database
 	if err := entity.DB().Table("reportproblem").Create(&wv).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -150,7 +106,7 @@ type Report struct {
 }
 
 // Get /reportProblem/:id
-func GetReportProblem(c *gin.Context) {
+func GetReportProblem2(c *gin.Context) {
 	var report entity.ReportProblem
 	id := c.Param("id")
 	if err := entity.DB().Table("reportproblem").
@@ -168,6 +124,22 @@ func GetReportProblem(c *gin.Context) {
 		"status": "OK",
 		"data":   report,
 	})
+}
+func GetReportProblem(c *gin.Context) {
+	var report entity.ReportProblem
+	id := c.Param("id")
+	if err := entity.DB().Table("reportproblem").
+		Select("reportproblem.*, user.*, status.*, department.*, fileupload.*").
+		Joins("inner join user on user.user_serial = reportproblem.user.user_serial").
+		Joins("inner join status on status.StID = reportproblem.status.StID").
+		Joins("inner join department on department.dep_id = reportproblem.department.dep_id").
+		Joins("inner join fileupload on fileupload.file_upload_id = reportproblem.fileupload.file_upload_id").
+		Where("reportproblem.id = ?", id).
+		First(&report).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": report})
 }
 
 // GET /reportProblem/:id
@@ -224,10 +196,10 @@ func ListReportProblemStatusID1(c *gin.Context) {
 	var reportProblems []entity.ReportPr
 	if err := entity.DB().Table("reportproblem").
 		Select("reportproblem.*, user.*, status.*, department.*, fileupload.*").
-		Joins("JOIN user ON user.user_serial = reportproblem.user_serial").
-		Joins("JOIN status ON status.StID = reportproblem.StID = 1").
-		Joins("JOIN department ON department.dep_id = reportproblem.dep_id").
-		Joins("JOIN fileupload ON fileupload.file_upload_id = reportproblem.file_upload_id").
+		Joins("inner join user on user.user_serial = reportproblem.user_serial").
+		Joins("inner join status on status.StID = reportproblem.StID = 1").
+		Joins("inner join department on department.dep_id = reportproblem.dep_id").
+		Joins("inner join fileupload on fileupload.file_upload_id = reportproblem.file_upload_id").
 		Find(&reportProblems).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -238,10 +210,10 @@ func ListReportProblemStatusID2(c *gin.Context) {
 	var reportProblems []entity.ReportPr
 	if err := entity.DB().Table("reportproblem").
 		Select("reportproblem.*, user.*, status.*, department.*, fileupload.*").
-		Joins("JOIN user ON user.user_serial = reportproblem.user_serial").
-		Joins("JOIN status ON status.StID = reportproblem.StID = 2").
-		Joins("JOIN department ON department.dep_id = reportproblem.dep_id").
-		Joins("JOIN fileupload ON fileupload.file_upload_id = reportproblem.file_upload_id").
+		Joins("inner join user on user.user_serial = reportproblem.user_serial").
+		Joins("inner join status on status.StID = reportproblem.StID = 2").
+		Joins("inner join department on department.dep_id = reportproblem.dep_id").
+		Joins("inner join fileupload on fileupload.file_upload_id = reportproblem.file_upload_id").
 		Find(&reportProblems).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -368,7 +340,6 @@ func UpdateReportProblem(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Leave not found"})
 		return
 	}
-	// ค้นหา employee ด้วย id
 
 	// ค้นหา ltype ด้วย id
 
@@ -376,13 +347,13 @@ func UpdateReportProblem(c *gin.Context) {
 	reportproblem.PendingDate = newreport.PendingDate
 	reportproblem.CompleteDate = newreport.CompleteDate
 	reportproblem.EndDate = newreport.EndDate
-	reportproblem.Heading = newreport.Heading
-	reportproblem.Description = newreport.Description
-	reportproblem.AdminID = newreport.AdminID
-	reportproblem.UserSerial = newreport.UserSerial
+	// reportproblem.Heading = newreport.Heading
+	// reportproblem.Description = newreport.Description
+	// reportproblem.AdminID = newreport.AdminID
+	// reportproblem.UserSerial = newreport.UserSerial
 	reportproblem.StID = newreport.StID
-	reportproblem.DepID = newreport.DepID
-	reportproblem.FileUploadID = newreport.FileUploadID
+	// reportproblem.DepID = newreport.DepID
+	// reportproblem.FileUploadID = newreport.FileUploadID
 
 	// ขั้นตอนการ validate
 	if err := entity.DB().Table("reportproblem").Save(&reportproblem).Error; err != nil {

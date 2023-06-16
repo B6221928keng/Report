@@ -1,7 +1,7 @@
 package entity
 
 type UserAuthen struct {
-	UserSerial uint   `gorm:"primaryKey" db:"user_serial"`
+	UserSerial uint   `gorm:"primaryKey" db:"user_serial" `
 	UserName   string `db:"user_name"`
 	Password   string `db:"password"`
 	Role       int    `db:"role_id"`
@@ -15,7 +15,7 @@ type User struct {
 	UserAuthenId	int			`db:"user_serial"`
 }
 type Department struct {	
-	DepID       uint   `gorm:"primaryKey" db:"dep_id"`
+	DepID       uint   `gorm:"primaryKey" db:"dep_id" json:"dep_id"`
 	DepName     string `db:"dep_name"`
 	DepMail     string `db:"dep_mail"`
 	ManagerMail string `db:"manager_mail"`

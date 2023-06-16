@@ -23,34 +23,32 @@ function Home() {
     getEmployee();
     getAdmin();
   }, []);
- const UserID = localStorage.getItem("uid");
-const getReportProblem = async () => {
-  const apiUrl = `http://localhost:8080/reportProblem/${UserID}`; // แก้ไข URL ให้ถูกต้อง
-  const requestOptions = {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-      "Content-Type": "application/json",
-    },
+  const UserID = localStorage.getItem("uid");
+  const getReportProblem = async () => {
+    const apiUrl = `http://localhost:8080/reportProblem/${UserID}`;
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+    fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        console.log(res.data);
+        if (Array.isArray(res.data)) { // Check if res.data is an array
+          const sortedData = res.data.sort(
+            (a: ReportProblemInterface, b: ReportProblemInterface) => b.ID - a.ID
+          );
+          const latestData = sortedData.slice(0, 5);
+          setReportListData(latestData);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
-  fetch(apiUrl, requestOptions)
-    .then((response) => response.json())
-    .then((res) => {
-      console.log(res.data);
-      if (res.data) {
-        // Sort the reportListData array based on ID in descending order
-        const sortedData = res.data.sort(
-          (a: ReportProblemInterface, b: ReportProblemInterface) => b.ID - a.ID
-        );
-        // Get only the first 5 items
-        const latestData = sortedData.slice(0, 5);
-        setReportListData(latestData);
-      }
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
-};
 
   // const getReportProblem = async () => {
   //   const apiUrl = "http://localhost:8080/reportProblem";
@@ -217,6 +215,7 @@ const getReportProblem = async () => {
                 <TableCell align="center" width="15">เวลา</TableCell>
                 <TableCell align="center" width="15">ดาวน์โหลด</TableCell>
                 <TableCell align="center" width="15">สถานะ</TableCell>
+                <TableCell align="center" width="15">IT</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -228,7 +227,7 @@ const getReportProblem = async () => {
                     <TableCell align="center" width="15">{report.Description}</TableCell>
                     <TableCell align="center" width="15">  {moment(report.NotificationDate).format('HH:mm')}</TableCell>
                     <TableCell align="center" width="15">
-                      <IconButton onClick={() => handleDownloadFile(report.ID, report.FileUpload.name)}>
+                      <IconButton onClick={() => handleDownloadFile(report.FileUploadID, report.FileUpload.name)}>
                         <GetAppRoundedIcon />
                       </IconButton>
                       {report.FileUpload.name}
@@ -249,6 +248,7 @@ const getReportProblem = async () => {
           </Table>
         </TableContainer>
       )}
+      
       {localStorage.getItem("role") === "2" && (
         <TableContainer component={Paper}>
           <Table className="custom-table1" align="center" style={{ boxShadow: "10px 10px 10px rgba(10, 5, 10, 0.15)", borderRadius: "20px", backgroundColor: "#f4f4f4", width: "90%", height: "90px" }}>

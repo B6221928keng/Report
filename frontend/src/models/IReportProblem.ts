@@ -3,7 +3,6 @@ import { FileUploadInterface } from "./IFileUpload"
 import { StatusInterface } from "./IStatus"
 import { UserAuthenInterface, UserInterface } from "./IUser"
 export interface ReportProblemInterface {
-
     ID: number,
     Heading: string,
     Description: string,

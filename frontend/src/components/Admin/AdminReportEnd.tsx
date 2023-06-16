@@ -31,7 +31,7 @@ function AdminReportEnd() {
     };
     function getEmployee() {
         const UserID = localStorage.getItem("uid")
-        const apiUrl = `http://localhost:8080/employeeId/${UserID}`;
+        const apiUrl = `http://localhost:8080/users/${UserID}`;
         const requestOptions = {
             method: "GET",
             headers: {

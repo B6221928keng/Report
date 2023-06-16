@@ -4,29 +4,30 @@ import (
 	"time"
 )
 type ReportProblem struct {
-	ID               uint        `gorm:"primaryKey"`
-	NotificationDate *time.Time
-	PendingDate      *time.Time
-	CompleteDate     *time.Time
-	EndDate          *time.Time
+	ID               uint       `gorm:"primaryKey;autoIncrement"`
+	NotificationDate *time.Time `json:"notificationDate"`
+	PendingDate      *time.Time `json:"pendingDate"`
+	CompleteDate     *time.Time `json:"completeDate"`
+	EndDate          *time.Time `json:"endDate"`
 
-	Heading        string         `validate:"required"`
-	Description    string
+	Heading     string `validate:"required" json:"heading"`
+	Description string `json:"description"`
 
-	AdminID        uint
+	AdminID uint `json:"adminId"`
 
-	UserSerial     uint           `gorm:"column:user_serial"`
-	UserAuthen     UserAuthen     `gorm:"foreignKey:UserSerial"`
+	UserSerial *uint      `gorm:"column:user_serial" json:"user_serial"`
+	UserAuthen UserAuthen `gorm:"foreignKey:UserSerial" json:"user"`
 
-	StID           uint           `gorm:"column:StID"`
-	Status         Status         `gorm:"foreignKey:StID"`
+	StID     *uint   `gorm:"column:StID" json:"StID"`
+	Status   Status  `gorm:"foreignKey:StID" json:"status"`
 
-	DepID          uint           `gorm:"column:dep_id"`
-	Department     Department     `gorm:"foreignKey:DepID"`
+	DepID      *uint       `gorm:"column:dep_id"`
+	Department Department  `gorm:"foreignKey:DepID" json:"department"`
 
-	FileUploadID   *uint          `gorm:"column:file_upload_id"`
-	FileUpload     FileUpload     `gorm:"foreignKey:FileUploadID"`
+	FileUploadID *uint      `gorm:"column:file_upload_id" json:"file_upload_id"`
+	FileUpload   FileUpload `gorm:"foreignKey:FileUploadID" json:"fileUpload"`
 }
+
 type ReportPr struct {
 	ID               uint   `gorm:"primaryKey"`
 	NotificationDate time.Time
@@ -129,14 +130,14 @@ type ReportProblem3 struct {
 
 }
 type Status struct {
-	StID           uint            `gorm:"primaryKey" db:"st_id"`
+	StID           uint            `gorm:"primaryKey" db:"StID" json:"StID"`
 	StatusName     string          `gorm:"uniqueIndex" db:"status_name"`
 	ReportProblem  []ReportProblem `gorm:"foreignKey:StID"`
 }
 
 
 type FileUpload struct {
-	FileUploadID uint       `gorm:"primaryKey" json:"file_upload_id"`
+	FileUploadID uint       `gorm:"primaryKey;autoIncrement"  db:"file_upload_id" json:"file_upload_id"`
 	Name         string     `json:"name"`
 	Size         int64      `json:"size"`
 	Type         string     `json:"type"`
