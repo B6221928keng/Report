@@ -1,4 +1,4 @@
-import { ReportProblemInterface } from "../models/IReportProblem";
+import { ReportProblemInterface, ReportProblemInterfaceT } from "../models/IReportProblem";
 
 const apiUrl = "http://localhost:8080";
 async function reportProblem() {
@@ -156,7 +156,7 @@ async function ListAdminReportProblem4() {
 
   return res;
 }
-async function UpdateReportproblem(data: Partial<ReportProblemInterface>) {
+async function UpdateReportproblem(data: Partial<ReportProblemInterfaceT>) {
    
   const requestOptions = {
       method: "PATCH",

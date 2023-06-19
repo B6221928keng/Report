@@ -70,7 +70,7 @@ function AdminReportComplete() {
             },
         },
         {
-            field: "Employee", headerName: "ผู้รายงาน", type: "string", width: 105, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+            field: "", headerName: "ผู้รายงาน", type: "string", width: 105, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
                 return <>{params.row.UserLname}</>
             },
         },

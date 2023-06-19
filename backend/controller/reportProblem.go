@@ -5,6 +5,8 @@ import (
 	// "io"
 	// "io/ioutil"
 
+	"io/ioutil"
+
 	"github.com/B6221928keng/Report/entity"
 	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
@@ -15,10 +17,10 @@ import (
 
 // POST /reportProblems
 func CreateReportProblem(c *gin.Context) {
-	var reportproblem entity.ReportProblem
-	var user entity.UserAuthen
-	var status entity.Status
-	var department entity.Department
+	var reportproblem entity.ReportProblem1
+	// var user entity.UserAuthen
+	// var status entity.Status
+	// var department entity.Department
 	var fileUpload entity.FileUpload
 	// var admin entity.Admin
 
@@ -27,24 +29,57 @@ func CreateReportProblem(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	if err := entity.DB().Table("userauthen").Find(&user, "user_serial = ?", reportproblem.UserSerial).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error user": err.Error()})
-		return
-	}
+	// if err := entity.DB().Table("userauthen").Find(&user, "user_serial = ?", reportproblem.UserSerial).Error; err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error user": err.Error()})
+	// 	return
+	// }
 
-	if err := entity.DB().Table("department").Find(&department, "dep_id = ?", reportproblem.DepID).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error department": err.Error()})
-		return
-	}
+	// if err := entity.DB().Table("department").Find(&department, "dep_id = ?", reportproblem.DepID).Error; err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error department": err.Error()})
+	// 	return
+	// }
 
-	if err := entity.DB().Table("status").Find(&status, "StID = ?", reportproblem.StID).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error status": err.Error()})
-		return
-	}
+	// if err := entity.DB().Table("status").Find(&status, "StID = ?", reportproblem.StID).Error; err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error status": err.Error()})
+	// 	return
+	// }
 
+	// Check if file is uploaded
+	file, err := c.FormFile("file")
+	if err == nil {
+		// Open file
+		src, err := file.Open()
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		defer src.Close()
+
+		// Read file content
+		content, err := ioutil.ReadAll(src)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		// Create file upload entity
+		fileUpload := entity.FileUpload{
+			Name:         file.Filename,
+			Size:         file.Size,
+			Type:         file.Header.Get("Content-Type"),
+			Content:      content,
+		}
+
+		// Save file uploads to database
+		if err := entity.DB().Create(&fileUpload).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		reportproblem.FileUploadID = &fileUpload.FileUploadID
+	}
 	// สร้าง FileUpload และบันทึกลงฐานข้อมูล
 	if reportproblem.FileUploadID != nil {
-		if tx := entity.DB().Table("fileupload").Where("FileUploadID = ?", *reportproblem.FileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
+		if tx := entity.DB().Where("file_upload_id = ?", *reportproblem.FileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "fileupload not found"})
 			return
 		}
@@ -55,15 +90,24 @@ func CreateReportProblem(c *gin.Context) {
 		reportproblem.FileUploadID = nil
 	}
 
+	// สร้าง FileUpload และบันทึกลงฐานข้อมูล
+	if fileUpload.FileUploadID != 0 {
+		if tx := entity.DB().First(&fileUpload, fileUpload.FileUploadID); tx.RowsAffected == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "fileupload not found"})
+			return
+		}
+		reportproblem.FileUpload = fileUpload
+	}
 	// Create ReportProblem entity
-	wv := entity.ReportProblem{
+	wv := entity.ReportProblem1{
 		NotificationDate: reportproblem.NotificationDate,
 		Heading:          reportproblem.Heading,
 		Description:      reportproblem.Description,
 		UserSerial:       reportproblem.UserSerial,
-		Status:           reportproblem.Status,
-		Department:       reportproblem.Department,
-		FileUpload:       reportproblem.FileUpload,
+		StID:             reportproblem.StID,
+		DepID:            reportproblem.DepID,
+		// FileUploadID:     reportproblem.FileUploadID,
+		FileUpload: reportproblem.FileUpload,
 	}
 	// Validate entity
 	if _, err := govalidator.ValidateStruct(wv); err != nil {
@@ -75,7 +119,7 @@ func CreateReportProblem(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
+	
 	c.JSON(http.StatusOK, gin.H{"data": wv})
 }
 
@@ -130,10 +174,10 @@ func GetReportProblem(c *gin.Context) {
 	id := c.Param("id")
 	if err := entity.DB().Table("reportproblem").
 		Select("reportproblem.*, user.*, status.*, department.*, fileupload.*").
-		Joins("inner join user on user.user_serial = reportproblem.user.user_serial").
-		Joins("inner join status on status.StID = reportproblem.status.StID").
-		Joins("inner join department on department.dep_id = reportproblem.department.dep_id").
-		Joins("inner join fileupload on fileupload.file_upload_id = reportproblem.fileupload.file_upload_id").
+		Joins("inner join user on user.user_serial = reportproblem.user_serial").
+		Joins("inner join status on status.StID = reportproblem.StID").
+		Joins("inner join department on department.dep_id = reportproblem.dep_id").
+		Joins("inner join fileupload on fileupload.file_upload_id = reportproblem.file_upload_id").
 		Where("reportproblem.id = ?", id).
 		First(&report).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -197,9 +241,10 @@ func ListReportProblemStatusID1(c *gin.Context) {
 	if err := entity.DB().Table("reportproblem").
 		Select("reportproblem.*, user.*, status.*, department.*, fileupload.*").
 		Joins("inner join user on user.user_serial = reportproblem.user_serial").
-		Joins("inner join status on status.StID = reportproblem.StID = 1").
+		Joins("inner join status on status.StID = reportproblem.StID").
 		Joins("inner join department on department.dep_id = reportproblem.dep_id").
 		Joins("inner join fileupload on fileupload.file_upload_id = reportproblem.file_upload_id").
+		Where("status.StID = 1").
 		Find(&reportProblems).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -211,9 +256,10 @@ func ListReportProblemStatusID2(c *gin.Context) {
 	if err := entity.DB().Table("reportproblem").
 		Select("reportproblem.*, user.*, status.*, department.*, fileupload.*").
 		Joins("inner join user on user.user_serial = reportproblem.user_serial").
-		Joins("inner join status on status.StID = reportproblem.StID = 2").
+		Joins("inner join status on status.StID = reportproblem.StID").
 		Joins("inner join department on department.dep_id = reportproblem.dep_id").
 		Joins("inner join fileupload on fileupload.file_upload_id = reportproblem.file_upload_id").
+		Where("status.StID = 2").
 		Find(&reportProblems).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -221,13 +267,15 @@ func ListReportProblemStatusID2(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": reportProblems})
 }
 func ListReportProblemStatusID3(c *gin.Context) {
+
 	var reportProblems []entity.ReportPr
 	if err := entity.DB().Table("reportproblem").
 		Select("reportproblem.*, user.*, status.*, department.*, fileupload.*").
 		Joins("JOIN user ON user.user_serial = reportproblem.user_serial").
-		Joins("JOIN status ON status.StID = reportproblem.StID = 3").
+		Joins("JOIN status ON status.StID = reportproblem.StID").
 		Joins("JOIN department ON department.dep_id = reportproblem.dep_id").
 		Joins("JOIN fileupload ON fileupload.file_upload_id = reportproblem.file_upload_id").
+		Where("status.StID = 3").
 		Find(&reportProblems).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -239,9 +287,10 @@ func ListReportProblemStatusID4(c *gin.Context) {
 	if err := entity.DB().Table("reportproblem").
 		Select("reportproblem.*, user.*, status.*, department.*, fileupload.*").
 		Joins("JOIN user ON user.user_serial = reportproblem.user_serial").
-		Joins("JOIN status ON status.StID = reportproblem.StID = 4").
+		Joins("JOIN status ON status.StID = reportproblem.StID").
 		Joins("JOIN department ON department.dep_id = reportproblem.dep_id").
 		Joins("JOIN fileupload ON fileupload.file_upload_id = reportproblem.file_upload_id").
+		Where("status.StID = 4").
 		Find(&reportProblems).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -323,8 +372,45 @@ func ListAdminReportProblem(c *gin.Context) {
 }
 
 func UpdateReportProblem(c *gin.Context) {
-	var reportproblem entity.ReportProblem
-	var newreport entity.ReportProblem
+	var reportproblem entity.ReportProblem1
+	var newreport entity.ReportProblem1
+
+	if err := c.ShouldBindJSON(&newreport); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	if _, err := govalidator.ValidateStruct(&newreport); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	if tx := entity.DB().Table("reportproblem").Where("id = ?", newreport.ID).First(&reportproblem); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Leave not found"})
+		return
+	}
+
+	// ค้นหา ltype ด้วย id
+
+	reportproblem.StID = newreport.StID
+	reportproblem.NotificationDate = newreport.NotificationDate
+	reportproblem.CompleteDate = newreport.CompleteDate
+	reportproblem.PendingDate = newreport.PendingDate
+	reportproblem.EndDate = newreport.EndDate
+
+
+	// ขั้นตอนการ validate
+	if err := entity.DB().Table("reportproblem").Save(&reportproblem).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": reportproblem})
+}
+
+func UpdateReportProblemUser(c *gin.Context) {
+	var reportproblem entity.ReportProblem1
+	var newreport entity.ReportProblem1
 
 	if err := c.ShouldBindJSON(&newreport); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -344,19 +430,24 @@ func UpdateReportProblem(c *gin.Context) {
 	// ค้นหา ltype ด้วย id
 
 	reportproblem.NotificationDate = newreport.NotificationDate
-	reportproblem.PendingDate = newreport.PendingDate
-	reportproblem.CompleteDate = newreport.CompleteDate
-	reportproblem.EndDate = newreport.EndDate
-	// reportproblem.Heading = newreport.Heading
-	// reportproblem.Description = newreport.Description
-	// reportproblem.AdminID = newreport.AdminID
-	// reportproblem.UserSerial = newreport.UserSerial
-	reportproblem.StID = newreport.StID
-	// reportproblem.DepID = newreport.DepID
-	// reportproblem.FileUploadID = newreport.FileUploadID
+	reportproblem.Heading = newreport.Heading
+	reportproblem.Description = newreport.Description
+	reportproblem.FileUploadID = newreport.FileUploadID
 
 	// ขั้นตอนการ validate
 	if err := entity.DB().Table("reportproblem").Save(&reportproblem).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Update the report problem in the database
+	if err := entity.DB().Table("reportproblem").Where("id = ?", reportproblem.ID).Updates(&reportproblem).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Retrieve the updated fileUpload from the database
+	if err := entity.DB().Table("fileupload").Where("file_upload_id = ?", reportproblem.FileUploadID).First(&reportproblem).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

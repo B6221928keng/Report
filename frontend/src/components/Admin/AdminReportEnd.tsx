@@ -122,12 +122,12 @@ function AdminReportEnd() {
             const { ID, Employee, Department, Heading, Description, Status, FileUpload, NotificationDate, PendingDate, CompleteDate, EndDate,  } = row;
             worksheet.addRow({
                 id: `${moment(NotificationDate).format('DDMMYY')}|${ID}`,
-                // Employee: Employee.EmployeeName,
+                Employee: Employee.UserLname,
                 Department: Department.DepName,
                 heading: Heading,
                 description: Description,
-                Status: Status?.StatusName,
-                FileUpload: FileUpload?.name,
+                Status: Status.StatusName,
+                FileUpload: FileUpload.name,
                 NotificationDate: moment(NotificationDate).format("HH:mm | DD/MM/YY"),
                 PendingDate: moment(PendingDate).format("HH:mm | DD/MM/YY"),
                 CompleteDate: moment(CompleteDate).format("HH:mm | DD/MM/YY"),
@@ -160,12 +160,12 @@ function AdminReportEnd() {
         },
         {
             field: "Employee", headerName: "ผู้รายงาน", type: "string", width: 105, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
-                return <>{params.row.Employee?.EmployeeName}</>
+                return <>{params.row.UserLname}</>
             },
         },
         {
             field: "Department", headerName: "แผนก", type: "string", width: 105, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
-                return <>{params.row.Department.DepartmentName}</>;
+                return <>{params.row.DepName}</>;
             },
         },
         {
@@ -180,13 +180,13 @@ function AdminReportEnd() {
         },
         {
             field: "Status", headerName: "สถานะ", type: "string", width: 150, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
-                return <>{params.row.Status.StatusName}</>;
+                return <>{params.row.StatusName}</>;
             },
         },
         { field: "EndDate", headerName: "เวลา", type: "date", width: 100, headerAlign: "center", align: "center", valueFormatter: (params) => moment(params?.value).format("HH:mm") },
 
         {
-            field: 'Download',
+            field: 'Name',
             headerName: 'ไฟล์',
             sortable: false,
             width: 110,
@@ -194,9 +194,9 @@ function AdminReportEnd() {
             align: 'left',
             renderCell: (params: GridRenderCellParams<any>) => {
                 return (
-                    <IconButton onClick={() => handleDownloadFile(params.row.ID, params.row.FileUpload.name)}>
+                    <IconButton onClick={() => handleDownloadFile(params.row.FileUploadID, params.row.name)}>
                         <GetAppRoundedIcon />
-                        <span style={{ fontSize: 'small' }}>{params.row.FileUpload.name}</span>
+                        <span style={{ fontSize: 'small' }}>{params.row.name}</span>
                     </IconButton>
                 );
             },
@@ -241,14 +241,14 @@ function AdminReportEnd() {
                         >
                             รายการแจ้งปัญหา Software
                         </Typography>
-                        <Button
+                        {/* <Button
                             onClick={handleExportExcel} // เรียกใช้ฟังก์ชัน handleExportExcel เมื่อคลิกปุ่ม
                             variant="contained"
                             color="primary"
                             sx={{ borderRadius: 20, '&:hover': { color: '#065D95', backgroundColor: '#e3f2fd' } }}
                         >
                             Export to Excel
-                        </Button>
+                        </Button> */}
                     </Box>
                     <Box sx={{ borderRadius: 30 }}>
                         <DataGrid

@@ -26,6 +26,26 @@ export interface ReportProblemInterface {
     FileUploadID: number,
     FileUpload: FileUploadInterface,
 }
+export interface ReportProblemInterfaceT {
+    ID: number,
+    Heading: string,
+    Description: string,
+    NotificationDate: Date | null,
+    PendingDate: Date | null, //ค่าเวลาตรวจงาน
+    CompleteDate: Date | null, //ค่าเวลาทำงาน
+    EndDate: Date | null, //ค่าเวลาเสร็จงาน
+
+    userserial: number,
+
+    AdminID: number,
+
+    StID: number,
+    
+    DepID: number,
+
+    fileUploadID: number,
+    FileUpload: FileUploadInterface,
+}
 export interface ReportPrInterface {
 
     ID: number,

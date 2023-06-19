@@ -56,10 +56,10 @@ type ReportPr struct {
 
 type ReportProblem1 struct {
 	ID               uint   `gorm:"primaryKey"`
-	NotificationDate time.Time
-	PendingDate      time.Time
-	CompleteDate     time.Time
-	EndDate          time.Time
+	NotificationDate time.Time  `gorm:"column:notification_date"`
+	PendingDate      time.Time   `gorm:"column:pending_date"`
+	CompleteDate     time.Time  `gorm:"column:complete_date" `
+	EndDate          time.Time  `gorm:"column:end_date"`
 
 	Heading     string `validate:"required"`
 	Description string
@@ -67,17 +67,17 @@ type ReportProblem1 struct {
 	AdminID uint
 	// Admin   User `gorm:"foreignKey:AdminID" valid:"-"`
 
-	UserSerial *uint `gorm:"column:userserial" valid:"-"`
-	User       User  `gorm:"foreignKey:UserSerial" valid:"-"`
+	UserSerial uint `gorm:"column:user_serial" valid:"-"`
+	
 
-	StID     *uint    `gorm:"column:st_id"`
-	Status   Status   `gorm:"foreignKey:StID" valid:"-"`
+	StID     uint    `gorm:"column:StID"`
 	
-	DepID      *uint       `gorm:"column:dep_id"`
-	Department Department  `gorm:"foreignKey:DepID" valid:"-"`
 	
-	FileUploadID *uint      `gorm:"column:file_upload_id"`
-	FileUpload   FileUpload `gorm:"foreignKey:FileUploadID" valid:"-"`
+	DepID      uint       `gorm:"column:dep_id"`
+	
+	
+	FileUploadID *uint      `gorm:"column:file_upload_id" json:"fileUpload"`
+	FileUpload   FileUpload `gorm:"foreignKey:FileUpload"`
 
 }
 type ReportProblem2 struct {

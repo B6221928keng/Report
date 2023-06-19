@@ -92,18 +92,6 @@ func UploadFile(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	// Update FileUploadID in ReportProblem
-	for i := range fileUploads {
-		reportProblem := entity.ReportProblem{
-			FileUploadID: &fileUploads[i].FileUploadID,
-		}
-		if err := entity.DB().Table("reportproblem").Where("id = ?", i+1).Updates(&reportProblem).Error; err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-	}
-
 	c.JSON(http.StatusOK, gin.H{"data": fileUploads})
 }
 
@@ -204,7 +192,7 @@ func UpdateUploadFile(c *gin.Context) {
 // GET /fileUploads
 func ListFileUploads(c *gin.Context) {
 	var fileUploads []entity.FileUpload
-	if err := entity.DB().Table("fileupload").Raw("SELECT * FROM fileupload").Find(&fileUploads).Error; err != nil {
+	if err := entity.DB().Table("fileupload").Raw("SELECT * FROM fileupload ORDER BY file_upload_id DESC LIMIT 1").Find(&fileUploads).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

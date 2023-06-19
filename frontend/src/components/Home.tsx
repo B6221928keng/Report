@@ -10,6 +10,7 @@ import './Home.css'; // นำเข้าไฟล์ CSS
 import { ListAdminReportProblem4 } from '../service/Servics';
 import Admin_Pending from './Admin/Admin_Pending';
 import { UserInterface } from '../models/IUser';
+import { useParams } from 'react-router-dom';
 function Home() {
   const [reportListData, setReportListData] = useState<ReportProblemInterface[]>([]);
   const [reportlistRcom, setReportlist] = useState<ReportProblem3Interface[]>([])
@@ -18,37 +19,59 @@ function Home() {
   const [statusChangedBy, setStatusChangedBy] = useState<number | null>(null);
   const [empName, setEmpName] = useState("");
   useEffect(() => {
-    getReportProblem();
+    getReportProblem(id);
     // getreportListAdminEnd();
     getEmployee();
     getAdmin();
   }, []);
-  const UserID = localStorage.getItem("uid");
-  const getReportProblem = async () => {
-    const apiUrl = `http://localhost:8080/reportProblem/${UserID}`;
-    const requestOptions = {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        "Content-Type": "application/json",
-      },
-    };
-    fetch(apiUrl, requestOptions)
-      .then((response) => response.json())
-      .then((res) => {
-        console.log(res.data);
-        if (Array.isArray(res.data)) { // Check if res.data is an array
-          const sortedData = res.data.sort(
-            (a: ReportProblemInterface, b: ReportProblemInterface) => b.ID - a.ID
-          );
-          const latestData = sortedData.slice(0, 5);
-          setReportListData(latestData);
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+  let { id } = useParams();
+  const getReportProblem = async (id: string | undefined | null) => {
+      const apiUrl = "http://localhost:8080";
+      const requestOptions = {
+          method: "GET",
+          headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+          },
+      };
+
+      fetch(`${apiUrl}/reportProblem/${id}`, requestOptions)
+          .then((response) => response.json())
+          .then((res) => {
+              console.log("reportProblem", res)
+              if (res.data) {
+                setReportListData(res.data);
+              } else {
+                  console.log("else");
+              }
+          });
   };
+  const UserID = localStorage.getItem("uid");
+  // const getReportProblem = async () => {
+  //   const apiUrl = `http://localhost:8080/reportProblem/${UserID}`;
+  //   const requestOptions = {
+  //     method: "GET",
+  //     headers: {
+  //       Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //       "Content-Type": "application/json",
+  //     },
+  //   };
+  //   fetch(apiUrl, requestOptions)
+  //     .then((response) => response.json())
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       if (Array.isArray(res.data)) { // Check if res.data is an array
+  //         const sortedData = res.data.sort(
+  //           (a: ReportProblemInterface, b: ReportProblemInterface) => b.ID - a.ID
+  //         );
+  //         const latestData = sortedData.slice(0, 5);
+  //         setReportListData(latestData);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error:", error);
+  //     });
+  // };
 
   // const getReportProblem = async () => {
   //   const apiUrl = "http://localhost:8080/reportProblem";

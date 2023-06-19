@@ -7,6 +7,7 @@ import { GetReportproblemByID, UpdateReportproblem } from "../../service/Servics
 import { ReportProblemInterface } from "../../models/IReportProblem";
 import React from "react";
 import axios from "axios";
+import { UserInterface } from "../../models/IUser";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -20,6 +21,8 @@ export default function Admin_Complete(props: any) {
     const [alertmessage, setAlertMessage] = useState("");
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(false);
+    const [emp, setEmp] = useState<UserInterface>();
+    const [empName1, setEmpName] = useState("");
     const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === "clickaway") {
             return;
@@ -46,18 +49,42 @@ export default function Admin_Complete(props: any) {
             console.log(res)
         }
     }
+    function getEmployee() {
+        const UserID = localStorage.getItem("uid")
+        const apiUrl = `http://localhost:8080/users/${UserID}`;
+        const requestOptions = {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        };
+        fetch(apiUrl, requestOptions)
+          .then((response) => response.json())
+          .then((res) => {
+            console.log("Combobox_employee", res);
+            if (res.data) {
+              setEmp(res.data);
+              setEmpName(res.data.EmployeeName); // เพิ่มบรรทัดนี้
+            } else {
+              console.log("else");
+            }
+          });
+      }
+      
     const navigator = useNavigate();
     async function approveComplete() {
         try {
             let data = {
                 ID: params,
                 EmployeeID: reportProblem?.UserSerial,
-                StatusID: 3,
+                StID: 3,
                 DepartmentID: reportProblem?.DepID,
                 Heading: reportProblem?.Heading,
                 Description: reportProblem?.Description,
                 CompleteDate: new Date(),
                 FileUploadID: reportProblem?.FileUploadID,
+                EmployeeName: emp?.UserLname,
 
             };
             console.log(data)
@@ -66,7 +93,7 @@ export default function Admin_Complete(props: any) {
             setTimeout(() => {
                 window.location.reload();
             }, 800);
-            mail();
+            // mail();
         } catch (err) {
             setError(true);
             console.log(err);
@@ -77,7 +104,7 @@ export default function Admin_Complete(props: any) {
             let data = {
                 ID: params,
                 EmployeeID: reportProblem?.UserSerial,
-                StatusID: 3,
+                StatusID: 2,
                 DepartmentID: reportProblem?.DepID,
                 Heading: reportProblem?.Heading,
                 Description: reportProblem?.Description,
@@ -86,9 +113,9 @@ export default function Admin_Complete(props: any) {
             console.log(data)
             let res = await UpdateReportproblem(data);
             setSuccess(true);
-            setTimeout(() => {
-                window.location.reload();
-            }, 800);
+            // setTimeout(() => {
+            //     window.location.reload();
+            // }, 800);
 
         } catch (err) {
             setError(true);
@@ -97,6 +124,11 @@ export default function Admin_Complete(props: any) {
     }
     useEffect(() => {
         getreportProblemByID(params);
+        // กำหนดค่าเริ่มต้นให้กับ reportProblem.StatusID
+        setReportProblem(prevReportProblem => ({
+            ...prevReportProblem,
+            StatusID: 3 // หรือค่าที่คุณต้องการ
+        }));
     }, []);
     async function mail() {
         let data = {

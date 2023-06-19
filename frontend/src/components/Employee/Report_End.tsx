@@ -52,7 +52,7 @@ export default function Report_End(props: any) {
             let data = {
                 ID: params,
                 EmployeeID: reportProblem?.UserSerial,
-                StatusID: 4,
+                StID: 4,
                 DepartmentID: reportProblem?.DepID,
                 Heading: reportProblem?.Heading,
                 Description: reportProblem?.Description,

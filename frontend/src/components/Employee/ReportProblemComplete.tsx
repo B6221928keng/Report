@@ -12,7 +12,6 @@ import Report_End from "./Report_End";
 
 function ReportProblemComplete() {
     const [reportlistRcom, setReportlist] = useState<ReportProblem2Interface[]>([])
-    const [isReportEndClicked, setIsReportEndClicked] = useState(false); // เพิ่มตัวแปร state
     const getreportListReportComplete = async () => {
         let res = await ListAdminReportProblem3();
         if (res.data) {
@@ -108,7 +107,7 @@ function ReportProblemComplete() {
             align: 'left',
             renderCell: (params: GridRenderCellParams<any>) => {
                 return (
-                    <IconButton onClick={() => handleDownloadFile(params.row.ID, params.row.name)}>
+                    <IconButton onClick={() => handleDownloadFile(params.row.FileUploadID, params.row.name)}>
                         <GetAppRoundedIcon />
                         <span style={{ fontSize: 'small' }}>{params.row.name}</span>
                     </IconButton>

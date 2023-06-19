@@ -12,7 +12,7 @@ import SnackbarContent from '@mui/material/SnackbarContent';
 import axios from 'axios';
 import { User1Interface, UserInterface } from "../../models/IUser";
 import { StatusInterface } from "../../models/IStatus";
-import { ReportProblemInterface } from "../../models/IReportProblem";
+import { ReportProblemInterface, ReportProblemInterfaceT } from "../../models/IReportProblem";
 import DriveFolderUploadRoundedIcon from '@mui/icons-material/DriveFolderUploadRounded';
 import CheckCircleSharpIcon from '@mui/icons-material/CheckCircleSharp';
 import { DepartmentInterface } from "../../models/IDepartment";
@@ -35,7 +35,7 @@ export default function ReportProblemCreate(props: any) {
     const [status, setStatus] = React.useState<StatusInterface[]>([]);
     const [department, setDepartment] = React.useState<DepartmentInterface>();
     //const [medicineLabel, setMedicineLable] = React.useState<MedicineLabelsInterface[]>([]);
-    const [ReportProblem, setReportProblem] = React.useState<Partial<ReportProblemInterface>>({
+    const [ReportProblem, setReportProblem] = React.useState<Partial<ReportProblemInterfaceT>>({
         NotificationDate: new Date(),
     });
     // const [filess, setFiless] = React.useState<FileUploadInterface>();
@@ -311,7 +311,7 @@ export default function ReportProblemCreate(props: any) {
         let val = typeof data === "string" ? parseInt(data) : data;
         return val;
     };
-
+    const did = localStorage.getItem('did')
     function submit() {
         setLoading(true);
         // Validate Heading
@@ -339,20 +339,21 @@ export default function ReportProblemCreate(props: any) {
         }
 
         let data = {
+            ID: ReportProblem.ID,
             UserSerial: emp?.UserSerial,
             Heading: ReportProblem.Heading ?? "",
             Description: ReportProblem.Description ?? "",
             StID: 1,
             NotificationDate: ReportProblem.NotificationDate,
-            DepID: ReportProblem.DepID,
-            FileUploadID: ReportProblem.FileUploadID,
+            DepID: convertType(did),
+            fileUploadID: ReportProblem.fileUploadID,
             AdminID: 0,
         };
 
         console.log(Email);
-        console.log("FileUploadID:", ReportProblem.FileUploadID);
+        console.log("FileUploadID:", ReportProblem.fileUploadID);
         console.log("FileUpload:", ReportProblem.FileUpload);
-        console.log(data.FileUploadID);
+        console.log(data.fileUploadID);
         console.log("Data", data);
         const apiUrl = "http://localhost:8080/reportProblems";
         const requestOptions = {
@@ -383,14 +384,6 @@ export default function ReportProblemCreate(props: any) {
                 }
             });
     }
-
-    // const loadfile =async () => {
-    //     React.useEffect(() => {
-    //         getFileUploads()
-
-    //     })
-
-    // }
 
     //ดึงข้อมูล ใส่ combobox
     React.useEffect(() => {

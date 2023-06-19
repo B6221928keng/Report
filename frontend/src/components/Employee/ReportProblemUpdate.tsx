@@ -12,7 +12,7 @@ import SourceIcon from '@mui/icons-material/Source';
 import moment from 'moment';
 import { UserInterface } from "../../models/IUser";
 import { StatusInterface } from "../../models/IStatus";
-import { ReportProblemInterface } from "../../models/IReportProblem";
+import { ReportProblemInterface, ReportProblemInterfaceT } from "../../models/IReportProblem";
 import { DepartmentInterface } from "../../models/IDepartment";
 import DriveFolderUploadRoundedIcon from '@mui/icons-material/DriveFolderUploadRounded';
 import CheckCircleSharpIcon from '@mui/icons-material/CheckCircleSharp';
@@ -39,7 +39,7 @@ export default function ReportProblemUpdate(props: any) {
     const [uploadError, setUploadError] = React.useState(false);
     const [uploadSuccess, setUploadSuccess] = React.useState(false);
     const [department, setDepartment] = React.useState<DepartmentInterface[]>([]);
-    const [ReportProblem, setReportProblem] = React.useState<Partial<ReportProblemInterface>>({
+    const [ReportProblem, setReportProblem] = React.useState<Partial<ReportProblemInterfaceT>>({
         NotificationDate: new Date(),
     });
     const { params, Amail, Email } = props;
@@ -92,7 +92,7 @@ export default function ReportProblemUpdate(props: any) {
         fetch(`${apiUrl}/reportProblem/${id}`, requestOptions)
             .then((response) => response.json())
             .then((res) => {
-                console.log("ReportProblem", res)
+                console.log("reportProblem", res)
                 if (res.data) {
                     setReportProblem(res.data);
                 } else {
@@ -225,7 +225,7 @@ export default function ReportProblemUpdate(props: any) {
         if (event.target.files) {
             const newFiles = Array.from(event.target.files).map((file) => {
                 const fileInfo = {
-                    FileUploadID: 0,
+                    FileUploadID: 1,
                     name: file.name,
                     size: file.size,
                     type: file.type,
@@ -330,7 +330,7 @@ export default function ReportProblemUpdate(props: any) {
         let val = typeof data === "string" ? parseInt(data) : data;
         return val;
     };
-
+    const did = localStorage.getItem('did')
     function submit() {
         setLoading(true);
         // Validate Heading
@@ -363,16 +363,16 @@ export default function ReportProblemUpdate(props: any) {
             Heading: ReportProblem.Heading ?? "",
             Description: ReportProblem.Description ?? "",
             StatusID: 1,
-            NotificationDate: ReportProblem.NotificationDate,
-            DepartmentID: convertType(emp?.UserAuthenId),
-            FileUploadID: convertType(ReportProblem.FileUploadID),
+            NotificationDate:  new Date(),
+            DepartmentID: convertType(did),
+            fileUploadID: convertType(ReportProblem.fileUploadID),
         };
         console.log(Email);
-        console.log("FileUploadID:", ReportProblem.FileUploadID);
+        console.log("FileUploadID:", ReportProblem.fileUploadID);
         console.log("FileUpload:", ReportProblem.FileUpload);
-        console.log(data.FileUploadID);
+        console.log(data.fileUploadID);
         console.log("Data", data);
-        const apiUrl = "http://localhost:8080/reportProblem";
+        const apiUrl = "http://localhost:8080/reportProblemE";
         const requestOptions = {
             method: "PATCH",
             headers: {

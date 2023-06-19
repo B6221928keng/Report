@@ -142,23 +142,23 @@ function ReportProblemdata() {
                 return <>{moment(params.row.NotificationDate).format('DDMMYY')}|{params.row.ID}</>
             },
         },
+        // {
+        //     field: "", headerName: "ผู้รายงาน", type: "string", width: 105, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+        //         return <>{params.row.UserLname}</>
+        //     },
+        // },
+        // {
+        //     field: "Department", headerName: "แผนก", type: "string", width: 105, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+        //         return <>{params.row.DepName}</>;
+        //     },
+        // },
         {
-            field: "", headerName: "ผู้รายงาน", type: "string", width: 105, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
-                return <>{params.row.UserLname}</>
-            },
-        },
-        {
-            field: "Department", headerName: "แผนก", type: "string", width: 105, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
-                return <>{params.row.DepName}</>;
-            },
-        },
-        {
-            field: "Heading", headerName: "หัวข้อ", type: "string", width: 150, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+            field: "Heading", headerName: "หัวข้อ", type: "string", width: 200, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
                 return <>{params.row.Heading}</>;
             },
         },
         {
-            field: "Description", headerName: "รายละเอียด", type: "string", width: 150, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
+            field: "Description", headerName: "รายละเอียด", type: "string", width: 300, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
                 return <>{params.row.Description}</>;
             },
         },
@@ -170,7 +170,7 @@ function ReportProblemdata() {
             field: 'Name',
             headerName: 'ไฟล์',
             sortable: false,
-            width: 110,
+            width: 165,
             headerAlign: 'center',
             align: 'left',
             renderCell: (params: GridRenderCellParams<any>) => {

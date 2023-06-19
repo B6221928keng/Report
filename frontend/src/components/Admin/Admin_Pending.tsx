@@ -4,7 +4,7 @@ import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { Button, Dialog, DialogActions, DialogTitle, IconButton, Snackbar } from "@mui/material";
 import FmdBadIcon from '@mui/icons-material/FmdBad';
 import { GetReportproblemByID, UpdateReportproblem } from "../../service/Servics";
-import { ReportProblemInterface } from "../../models/IReportProblem";
+import { ReportProblemInterface, ReportProblemInterfaceT } from "../../models/IReportProblem";
 import React from "react";
 import moment from "moment";
 import axios from "axios";
@@ -39,7 +39,7 @@ export default function Admin_Pending(props: any) {
         setError(false)
     };
 
-    const [reportProblem, setReportProblem] = React.useState<Partial<ReportProblemInterface>>({
+    const [reportProblem, setReportProblem] = React.useState<Partial<ReportProblemInterfaceT>>({
         PendingDate: new Date(),
     });
     const getreportProblemByID = async (id: any) => {
@@ -77,13 +77,14 @@ export default function Admin_Pending(props: any) {
         try {
             let data = {
                 ID: params,
-                EmployeeID: reportProblem?.UserSerial,
+                EmployeeID: reportProblem?.userserial,
                 StID: 2,
                 DepartmentID: reportProblem?.DepID,
                 Heading: reportProblem?.Heading,
                 Description: reportProblem?.Description,
+                NotificationDate:reportProblem?.NotificationDate,
                 PendingDate: new Date(),
-                FileUploadID: reportProblem.FileUploadID,
+                FileUploadID: reportProblem.fileUploadID,
                 EmployeeName: emp?.UserLname,
                 // AdminID: emp?.ID
             };
@@ -104,7 +105,7 @@ export default function Admin_Pending(props: any) {
         try {
             let data = {
                 ID: params,
-                EmployeeID: reportProblem?.UserSerial,
+                EmployeeID: reportProblem?.userserial,
                 StatusID: 2,
                 DepartmentID: reportProblem?.DepID,
                 Heading: reportProblem?.Heading,
