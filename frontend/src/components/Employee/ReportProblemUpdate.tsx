@@ -365,10 +365,10 @@ export default function ReportProblemUpdate(props: any) {
             StatusID: 1,
             NotificationDate:  new Date(),
             DepartmentID: convertType(did),
-            fileUploadID: convertType(ReportProblem.fileUploadID),
+            fileUploadID: convertType(ReportProblem.FileUploadID),
         };
         console.log(Email);
-        console.log("FileUploadID:", ReportProblem.fileUploadID);
+        console.log("FileUploadID:", ReportProblem.FileUploadID);
         console.log("FileUpload:", ReportProblem.FileUpload);
         console.log(data.fileUploadID);
         console.log("Data", data);

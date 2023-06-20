@@ -44,6 +44,7 @@ func main() {
 	//-----------------------------------แจ้งปัญหา------------------------------------
 	r.POST("/reportProblems", controller.CreateReportProblem)
 	r.GET("/reportProblem", controller.ListReportProblem)
+	r.GET("/reportProblemHome", controller.ListReportProblemHome)
 	r.GET("/reportProblemstatus1", controller.ListReportProblemStatusID1)
 	r.GET("/reportProblemstatus2", controller.ListReportProblemStatusID2)
 	r.GET("/reportProblemstatus3", controller.ListReportProblemStatusID3)

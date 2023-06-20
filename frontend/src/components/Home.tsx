@@ -3,7 +3,7 @@ import { Container, IconButton, Typography } from '@mui/material';
 import home from './image/Home.jpg';
 import React, { useEffect, useState } from "react";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
-import { ReportProblem3Interface, ReportProblemInterface } from '../models/IReportProblem';
+import { ReportPrInterface, ReportProblem3Interface, ReportProblemInterface } from '../models/IReportProblem';
 import moment from 'moment';
 import GetAppRoundedIcon from '@mui/icons-material/GetAppRounded';
 import './Home.css'; // นำเข้าไฟล์ CSS
@@ -12,67 +12,91 @@ import Admin_Pending from './Admin/Admin_Pending';
 import { UserInterface } from '../models/IUser';
 import { useParams } from 'react-router-dom';
 function Home() {
-  const [reportListData, setReportListData] = useState<ReportProblemInterface[]>([]);
+  const [reportListData, setReportListData] = useState<ReportPrInterface[]>([]);
   const [reportlistRcom, setReportlist] = useState<ReportProblem3Interface[]>([])
   const [emp, setEmp] = React.useState<UserInterface>();
   const [admin, setadmin] = React.useState<UserInterface>();
   const [statusChangedBy, setStatusChangedBy] = useState<number | null>(null);
   const [empName, setEmpName] = useState("");
   useEffect(() => {
-    getReportProblem(id);
+    getReportProblem();
     // getreportListAdminEnd();
     getEmployee();
     getAdmin();
   }, []);
-  let { id } = useParams();
-  const getReportProblem = async (id: string | undefined | null) => {
-      const apiUrl = "http://localhost:8080";
-      const requestOptions = {
-          method: "GET",
-          headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "application/json",
-          },
-      };
+  // let { id } = useParams();
+  // const getReportProblem = async (id: string | undefined | null) => {
+  //     const apiUrl = "http://localhost:8080";
+  //     const requestOptions = {
+  //         method: "GET",
+  //         headers: {
+  //             Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //             "Content-Type": "application/json",
+  //         },
+  //     };
 
-      fetch(`${apiUrl}/reportProblem/${id}`, requestOptions)
-          .then((response) => response.json())
-          .then((res) => {
-              console.log("reportProblem", res)
-              if (res.data) {
-                setReportListData(res.data);
-              } else {
-                  console.log("else");
-              }
-          });
-  };
-  const UserID = localStorage.getItem("uid");
-  // const getReportProblem = async () => {
-  //   const apiUrl = `http://localhost:8080/reportProblem/${UserID}`;
-  //   const requestOptions = {
-  //     method: "GET",
-  //     headers: {
-  //       Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //       "Content-Type": "application/json",
-  //     },
-  //   };
-  //   fetch(apiUrl, requestOptions)
-  //     .then((response) => response.json())
-  //     .then((res) => {
-  //       console.log(res.data);
-  //       if (Array.isArray(res.data)) { // Check if res.data is an array
-  //         const sortedData = res.data.sort(
-  //           (a: ReportProblemInterface, b: ReportProblemInterface) => b.ID - a.ID
-  //         );
-  //         const latestData = sortedData.slice(0, 5);
-  //         setReportListData(latestData);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error:", error);
-  //     });
+  //     fetch(`${apiUrl}/reportProblem/${id}`, requestOptions)
+  //         .then((response) => response.json())
+  //         .then((res) => {
+  //             console.log("reportProblem", res)
+  //             if (res.data) {
+  //               setReportListData(res.data);
+  //             } else {
+  //                 console.log("else");
+  //             }
+  //         });
   // };
-
+ 
+  const getReportProblem1 = async () => { 
+    const UserID = localStorage.getItem("uid");
+    const apiUrl = `http://localhost:8080/reportProblem/${UserID}`;
+    if (!UserID) {
+      // ไม่พบค่า UserID ใน localStorage
+      console.error("UserID not found in localStorage");
+      return;
+    }  
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+    fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        console.log(res.data);
+        console.log(UserID);
+        if (Array.isArray(res.data)) { // Check if res.data is an array
+          const sortedData = res.data.sort(
+            (a: ReportProblemInterface, b: ReportProblemInterface) => b.ID - a.ID
+          );
+          const latestData = sortedData.slice(0, 5);
+          setReportListData(latestData);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+  const getReportProblem = async () => {
+    const apiUrl = "http://localhost:8080/reportProblemHome";
+    const requestOptions = {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+        },
+    };
+    fetch(apiUrl, requestOptions)
+        .then((response) => response.json())
+        .then((res) => {
+            console.log(res.data);
+            if (res.data) {
+              setReportListData(res.data);
+            }
+        });
+};
   // const getReportProblem = async () => {
   //   const apiUrl = "http://localhost:8080/reportProblem";
   //   const requestOptions = {
@@ -236,32 +260,32 @@ function Home() {
                 <TableCell align="center" width="15">หัวข้อ</TableCell>
                 <TableCell align="center" width="15">รายละเอียด</TableCell>
                 <TableCell align="center" width="15">เวลา</TableCell>
-                <TableCell align="center" width="15">ดาวน์โหลด</TableCell>
+                {/* <TableCell align="center" width="15">ดาวน์โหลด</TableCell> */}
                 <TableCell align="center" width="15">สถานะ</TableCell>
                 <TableCell align="center" width="15">IT</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {reportListData.map((report) => (
-                report.Status.StatusName !== "End" && (
+                  report.StatusName !== "End" && (
                   <TableRow key={report.ID}>
                     <TableCell align="center" width="15"> {moment(report.NotificationDate).format('DDMMYY')}|{report.ID}</TableCell>
                     <TableCell align="center" width="15">{report.Heading}</TableCell>
                     <TableCell align="center" width="15">{report.Description}</TableCell>
                     <TableCell align="center" width="15">  {moment(report.NotificationDate).format('HH:mm')}</TableCell>
-                    <TableCell align="center" width="15">
-                      <IconButton onClick={() => handleDownloadFile(report.FileUploadID, report.FileUpload.name)}>
+                    {/* <TableCell align="center" width="15">
+                    <IconButton onClick={() => handleDownloadFile(report.ID, report.Name)}>
                         <GetAppRoundedIcon />
+                          <span style={{ fontSize: 'small' }}>{report.Name}</span>
                       </IconButton>
-                      {report.FileUpload.name}
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell align="center" width="15">
                       <span
                         style={{
-                          color: report.Status.StatusName === "Send request" ? "red" : report.Status.StatusName === "Pending" ? "orange" : "green",
+                          color: report.StatusName ===  "Send request"  ? "red" : report.StatusName === "Pending" ? "orange" : "green",
                         }}
                       >
-                        {report.Status.StatusName}
+                        {report.StatusName}
                       </span>
                     </TableCell>
                   </TableRow>
@@ -271,7 +295,7 @@ function Home() {
           </Table>
         </TableContainer>
       )}
-      
+
       {localStorage.getItem("role") === "2" && (
         <TableContainer component={Paper}>
           <Table className="custom-table1" align="center" style={{ boxShadow: "10px 10px 10px rgba(10, 5, 10, 0.15)", borderRadius: "20px", backgroundColor: "#f4f4f4", width: "90%", height: "90px" }}>
@@ -282,47 +306,47 @@ function Home() {
                 <TableCell align="center" width="15">หัวข้อ</TableCell>
                 <TableCell align="center" width="15">รายละเอียด</TableCell>
                 <TableCell align="center" width="15">เวลา</TableCell>
-                <TableCell align="center" width="15">ดาวน์โหลด</TableCell>
+                {/* <TableCell align="center" width="15">ดาวน์โหลด</TableCell> */}
                 <TableCell align="center" width="15">สถานะ</TableCell>
                 <TableCell align="center" width="15">IT</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {reportListData.map((report) => (
-                report.Status.StatusName !== "End" && (
+                report.StatusName !== "End" && (
                   <TableRow key={report.ID}>
                     <TableCell align="center" width="15"> {moment(report.NotificationDate).format('DDMMYY')}|{report.ID}</TableCell>
-                    {/* <TableCell align="center" width="15">{report.Employee.EmployeeName}</TableCell> */}
+                    <TableCell align="center" width="15">{report.UserLname}</TableCell>
                     <TableCell align="center" width="15">{report.Heading}</TableCell>
                     <TableCell align="center" width="15">{report.Description}</TableCell>
                     <TableCell align="center" width="15">  {moment(report.NotificationDate).format('HH:mm')}</TableCell>
-                    <TableCell align="center" width="15">
-                      <IconButton onClick={() => handleDownloadFile(report.ID, report.FileUpload.name)}>
+                    {/* <TableCell align="center" width="15">
+                      <IconButton onClick={() => handleDownloadFile(report.FileUploadID, report.Name)}>
                         <GetAppRoundedIcon />
                       </IconButton>
-                      {report.FileUpload.name}
-                    </TableCell>
+                      {report.Name}
+                    </TableCell> */}
                     <TableCell align="center" width="15">
                       <span
                         style={{
-                          color: report.Status.StatusName === "Send request" ? "red" : report.Status.StatusName === "Pending" ? "orange" : "green",
+                          color: report.StatusName === "Send request" ? "red" : report.StatusName === "Pending" ? "orange" : "green",
                         }}
                       >
-                        {report.Status.StatusName === "Send request" ? "Send request" : report.Status.StatusName}
+                        {report.StatusName === "Send request" ? "Send request" : report.StatusName}
                       </span>
                     </TableCell>
-                    {/* <TableCell align="center" width="15">
-                      {report.Status.StatusName === "Send request" ? (
+                    <TableCell align="center" width="15">
+                      {report.StatusName === "Send request" ? (
                         "ยังไม่มีการตรวจสอบ"
                       ) : (
                         <span>
-                          {report.Status.StatusName === "Pending" &&
-                            (report.Admin.EmployeeName)}
-                          {report.Status.StatusName === "Complete" &&
-                            (report.Admin.EmployeeName)}
+                          {report.StatusName === "Pending" &&
+                            (report.AdminID)}
+                          {report.StatusName === "Complete" &&
+                            (report.AdminID)}
                         </span>
                       )}
-                    </TableCell> */}
+                    </TableCell>
                   </TableRow>
                 )
               ))}

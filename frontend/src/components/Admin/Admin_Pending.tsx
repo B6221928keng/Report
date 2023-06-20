@@ -82,9 +82,8 @@ export default function Admin_Pending(props: any) {
                 DepartmentID: reportProblem?.DepID,
                 Heading: reportProblem?.Heading,
                 Description: reportProblem?.Description,
-                NotificationDate:reportProblem?.NotificationDate,
                 PendingDate: new Date(),
-                FileUploadID: reportProblem.fileUploadID,
+                FileUploadID: reportProblem.FileUploadID,
                 EmployeeName: emp?.UserLname,
                 // AdminID: emp?.ID
             };

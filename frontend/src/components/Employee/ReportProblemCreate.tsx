@@ -35,7 +35,7 @@ export default function ReportProblemCreate(props: any) {
     const [status, setStatus] = React.useState<StatusInterface[]>([]);
     const [department, setDepartment] = React.useState<DepartmentInterface>();
     //const [medicineLabel, setMedicineLable] = React.useState<MedicineLabelsInterface[]>([]);
-    const [ReportProblem, setReportProblem] = React.useState<Partial<ReportProblemInterfaceT>>({
+    const [ReportProblem, setReportProblem] = React.useState<Partial<ReportProblemInterface>>({
         NotificationDate: new Date(),
     });
     // const [filess, setFiless] = React.useState<FileUploadInterface>();
@@ -235,10 +235,10 @@ export default function ReportProblemCreate(props: any) {
                         const fileData = data.data[0];
                         setReportProblem((prevReportProblem) => ({
                             ...prevReportProblem,
-                            FileUploadID: fileData.ID, // ไม่ต้องกำหนดค่า FileUploadID ตรงนี้
+                            FileUploadID: fileData.file_upload_id, // ไม่ต้องกำหนดค่า FileUploadID ตรงนี้
                             FileUpload: {
                                 ...(prevReportProblem.FileUpload || {}),
-                                FileUploadID: fileData.FileUploadID,
+                                FileUploadID: fileData.file_upload_id,
                                 name: fileData.name,
                                 size: fileData.size,
                                 type: fileData.type,
@@ -339,21 +339,21 @@ export default function ReportProblemCreate(props: any) {
         }
 
         let data = {
-            ID: ReportProblem.ID,
             UserSerial: emp?.UserSerial,
             Heading: ReportProblem.Heading ?? "",
             Description: ReportProblem.Description ?? "",
             StID: 1,
             NotificationDate: ReportProblem.NotificationDate,
             DepID: convertType(did),
-            fileUploadID: ReportProblem.fileUploadID,
+            FileUpload: ReportProblem.FileUpload,
+            FileUploadID: ReportProblem.FileUploadID,
             AdminID: 0,
         };
 
         console.log(Email);
-        console.log("FileUploadID:", ReportProblem.fileUploadID);
+        console.log("FileUploadID:", ReportProblem.FileUploadID);
         console.log("FileUpload:", ReportProblem.FileUpload);
-        console.log(data.fileUploadID);
+        console.log(data.FileUpload);
         console.log("Data", data);
         const apiUrl = "http://localhost:8080/reportProblems";
         const requestOptions = {

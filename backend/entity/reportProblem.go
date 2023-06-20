@@ -77,7 +77,7 @@ type ReportProblem1 struct {
 	
 	
 	FileUploadID *uint      `gorm:"column:file_upload_id" json:"fileUpload"`
-	FileUpload   FileUpload `gorm:"foreignKey:FileUpload"`
+	FileUpload   FileUpload `gorm:"foreignKey:FileUploadID"`
 
 }
 type ReportProblem2 struct {
@@ -144,7 +144,7 @@ type FileUpload struct {
 	Content      []byte     `json:"content"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	ReportProblem []ReportProblem `gorm:"foreignKey:FileUploadID"` 
+	ReportProblem []ReportProblem1 `gorm:"foreignKey:FileUploadID"` 
 }
 
 // type ReportProblem1 struct {

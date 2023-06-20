@@ -43,7 +43,7 @@ export interface ReportProblemInterfaceT {
     
     DepID: number,
 
-    fileUploadID: number,
+    FileUploadID: number,
     FileUpload: FileUploadInterface,
 }
 export interface ReportPrInterface {
