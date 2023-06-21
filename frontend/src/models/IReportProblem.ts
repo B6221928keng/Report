@@ -1,7 +1,7 @@
 import { DepartmentInterface } from "./IDepartment"
 import { FileUploadInterface } from "./IFileUpload"
 import { StatusInterface } from "./IStatus"
-import { UserAuthenInterface, UserInterface } from "./IUser"
+import { User1Interface, UserAuthenInterface, UserInterface } from "./IUser"
 export interface ReportProblemInterface {
     ID: number,
     Heading: string,
@@ -15,7 +15,7 @@ export interface ReportProblemInterface {
     UserAuthen: UserAuthenInterface,
   
     AdminID: number,
-    Admin: UserAuthenInterface,
+    Admin: User1Interface,
 
     StID: number,
     Status: StatusInterface
@@ -36,7 +36,7 @@ export interface ReportProblemInterfaceT {
     EndDate: Date | null, //ค่าเวลาเสร็จงาน
 
     userserial: number,
-
+    UserLname: string,
     AdminID: number,
 
     StID: number,
@@ -59,7 +59,9 @@ export interface ReportPrInterface {
     UserSerial: number,
     UserName: string,
     UserLname: string,
+    
     AdminID: number,
+    Admin: User1Interface,
 
     StID: number,
     StatusName: string,

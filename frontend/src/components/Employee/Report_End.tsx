@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { Button, Dialog, DialogActions, DialogTitle, IconButton, Snackbar } from "@mui/material";
 import DomainVerificationIcon from '@mui/icons-material/DomainVerification';
-import { GetReportproblemByID, UpdateReportproblem } from "../../service/Servics";
+import { GetReportproblemByID, UpdateReportproblem, UpdateReportproblemE } from "../../service/Servics";
 import { ReportProblemInterface } from "../../models/IReportProblem";
 import React from "react";
 import axios from "axios";
@@ -60,7 +60,7 @@ export default function Report_End(props: any) {
                 FileUploadID: reportProblem?.FileUploadID,
             };
             console.log(data)
-            let res = await UpdateReportproblem(data);
+            let res = await UpdateReportproblemE(data);
             setSuccess(true);
             setTimeout(() => {
                 window.location.reload();
@@ -80,7 +80,7 @@ export default function Report_End(props: any) {
                 DepartmentID: reportProblem?.DepID,
                 Heading: reportProblem?.Heading,
                 Description: reportProblem?.Description,
-                NotificationDate: reportProblem?.NotificationDate
+              
             };
             console.log(data)
             let res = await UpdateReportproblem(data);

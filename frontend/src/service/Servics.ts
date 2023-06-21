@@ -156,7 +156,7 @@ async function ListAdminReportProblem4() {
 
   return res;
 }
-async function UpdateReportproblem(data: Partial<ReportProblemInterfaceT>) {
+async function UpdateReportproblem(data: Partial<ReportProblemInterface>) {
    
   const requestOptions = {
       method: "PATCH",
@@ -174,9 +174,45 @@ async function UpdateReportproblem(data: Partial<ReportProblemInterfaceT>) {
       })
   return res
 }
+async function UpdateReportproblemC(data: Partial<ReportProblemInterface>) {
+   
+  const requestOptions = {
+      method: "PATCH",
+      headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data)
+  }
 
+  let res = await fetch(`${apiUrl}/reportProblemc`, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        return res
+      })
+  return res
+}
+async function UpdateReportproblemE(data: Partial<ReportProblemInterface>) {
+   
+  const requestOptions = {
+      method: "PATCH",
+      headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data)
+  }
+
+  let res = await fetch(`${apiUrl}/reportProblemEnd`, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        return res
+      })
+  return res
+}
 export {
-  
+  UpdateReportproblemE,
+  UpdateReportproblemC,
   reportProblem,
   ListLeaveType,
   GetReportproblemByID,

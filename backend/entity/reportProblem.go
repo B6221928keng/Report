@@ -37,6 +37,7 @@ type ReportPr struct {
 
 	Heading     string `validate:"required"`
 	Description string
+	
 	AdminID uint
 	
 	UserSerial *uint `gorm:"column:userserial" valid:"-"`
@@ -76,7 +77,7 @@ type ReportProblem1 struct {
 	DepID      uint       `gorm:"column:dep_id"`
 	
 	
-	FileUploadID *uint      `gorm:"column:file_upload_id" json:"fileUpload"`
+	FileUploadID *uint      `gorm:"column:file_upload_id"`
 	FileUpload   FileUpload `gorm:"foreignKey:FileUploadID"`
 
 }
@@ -146,6 +147,19 @@ type FileUpload struct {
 	UpdatedAt time.Time
 	ReportProblem []ReportProblem1 `gorm:"foreignKey:FileUploadID"` 
 }
+
+type FileUpload1 struct {
+	FileUploadID uint       ` db:"file_upload_id" `
+	Name         string     `db:"name"`
+	Size         int64      `db:"size"`
+	Type         string     `db:"type"`
+	Content      []byte     `db:"content"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	ReportProblems []ReportProblem1 `gorm:"foreignKey:FileUploadID"` 
+}
+
+
 
 // type ReportProblem1 struct {
 // 	ID               uint   `gorm:"primaryKey"`

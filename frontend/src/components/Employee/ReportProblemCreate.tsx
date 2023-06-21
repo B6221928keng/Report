@@ -345,15 +345,14 @@ export default function ReportProblemCreate(props: any) {
             StID: 1,
             NotificationDate: ReportProblem.NotificationDate,
             DepID: convertType(did),
-            FileUpload: ReportProblem.FileUpload,
+            // FileUpload: ReportProblem.FileUpload,
             FileUploadID: ReportProblem.FileUploadID,
             AdminID: 0,
         };
 
         console.log(Email);
-        console.log("FileUploadID:", ReportProblem.FileUploadID);
-        console.log("FileUpload:", ReportProblem.FileUpload);
-        console.log(data.FileUpload);
+        // console.log("FileUploadID:", ReportProblem.FileUploadID);
+        // console.log(data.FileUpload);
         console.log("Data", data);
         const apiUrl = "http://localhost:8080/reportProblems";
         const requestOptions = {

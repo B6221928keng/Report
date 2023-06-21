@@ -52,8 +52,12 @@ func main() {
 	r.GET("/reportProblem/:id", controller.GetReportProblem)
 	r.GET("/adminReportProblem/:id", controller.ListAdminReportProblem)
 
-	r.PATCH("/reportProblem", controller.UpdateReportProblem)
+	r.PATCH("/reportProblem", controller.UpdateReportProblemP)
+	r.PATCH("/reportProblemc", controller.UpdateReportProblemC)
+	r.PATCH("/reportProblemEnd", controller.UpdateReportProblemE)
+
 	r.PATCH("/reportProblemE", controller.UpdateReportProblemUser)
+
 	
 	r.DELETE("/reportProblems/:id", controller.DeleteReportProblem)
 	//Status

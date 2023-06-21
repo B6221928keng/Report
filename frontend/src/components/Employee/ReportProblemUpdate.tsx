@@ -20,6 +20,7 @@ import { FileUploadInterface } from '../../models/IFileUpload';
 import GppMaybeSharpIcon from '@mui/icons-material/GppMaybeSharp';
 import SnackbarContent from '@mui/material/SnackbarContent';
 import axios from 'axios';
+import { reportProblem } from '../../service/Servics';
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
     ref
@@ -39,7 +40,7 @@ export default function ReportProblemUpdate(props: any) {
     const [uploadError, setUploadError] = React.useState(false);
     const [uploadSuccess, setUploadSuccess] = React.useState(false);
     const [department, setDepartment] = React.useState<DepartmentInterface[]>([]);
-    const [ReportProblem, setReportProblem] = React.useState<Partial<ReportProblemInterfaceT>>({
+    const [ReportProblem, setReportProblem] = React.useState<Partial<ReportProblemInterface>>({
         NotificationDate: new Date(),
     });
     const { params, Amail, Email } = props;
@@ -279,10 +280,10 @@ export default function ReportProblemUpdate(props: any) {
                         const fileUploadID = fileData.ID;
                         setReportProblem((prevReportProblem) => ({
                             ...prevReportProblem,
-                            FileUploadID: fileData.ID,
+                            FileUploadID: fileData.file_upload_id,
                             FileUpload: {
                                 ...(prevReportProblem.FileUpload || {}),
-                                FileUploadID: fileData.FileUploadID,
+                                FileUploadID: fileData.file_upload_id,
                                 name: fileData.name,
                                 size: fileData.size,
                                 type: fileData.type,
@@ -360,17 +361,18 @@ export default function ReportProblemUpdate(props: any) {
         let data = {
             ID: convertType(ReportProblem.ID),
             EmployeeID: emp?.UserNo,
-            Heading: ReportProblem.Heading ?? "",
+            // Heading: ReportProblem.Heading ?? "", 
+            Heading: convertType(ReportProblem?.Heading) ?? 0,
             Description: ReportProblem.Description ?? "",
             StatusID: 1,
-            NotificationDate:  new Date(),
+            NotificationDate: new Date(),
             DepartmentID: convertType(did),
             fileUploadID: convertType(ReportProblem.FileUploadID),
         };
         console.log(Email);
-        console.log("FileUploadID:", ReportProblem.FileUploadID);
-        console.log("FileUpload:", ReportProblem.FileUpload);
-        console.log(data.fileUploadID);
+        // console.log("FileUploadID:", ReportProblem.FileUploadID);
+        // console.log("FileUpload:", ReportProblem.FileUpload);
+        // console.log(data.fileUploadID);
         console.log("Data", data);
         const apiUrl = "http://localhost:8080/reportProblemE";
         const requestOptions = {
@@ -507,12 +509,16 @@ export default function ReportProblemUpdate(props: any) {
                 <Grid container spacing={2}>
                     <Grid item xs={4}>
                         <FormControl fullWidth variant="outlined" style={{ width: '100%' }}>
-                            <p>หัวข้อ</p>
+                            <p>
+                                <span style={{ color: 'black' }}>หัวข้อ</span>
+                                <span style={{ color: 'red' }}>*</span>
+                            </p>
                             <FormControl fullWidth variant="outlined">
                                 <TextField
                                     id="Heading"
+                                    name='Heading'
                                     variant="outlined"
-                                    value={ReportProblem.Heading}
+                                    value={ReportProblem?.Heading ?? ""}
                                     type="string"
                                     size="medium"
                                     placeholder="กรอกหัวข้อ"
@@ -533,13 +539,13 @@ export default function ReportProblemUpdate(props: any) {
                                 <TextField
                                     id="Description"
                                     variant="outlined"
-                                    value={ReportProblem.Description}
                                     type="string"
                                     size="medium"
                                     placeholder="กรอกรายละเอียด"
+                                    value={ReportProblem.Description} // เพิ่มส่วนนี้เพื่อแสดงค่า Description
                                     onChange={handleInputChange}
                                     multiline
-                                    rows={6} // กำหนดจำนวนบรรทัดที่แสดงใน TextField
+                                    rows={6}
                                 />
                             </FormControl>
                         </FormControl>
@@ -560,6 +566,7 @@ export default function ReportProblemUpdate(props: any) {
                         </div>
                     </form>
                 </div>
+
                 {/* <div style={{ marginTop: '20px' }}>
                     <form onSubmit={handleSubmit}>
                         <input type="file" name="files" multiple onChange={handleFileChange} />
@@ -628,8 +635,8 @@ export default function ReportProblemUpdate(props: any) {
                                 (!fileSelected || (fileSelected && files.length === 0)) ||
                                 !uploaded // เพิ่มเงื่อนไขที่ต้องการ
                             }
-                            component={RouterLink}
-                            to="/reportProblemData"
+                        // component={RouterLink}
+                        // to="/reportProblemData"
                         >
                             บันทึกข้อมูล
                         </Button>

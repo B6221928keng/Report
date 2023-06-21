@@ -2,7 +2,7 @@ import { Link as RouterLink } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { Box, Button, Container, IconButton, Paper, Typography } from '@mui/material';
-import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarColumnsButton, GridToolbarFilterButton } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarColumnsButton, GridToolbarFilterButton, GridValueGetterParams } from '@mui/x-data-grid';
 import { ReportPrInterface, ReportProblem2Interface, ReportProblemInterface } from '../../models/IReportProblem';
 import { ListAdminReportProblem3 } from '../../service/Servics';
 import moment from 'moment';
@@ -13,7 +13,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import { FileUploadInterface } from "../../models/IFileUpload";
 import DeleteIcon from '@mui/icons-material/Delete';
 function ReportProblemdata() {
-    const [reportlistdata, setReportlistdata] = useState<ReportPrInterface[]>([])
+    const [reportlistdata, setReportlistdata] = useState<ReportProblemInterface[]>([])
     const [reportfile, setReportfile] = useState<FileUploadInterface[]>([])
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(false);
@@ -28,13 +28,14 @@ function ReportProblemdata() {
             },
         };
         fetch(apiUrl, requestOptions)
-            .then((response) => response.json())
-            .then((res) => {
-                console.log(res.data);
-                if (res.data) {
-                    setReportlistdata(res.data);
-                }
-            });
+        .then((response) => response.json())
+        .then((res) => {
+          console.log(res.data);
+          if (res.data) {
+            const sortedData = res.data.sort((a: { ID: number; }, b: { ID: number; }) => b.ID - a.ID); // Sort data by ID in descending order
+            setReportlistdata(sortedData);
+          }
+        });
     };
     // const getFileUpload = async () => {
     //     const apiUrl = "http://localhost:8080/fileUploads";
@@ -138,10 +139,21 @@ function ReportProblemdata() {
 
     const columns: GridColDef[] = [
         {
-            field: "id", headerName: "ID", type: "number", width: 120, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
-                return <>{moment(params.row.NotificationDate).format('DDMMYY')}|{params.row.ID}</>
+            field: "id",
+            headerName: "ID",
+            type: "number",
+            width: 120,
+            headerAlign: "center",
+            align: "center",
+            renderCell: (params: GridRenderCellParams<any>) => {
+              return (
+                <>
+                 <b> {moment(params.row.NotificationDate).format("DDMMYY")}|
+                  {params.row.ID}</b>
+                </>
+              );
             },
-        },
+          },
         // {
         //     field: "", headerName: "ผู้รายงาน", type: "string", width: 105, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
         //         return <>{params.row.UserLname}</>
@@ -165,7 +177,30 @@ function ReportProblemdata() {
 
         { field: "NotificationDate", headerName: "เวลา", type: "date", width: 100, headerAlign: "center", align: "center", valueFormatter: (params) => moment(params?.value).format("HH:mm") },
 
-
+        // {
+        //     field: "NotificationDate",
+        //     headerName: "เวลา",
+        //     width: 100,
+        //     headerAlign: "center",
+        //     align: "center",
+        //     valueGetter: (params: GridValueGetterParams) => {
+        //       const statusName = params.row.StatusName;
+        //       const notificationDate = params.row.NotificationDate;
+          
+        //       if (statusName === "Send request") {
+        //         return moment(notificationDate).format("HH:mm");
+        //       } else if (statusName === "Pending") {
+        //         return "Pending";
+        //       } else if (statusName === "Complete") {
+        //         return "Complete";
+        //       } else if (statusName === "End") {
+        //         return "End";
+        //       }
+          
+        //       return "";
+        //     },
+        //   },
+          
         {
             field: 'Name',
             headerName: 'ไฟล์',
@@ -255,6 +290,45 @@ function ReportProblemdata() {
                 );
             },
         },
+
+        // {
+        //     field: 'StatusName',
+        //     headerName: 'สถานะ',
+        //     sortable: false,
+        //     type: "string",
+        //     width: 110,
+        //     headerAlign: 'center',
+        //     align: 'center',
+        //     renderCell: (params: GridRenderCellParams<any>) => {
+        //         let statusColor = '';
+        //         let statusIcon = null;
+        //         let dateToDisplay = null;
+              
+        //         if (params.row.StatusName === "Send request") {
+        //           statusColor = 'red';
+        //         } else if (params.row.StatusName === "Pending") {
+        //           statusColor = 'orange';
+        //           dateToDisplay = params.row.PendingDate ? moment(params.row.Pending).format("DDMMYY") : null;
+        //         } else if (params.row.StatusName === "Complete") {
+        //           statusColor = 'green';
+        //           dateToDisplay = params.row.CompleteDate ? moment(params.row.CompleteDate).format("DDMMYY") : null;
+        //         } else if (params.row.StatusName === "End") {
+        //           statusColor = 'darkgreen';
+        //           statusIcon = <CheckIcon style={{ fontSize: 'small' }} />;
+        //           dateToDisplay = params.row.EndDate ? moment(params.row.EndDate).format("DDMMYY") : null;
+        //         }
+              
+        //         return (
+        //           <IconButton>
+        //             <span style={{ fontSize: 'small', color: statusColor }}>
+        //               {params.row.StatusName}
+        //               {statusIcon}
+        //               {dateToDisplay && ` ${dateToDisplay}`}
+        //             </span>
+        //           </IconButton>
+        //         );
+        //       },
+        // },
     ];
 
     return (

@@ -8,7 +8,7 @@ import { ReportProblemInterface, ReportProblemInterfaceT } from "../../models/IR
 import React from "react";
 import moment from "moment";
 import axios from "axios";
-import { UserInterface } from "../../models/IUser";
+import { User1Interface, UserInterface } from "../../models/IUser";
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
     ref
@@ -21,7 +21,7 @@ export default function Admin_Pending(props: any) {
     const [alertmessage, setAlertMessage] = useState("");
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(false);
-    const [emp, setEmp] = useState<UserInterface>();
+    const [emp, setEmp] = useState<User1Interface>();
     const [empName1, setEmpName] = useState("");
     const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === "clickaway") {
@@ -75,17 +75,17 @@ export default function Admin_Pending(props: any) {
     const navigator = useNavigate();
     async function approvereport() {
         try {
-            let data = {
-                ID: params,
-                EmployeeID: reportProblem?.userserial,
-                StID: 2,
-                DepartmentID: reportProblem?.DepID,
-                Heading: reportProblem?.Heading,
-                Description: reportProblem?.Description,
-                PendingDate: new Date(),
-                FileUploadID: reportProblem.FileUploadID,
-                EmployeeName: emp?.UserLname,
-                // AdminID: emp?.ID
+        let data = {
+            ID: params,
+            EmployeeID: reportProblem?.userserial,
+            StID: 2,
+            DepartmentID: reportProblem?.DepID,
+            Heading: reportProblem?.Heading,
+            Description: reportProblem?.Description,
+            PendingDate: new Date(),
+            FileUploadID: reportProblem.FileUploadID,
+            EmployeeName: emp?.UserLname, // แทนที่ emp?.UserLname ด้วย employee?.UserLname
+            AdminID: emp?.UserSerial, // แทนที่ emp?.UserSerial ด้วย employee?.UserSerial
             };
             console.log(data)
             console.log(params)

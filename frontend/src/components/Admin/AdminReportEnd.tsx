@@ -155,7 +155,7 @@ function AdminReportEnd() {
     const columns: GridColDef[] = [
         {
             field: "id", headerName: "ID", type: "number", width: 120, headerAlign: "center", align: "center", renderCell: (params: GridRenderCellParams<any>) => {
-                return <>{moment(params.row.NotificationDate).format('DDMMYY')}|{params.row.ID}</>
+                return <><b>{moment(params.row.NotificationDate).format('DDMMYY')}|{params.row.ID}</b></>
             },
         },
         {

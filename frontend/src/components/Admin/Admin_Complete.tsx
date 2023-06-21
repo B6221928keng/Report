@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { Button, Dialog, DialogActions, DialogTitle, IconButton, Snackbar } from "@mui/material";
 import DomainVerificationIcon from '@mui/icons-material/DomainVerification';
-import { GetReportproblemByID, UpdateReportproblem } from "../../service/Servics";
+import { GetReportproblemByID, UpdateReportproblem, UpdateReportproblemC } from "../../service/Servics";
 import { ReportProblemInterface } from "../../models/IReportProblem";
 import React from "react";
 import axios from "axios";
@@ -88,7 +88,7 @@ export default function Admin_Complete(props: any) {
 
             };
             console.log(data)
-            let res = await UpdateReportproblem(data);
+            let res = await UpdateReportproblemC(data);
             setSuccess(true);
             setTimeout(() => {
                 window.location.reload();

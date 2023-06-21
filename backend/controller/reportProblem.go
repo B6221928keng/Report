@@ -3,9 +3,6 @@ package controller
 import (
 	// "fmt"
 	// "io"
-	// "io/ioutil"
-
-	"io/ioutil"
 
 	"github.com/B6221928keng/Report/entity"
 	"github.com/asaskevich/govalidator"
@@ -45,62 +42,62 @@ func CreateReportProblem(c *gin.Context) {
 	// 	return
 	// }
 
-	if err := entity.DB().Table("fileupload").Find(&fileUpload, "file_upload_id = ?", reportproblem.FileUploadID).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error status": err.Error()})
+	if err := entity.DB().Table("fileupload").Select("*").Where("file_upload_id=?",reportproblem.FileUploadID).Find(&fileUpload).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error fileupload": err.Error()})
 		return
 	}
 	// Check if file is uploaded
-	file, err := c.FormFile("file")
-	if err == nil {
-		// Open file
-		src, err := file.Open()
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		defer src.Close()
+	// file, err := c.FormFile("file")
+	// if err == nil {
+	// 	// Open file
+	// 	src, err := file.Open()
+	// 	if err != nil {
+	// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 		return
+	// 	}
+	// 	defer src.Close()
 
-		// Read file content
-		content, err := ioutil.ReadAll(src)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
+	// 	// Read file content
+	// 	content, err := ioutil.ReadAll(src)
+	// 	if err != nil {
+	// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 		return
 
-		}
+	// 	}
 
-		// Create file upload entity
-		fileUpload := entity.FileUpload{
-			Name:    file.Filename,
-			Size:    file.Size,
-			Type:    file.Header.Get("Content-Type"),
-			Content: content,
-		}
+	// 	// Create file upload entity
+	// 	fileUpload := entity.FileUpload{
+	// 		Name:    file.Filename,
+	// 		Size:    file.Size,
+	// 		Type:    file.Header.Get("Content-Type"),
+	// 		Content: content,
+	// 	}
 
-		// Save file uploads to database
-		if err := entity.DB().Table("fileupload").Create(&fileUpload).Error; err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		reportproblem.FileUploadID = &fileUpload.FileUploadID
-	}
-	// Check if file upload ID is provided
-	if reportproblem.FileUploadID != nil {
-		// Retrieve file upload from database
-		if tx := entity.DB().Table("fileupload").Where("file_upload_id = ?", *reportproblem.FileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "fileupload not found"})
-			return
-		}
-		reportproblem.FileUpload = fileUpload
-	} else {
-		// No file uploaded, set FileUpload field to empty struct
-		reportproblem.FileUpload = entity.FileUpload{}
-		reportproblem.FileUploadID = nil
-	}
+	// 	// Save file uploads to database
+	// 	if err := entity.DB().Table("fileupload").Create(&fileUpload).Error; err != nil {
+	// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 		return
+	// 	}
+	// 	reportproblem.FileUploadID = &fileUpload.FileUploadID
+	// }
+	// // Check if file upload ID is provided
+	// if reportproblem.FileUploadID != nil {
+	// 	// Retrieve file upload from database
+	// 	if tx := entity.DB().Table("fileupload").Where("file_upload_id = ?", *reportproblem.FileUploadID).First(&fileUpload); tx.RowsAffected == 0 {
+	// 		c.JSON(http.StatusBadRequest, gin.H{"error": "fileupload not found"})
+	// 		return
+	// 	}
+	// 	reportproblem.FileUpload = fileUpload
+	// } else {
+	// 	// No file uploaded, set FileUpload field to empty struct
+	// 	reportproblem.FileUpload = entity.FileUpload{}
+	// 	reportproblem.FileUploadID = nil
+	// }
 
-	// Set file upload ID if file is uploaded
-	if reportproblem.FileUploadID == nil && reportproblem.FileUpload.FileUploadID != 0 {
-		reportproblem.FileUploadID = &reportproblem.FileUpload.FileUploadID
-	}
+	// // Set file upload ID if file is uploaded
+	// if reportproblem.FileUploadID == nil && reportproblem.FileUpload.FileUploadID != 0 {
+	// 	reportproblem.FileUploadID = &reportproblem.FileUpload.FileUploadID
+	// }
 
 	// Create ReportProblem entity
 	wv := entity.ReportProblem1{
@@ -113,8 +110,7 @@ func CreateReportProblem(c *gin.Context) {
 		UserSerial:       reportproblem.UserSerial,
 		StID:             reportproblem.StID,
 		DepID:            reportproblem.DepID,
-		FileUploadID:     reportproblem.FileUploadID,
-		FileUpload:       fileUpload,
+		FileUploadID:     &fileUpload.FileUploadID,
 	}
 	
 	// Validate entity
@@ -364,7 +360,7 @@ func ListAdminReportProblem(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": output})
 }
 
-func UpdateReportProblem(c *gin.Context) {
+func UpdateReportProblemP(c *gin.Context) {
 	var reportproblem entity.ReportProblem1
 	var newreport entity.ReportProblem1
 
@@ -386,7 +382,7 @@ func UpdateReportProblem(c *gin.Context) {
 	// ค้นหา ltype ด้วย id
 
 	reportproblem.StID = newreport.StID
-	reportproblem.NotificationDate = newreport.NotificationDate
+	reportproblem.AdminID = newreport.AdminID
 	reportproblem.CompleteDate = newreport.CompleteDate
 	reportproblem.PendingDate = newreport.PendingDate
 	reportproblem.EndDate = newreport.EndDate
@@ -399,8 +395,7 @@ func UpdateReportProblem(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"data": reportproblem})
 }
-
-func UpdateReportProblemUser(c *gin.Context) {
+func UpdateReportProblemC(c *gin.Context) {
 	var reportproblem entity.ReportProblem1
 	var newreport entity.ReportProblem1
 
@@ -416,6 +411,71 @@ func UpdateReportProblemUser(c *gin.Context) {
 	}
 	if tx := entity.DB().Table("reportproblem").Where("id = ?", newreport.ID).First(&reportproblem); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Leave not found"})
+		return
+	}
+
+	// ค้นหา ltype ด้วย id
+
+	reportproblem.StID = newreport.StID
+	reportproblem.AdminID = newreport.AdminID
+	reportproblem.CompleteDate = newreport.CompleteDate
+	reportproblem.EndDate = newreport.EndDate
+
+	// ขั้นตอนการ validate
+	if err := entity.DB().Table("reportproblem").Save(&reportproblem).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": reportproblem})
+}
+func UpdateReportProblemE(c *gin.Context) {
+	var reportproblem entity.ReportProblem1
+	var newreport entity.ReportProblem1
+
+	if err := c.ShouldBindJSON(&newreport); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	if _, err := govalidator.ValidateStruct(&newreport); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	if tx := entity.DB().Table("reportproblem").Where("id = ?", newreport.ID).First(&reportproblem); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Leave not found"})
+		return
+	}
+	reportproblem.StID = newreport.StID
+	reportproblem.AdminID = newreport.AdminID
+	reportproblem.EndDate = newreport.EndDate
+
+	// ขั้นตอนการ validate
+	if err := entity.DB().Table("reportproblem").Save(&reportproblem).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": reportproblem})
+}
+func UpdateReportProblemUser(c *gin.Context) {
+	var reportproblem entity.ReportProblem
+	var newreport entity.ReportProblem
+	var fileUpload entity.FileUpload
+
+	if err := c.ShouldBindJSON(&newreport); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	if _, err := govalidator.ValidateStruct(&newreport); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	if tx := entity.DB().Table("reportproblem").Where("id = ?", newreport.ID).First(&reportproblem); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "reportproblem not found"})
 		return
 	}
 
@@ -439,8 +499,8 @@ func UpdateReportProblemUser(c *gin.Context) {
 	}
 
 	// Retrieve the updated fileUpload from the database
-	if err := entity.DB().Table("fileupload").Where("file_upload_id = ?", reportproblem.FileUploadID).First(&reportproblem).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := entity.DB().Table("fileupload").Select("*").Where("file_upload_id=?",reportproblem.FileUploadID).Find(&fileUpload).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error fileupload": err.Error()})
 		return
 	}
 

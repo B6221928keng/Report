@@ -24,61 +24,7 @@ function Home() {
     getEmployee();
     getAdmin();
   }, []);
-  // let { id } = useParams();
-  // const getReportProblem = async (id: string | undefined | null) => {
-  //     const apiUrl = "http://localhost:8080";
-  //     const requestOptions = {
-  //         method: "GET",
-  //         headers: {
-  //             Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //             "Content-Type": "application/json",
-  //         },
-  //     };
-
-  //     fetch(`${apiUrl}/reportProblem/${id}`, requestOptions)
-  //         .then((response) => response.json())
-  //         .then((res) => {
-  //             console.log("reportProblem", res)
-  //             if (res.data) {
-  //               setReportListData(res.data);
-  //             } else {
-  //                 console.log("else");
-  //             }
-  //         });
-  // };
  
-  const getReportProblem1 = async () => { 
-    const UserID = localStorage.getItem("uid");
-    const apiUrl = `http://localhost:8080/reportProblem/${UserID}`;
-    if (!UserID) {
-      // ไม่พบค่า UserID ใน localStorage
-      console.error("UserID not found in localStorage");
-      return;
-    }  
-    const requestOptions = {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        "Content-Type": "application/json",
-      },
-    };
-    fetch(apiUrl, requestOptions)
-      .then((response) => response.json())
-      .then((res) => {
-        console.log(res.data);
-        console.log(UserID);
-        if (Array.isArray(res.data)) { // Check if res.data is an array
-          const sortedData = res.data.sort(
-            (a: ReportProblemInterface, b: ReportProblemInterface) => b.ID - a.ID
-          );
-          const latestData = sortedData.slice(0, 5);
-          setReportListData(latestData);
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  };
   const getReportProblem = async () => {
     const apiUrl = "http://localhost:8080/reportProblemHome";
     const requestOptions = {
@@ -269,7 +215,7 @@ function Home() {
               {reportListData.map((report) => (
                   report.StatusName !== "End" && (
                   <TableRow key={report.ID}>
-                    <TableCell align="center" width="15"> {moment(report.NotificationDate).format('DDMMYY')}|{report.ID}</TableCell>
+                    <TableCell align="center" width="15"> <b>{moment(report.NotificationDate).format('DDMMYY')}|{report.ID}</b></TableCell>
                     <TableCell align="center" width="15">{report.Heading}</TableCell>
                     <TableCell align="center" width="15">{report.Description}</TableCell>
                     <TableCell align="center" width="15">  {moment(report.NotificationDate).format('HH:mm')}</TableCell>
@@ -315,7 +261,7 @@ function Home() {
               {reportListData.map((report) => (
                 report.StatusName !== "End" && (
                   <TableRow key={report.ID}>
-                    <TableCell align="center" width="15"> {moment(report.NotificationDate).format('DDMMYY')}|{report.ID}</TableCell>
+                    <TableCell align="center" width="15"> <b>{moment(report.NotificationDate).format('DDMMYY')}|{report.ID}</b></TableCell>
                     <TableCell align="center" width="15">{report.UserLname}</TableCell>
                     <TableCell align="center" width="15">{report.Heading}</TableCell>
                     <TableCell align="center" width="15">{report.Description}</TableCell>
@@ -337,7 +283,7 @@ function Home() {
                     </TableCell>
                     <TableCell align="center" width="15">
                       {report.StatusName === "Send request" ? (
-                        "ยังไม่มีการตรวจสอบ"
+                        "ยังไม่มีการตรวจสอบ" 
                       ) : (
                         <span>
                           {report.StatusName === "Pending" &&
