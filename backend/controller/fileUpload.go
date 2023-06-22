@@ -94,6 +94,62 @@ func UploadFile(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"data": fileUploads})
 }
+func UpdateFile(c *gin.Context) {
+	// Get file ID from URL parameter
+	fileID := c.Param("id")
+
+	// Get file from database
+	var fileUpload entity.FileUpload
+	if err := entity.DB().Table("fileupload").Where("file_upload_id = ?", fileID).First(&fileUpload).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "file not found"})
+		return
+	}
+
+	// Multipart form
+	form, err := c.MultipartForm()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Get files from form
+	files := form.File["files"]
+
+	// Check if any files were uploaded
+	if len(files) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "no file uploads found"})
+		return
+	}
+
+	// Open file
+	src, err := files[0].Open()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	defer src.Close()
+
+	// Read file content
+	content, err := io.ReadAll(src)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Update file upload entity
+	fileUpload.Name = files[0].Filename
+	fileUpload.Size = files[0].Size
+	fileUpload.Type = files[0].Header.Get("Content-Type")
+	fileUpload.Content = content
+
+	// Update file in database
+	if err := entity.DB().Table("fileupload").Save(&fileUpload).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": fileUpload})
+}
 
 
 

@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+
 // POST /Department
 func CreateDepartment(c *gin.Context) {
 	var department entity.Department
@@ -22,15 +23,17 @@ func CreateDepartment(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": department})
 }
 
+
 // List /Departments
 func ListDepartment(c *gin.Context) {
 	var departments []entity.Department
-	if err := entity.DB().Table("department").Raw("SELECT * FROM department").Find(&departments).Error; err != nil {
+	if err := entity.DB().Raw("SELECT * FROM bt_department").Find(&departments).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": departments})
 }
+
 
 // GET /Department/:id
 func GetDepartment(c *gin.Context) {
@@ -43,10 +46,11 @@ func GetDepartment(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": department})
 }
 
+
 func GetDepartmentByUserID(c *gin.Context) {
 	var department entity.Department
 	id := c.Param("id")
-	if err := entity.DB().Preload("Department").Preload("User").Preload("Role").Raw("SELECT * FROM departments WHERE user_id = ?", id).Scan(&department).Error; err != nil {
+	if err := entity.DB().Preload("Department").Preload("User").Preload("UserPermission").Raw("SELECT * FROM departments WHERE user_id = ?", id).Scan(&department).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

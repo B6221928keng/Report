@@ -192,7 +192,7 @@ function Home() {
           /> */}
         </Typography>
       </Container>
-      {localStorage.getItem("role") === "1" && (
+      {localStorage.getItem("userpermission") === "0" && (
 
         <TableContainer component={Paper} elevation={6}
           sx={{
@@ -234,6 +234,18 @@ function Home() {
                         {report.StatusName}
                       </span>
                     </TableCell>
+                    <TableCell align="center" width="15">
+                      {report.StatusName === "Send request" ? (
+                        "ยังไม่มีการตรวจสอบ" 
+                      ) : (
+                        <span>
+                          {report.StatusName === "Pending" &&
+                            (report.AdminID)}
+                          {report.StatusName === "Complete" &&
+                            (report.AdminID)}
+                        </span>
+                      )}
+                    </TableCell>
                   </TableRow>
                 )
               ))}
@@ -242,7 +254,7 @@ function Home() {
         </TableContainer>
       )}
 
-      {localStorage.getItem("role") === "2" && (
+      {localStorage.getItem("userpermission") === "1" && (
         <TableContainer component={Paper}>
           <Table className="custom-table1" align="center" style={{ boxShadow: "10px 10px 10px rgba(10, 5, 10, 0.15)", borderRadius: "20px", backgroundColor: "#f4f4f4", width: "90%", height: "90px" }}>
             <TableHead style={{ borderRadius: "20px" }}>

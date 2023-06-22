@@ -14,20 +14,21 @@ import (
 
 type LoginPayload struct {
 	User     string `json:"username"`
-	Password string `json:"password"`
+	Password string `json:"user_pass"`
 }
 
 type UserResponse struct {
-	Token    	string	`json:"token"`
-	UserSerial  uint   	`json:"user_serial"`
-	DepID 		uint 	`json:"dep_id"`
-	Role 	int 	`json:"role"`
+	Token      string `json:"token"`
+	UserSerial uint   `json:"user_serial"`
+	DepID      uint   `json:"dep_id"`
+	UserPermission       int    `json:"user_permission"`
 }
+
 // POST /signin
 func Signin(c *gin.Context) {
 	var payload LoginPayload
 	var login entity.UserAuthen
-	var dep		entity.Department
+	var dep entity.Department
 
 	if err := c.ShouldBindJSON(&payload); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -35,19 +36,19 @@ func Signin(c *gin.Context) {
 	}
 
 	//ค้นหา login ด้วย Username ที่ผู้ใช้กรอกมา
-	if err := entity.DB().Raw("SELECT * FROM userauthen WHERE user_name = ?", payload.User).Scan(&login).Error; err != nil {
+	if err := entity.DB().Raw("SELECT * FROM bt_userauthen WHERE user_name = ?", payload.User).Scan(&login).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	
+
 	//ตรวจสอบ Password
-	err := services.VerifyPassword(login.Password, payload.Password)
-	if err != nil {
+	err1 := services.VerifyPassword(login.Password, payload.Password)
+	if err1 == false {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid user credentials"})
 		return
 	}
 	//ค้นหา Department ด้วย did
-	if err := entity.DB().Raw("SELECT * FROM department WHERE dep_id = ?", login.DepID).Scan(&dep).Error; err != nil {
+	if err := entity.DB().Raw("SELECT * FROM bt_department WHERE dep_id = ?", login.DepID).Scan(&dep).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -57,7 +58,7 @@ func Signin(c *gin.Context) {
 		ExpirationHour: 24,
 	}
 
-	signedToken, err := jwtWrapper.GenerateToken(login.UserSerial, login.Role)
+	signedToken, err := jwtWrapper.GenerateToken(login.UserSerial, login.UserPermission)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "error signing token"})
 		return
@@ -66,10 +67,9 @@ func Signin(c *gin.Context) {
 			Token:    signedToken,
 			UserSerial:  login.UserSerial,
 			DepID: dep.DepID,
-			Role: login.Role,
+			UserPermission: login.UserPermission,
 		}
 		c.JSON(http.StatusOK, gin.H{"data": tokenResponse})
-	
 }
 
 // GET /valid

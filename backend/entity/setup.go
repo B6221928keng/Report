@@ -17,7 +17,7 @@ func DB() *gorm.DB {
 
 func SetupDatabase() {
 
-	dsn := "root:@tcp(localhost:3306)/report?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "super:Sang87958@tcp(117.121.217.183:38990)/bsv5?charset=utf8mb4&parseTime=True&loc=Local"
 	database, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect databasess")

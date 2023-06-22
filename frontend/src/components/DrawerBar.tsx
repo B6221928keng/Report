@@ -12,7 +12,7 @@ import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 import FlakyIcon from '@mui/icons-material/Flaky';
-export default function DrawerBar({ role, drawerWidth, handleDrawerClose, open, theme}: any) {
+export default function DrawerBar({ userpermission, drawerWidth, handleDrawerClose, open, theme}: any) {
     const DrawerHeader = styled('div')(({ theme }) => ({
         display: 'flex',
         alignItems: 'center',
@@ -37,11 +37,11 @@ export default function DrawerBar({ role, drawerWidth, handleDrawerClose, open, 
           ]
 
           var menu: any[];
-          switch (role) {
-            case "1":
+          switch (userpermission) {
+            case "0":
               menu = menuemployee;
               break;
-              case "2":
+              case "1":
               menu = menuadmin;
               break;
             

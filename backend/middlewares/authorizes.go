@@ -41,7 +41,7 @@ func Authorized() gin.HandlerFunc {
 		}
 
 		c.Set("user_id", claims.User_id)
-		c.Set("role", claims.Role)
+		c.Set("userpermission", claims.UserPermission)
 
 		c.Next()
 	}

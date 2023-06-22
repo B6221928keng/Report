@@ -3,8 +3,8 @@ package entity
 type UserAuthen struct {
 	UserSerial uint   `gorm:"primaryKey" db:"user_serial" `
 	UserName   string `db:"user_name"`
-	Password   string `db:"password"`
-	Role       int    `db:"role_id"`
+	Password   string `db:"user_pass"`
+	UserPermission       int    `db:"user_permission"`
 	DepID      int    `db:"dep_id"`
 	Department Department `gorm:"foreignKey:DepID"`
 }

@@ -10,7 +10,7 @@ import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper'
 import SourceIcon from '@mui/icons-material/Source';
 import moment from 'moment';
-import { UserInterface } from "../../models/IUser";
+import { User1Interface, UserInterface } from "../../models/IUser";
 import { StatusInterface } from "../../models/IStatus";
 import { ReportProblemInterface, ReportProblemInterfaceT } from "../../models/IReportProblem";
 import { DepartmentInterface } from "../../models/IDepartment";
@@ -33,7 +33,7 @@ export default function ReportProblemUpdate(props: any) {
     const [error, setError] = React.useState(false);
     const [date, setDate] = React.useState<Date | null>(null);
     const [user, setUser] = React.useState<UserInterface>();
-    const [emp, setEmp] = React.useState<UserInterface>();
+    const [emp, setEmp] = React.useState<User1Interface>();
     const [status, setStatus] = React.useState<StatusInterface[]>([]);
     const [files, setFiles] = React.useState<FileUploadInterface[]>([]);
     const [fileUploads, setFileUploads] = React.useState<FileUploadInterface[]>([]);
@@ -357,17 +357,16 @@ export default function ReportProblemUpdate(props: any) {
             setShowSnackbar(true); // แสดง Snackbar เตือนให้เลือกไฟล์
             return;
         }
-
+  // Heading: convertType(ReportProblem?.Heading) ?? 0,
         let data = {
             ID: convertType(ReportProblem.ID),
-            EmployeeID: emp?.UserNo,
-            // Heading: ReportProblem.Heading ?? "", 
-            Heading: convertType(ReportProblem?.Heading) ?? 0,
+            UserSerial: emp?.UserSerial,
+            Heading: ReportProblem.Heading ?? "", 
             Description: ReportProblem.Description ?? "",
-            StatusID: 1,
+            StID: 1,
             NotificationDate: new Date(),
-            DepartmentID: convertType(did),
-            fileUploadID: convertType(ReportProblem.FileUploadID),
+            DepID: convertType(did),
+            fileUploadID: ReportProblem.FileUploadID ,
         };
         console.log(Email);
         // console.log("FileUploadID:", ReportProblem.FileUploadID);

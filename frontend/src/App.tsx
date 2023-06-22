@@ -51,15 +51,15 @@ function App() {
 
   const [token, setToken] = React.useState<String>("");
 
-  const [role, setRole] = React.useState<String>("")
+  const [userpermission, setRole] = React.useState<String>("")
   const [open, setOpen] = React.useState<boolean>(false)
 
   useEffect(() => {
     const token: any = localStorage.getItem("token")
-    const role: any = localStorage.getItem("role")
+    const userpermission: any = localStorage.getItem("userpermission")
     if (token) {
       setToken(token)
-      setRole(role)
+      setRole(userpermission)
     }
 
   }, [])
@@ -101,13 +101,13 @@ function App() {
           <Box sx={{ display: 'flex' }}>
             <CssBaseline />
             <Navbar open={open} onClick={handleDrawerOpen} />
-            <DrawerBar open={open} drawerWidth={drawerWidth} handleDrawerClose={handleDrawerClose} role={role} theme={theme} />
+            <DrawerBar open={open} drawerWidth={drawerWidth} handleDrawerClose={handleDrawerClose} userpermission={userpermission} theme={theme} />
 
             <Main open={open}>
               <DrawerHeader />
 
               <Routes>
-                {role === "1" && (
+                {userpermission === "0" && (
                   <>
 
                     {/* <Route path="/" element={<Emp  />} />
@@ -121,7 +121,7 @@ function App() {
                   </>
 
                 )}
-                {role === "2" && (
+                {userpermission === "1" && (
                   <>
                     <Route path="/" element={<Home />} />
                     <Route path="/adminReportProblem" element={<AdminReportProblem />} />

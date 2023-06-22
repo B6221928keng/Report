@@ -43,11 +43,12 @@ export default function Signin() {
             .then((res) => {
                 if (res.data) {
                     setSuccess(true);
+                    console.log(res.data);
                     localStorage.setItem("token", res.data.token);
                     localStorage.setItem("uid", res.data.user_serial);
                     localStorage.setItem("did", res.data.dep_id);
-                    localStorage.setItem("role", res.data.role);
-                    window.location.reload();
+                    localStorage.setItem("userpermission", res.data.user_permission);
+                    // window.location.reload();
                 } else {
                     console.log("error");
                     setError(true);

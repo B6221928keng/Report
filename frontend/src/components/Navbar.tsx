@@ -129,7 +129,7 @@ export default function Navbar({ open, onClick }: any) {
                         }}
                     >
                         <AccountCircleRoundedIcon style={{ verticalAlign: 'middle', marginRight: '5px', color: "DarkBlue" }} />
-                        User: {emp?.UserLname} | {emp?.DepName} 
+                        {emp?.UserLname} | {emp?.DepName} 
                     </Typography>
 
 

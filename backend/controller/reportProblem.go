@@ -42,7 +42,7 @@ func CreateReportProblem(c *gin.Context) {
 	// 	return
 	// }
 
-	if err := entity.DB().Table("fileupload").Select("*").Where("file_upload_id=?",reportproblem.FileUploadID).Find(&fileUpload).Error; err != nil {
+	if err := entity.DB().Table("fileupload").Select("*").Where("file_upload_id=?", reportproblem.FileUploadID).Find(&fileUpload).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error fileupload": err.Error()})
 		return
 	}
@@ -112,7 +112,7 @@ func CreateReportProblem(c *gin.Context) {
 		DepID:            reportproblem.DepID,
 		FileUploadID:     &fileUpload.FileUploadID,
 	}
-	
+
 	// Validate entity
 	if _, err := govalidator.ValidateStruct(wv); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -479,12 +479,17 @@ func UpdateReportProblemUser(c *gin.Context) {
 		return
 	}
 
-	// ค้นหา ltype ด้วย id
-
 	reportproblem.NotificationDate = newreport.NotificationDate
 	reportproblem.Heading = newreport.Heading
 	reportproblem.Description = newreport.Description
-	reportproblem.FileUploadID = newreport.FileUploadID
+	
+	// ดึงข้อมูล FileUpload จากฐานข้อมูล
+	if err := entity.DB().Table("fileupload").Where("file_upload_id = ?", newreport.FileUploadID).First(&fileUpload).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	
+	reportproblem.FileUploadID = &fileUpload.FileUploadID
 
 	// ขั้นตอนการ validate
 	if err := entity.DB().Table("reportproblem").Save(&reportproblem).Error; err != nil {
@@ -495,12 +500,6 @@ func UpdateReportProblemUser(c *gin.Context) {
 	// Update the report problem in the database
 	if err := entity.DB().Table("reportproblem").Where("id = ?", reportproblem.ID).Updates(&reportproblem).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	// Retrieve the updated fileUpload from the database
-	if err := entity.DB().Table("fileupload").Select("*").Where("file_upload_id=?",reportproblem.FileUploadID).Find(&fileUpload).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error fileupload": err.Error()})
 		return
 	}
 

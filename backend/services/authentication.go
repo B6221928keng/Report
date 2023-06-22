@@ -17,15 +17,15 @@ type JwtWrapper struct {
 
 type JwtClaims struct {
 	Authorized bool
-	Role  int
+	UserPermission  int
 	User_id    uint
 	jwt.StandardClaims
 }
 
-func (j *JwtWrapper) GenerateToken(userID uint, role int) (signedToken string, err error) {
+func (j *JwtWrapper) GenerateToken(userID uint, userpermission int) (signedToken string, err error) {
 
 	claims := &JwtClaims{
-		Role:  role,
+		UserPermission: userpermission ,
 		User_id:    userID,
 		Authorized: true,
 		StandardClaims: jwt.StandardClaims{

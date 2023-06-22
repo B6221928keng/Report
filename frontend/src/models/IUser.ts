@@ -3,7 +3,7 @@ export interface UserAuthenInterface {
     UserSerial: number,
     UserName: string,
     Password: string,
-    Role: number,
+    UserPermission: number,
     DepID: number,
     Department: DepartmentInterface,
 }
