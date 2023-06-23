@@ -88,7 +88,7 @@ func UploadFile(c *gin.Context) {
 	}
 
 	// Save file uploads to database
-	if err := entity.DB().Table("fileupload").Create(&fileUploads).Error; err != nil {
+	if err := entity.DB().Table("bt_fileupload").Create(&fileUploads).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -100,7 +100,7 @@ func UpdateFile(c *gin.Context) {
 
 	// Get file from database
 	var fileUpload entity.FileUpload
-	if err := entity.DB().Table("fileupload").Where("file_upload_id = ?", fileID).First(&fileUpload).Error; err != nil {
+	if err := entity.DB().Table("bt_fileupload").Where("file_upload_id = ?", fileID).First(&fileUpload).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "file not found"})
 		return
 	}
@@ -143,7 +143,7 @@ func UpdateFile(c *gin.Context) {
 	fileUpload.Content = content
 
 	// Update file in database
-	if err := entity.DB().Table("fileupload").Save(&fileUpload).Error; err != nil {
+	if err := entity.DB().Table("bt_fileUpload").Save(&fileUpload).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -158,7 +158,7 @@ func DownloadFile(c *gin.Context) {
 	id := c.Param("id")
 
 	var fileUpload entity.FileUpload
-	if err := entity.DB().Table("fileUpload").Where("file_upload_id = ?", id).First(&fileUpload).Error; err != nil {
+	if err := entity.DB().Table("bt_fileUpload").Where("file_upload_id = ?", id).First(&fileUpload).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -248,7 +248,7 @@ func UpdateUploadFile(c *gin.Context) {
 // GET /fileUploads
 func ListFileUploads(c *gin.Context) {
 	var fileUploads []entity.FileUpload
-	if err := entity.DB().Table("fileupload").Raw("SELECT * FROM fileupload ORDER BY file_upload_id DESC LIMIT 1").Find(&fileUploads).Error; err != nil {
+	if err := entity.DB().Table("bt_fileupload").Raw("SELECT * FROM bt_fileupload ORDER BY file_upload_id DESC LIMIT 1").Find(&fileUploads).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

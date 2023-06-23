@@ -1,7 +1,7 @@
 import { Link as RouterLink } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
-import { Box, Button, Container, IconButton, Paper, Typography } from '@mui/material';
+import { Box, Button, Container, IconButton, Paper, TableCell, Typography } from '@mui/material';
 import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarColumnsButton, GridToolbarFilterButton, GridValueGetterParams } from '@mui/x-data-grid';
 import { ReportPrInterface, ReportProblem2Interface, ReportProblemInterface } from '../../models/IReportProblem';
 import { ListAdminReportProblem3 } from '../../service/Servics';
@@ -95,7 +95,34 @@ function ReportProblemdata() {
         }
         return null;
     }
+    const DeleteMedicineReceive = async (id: string | number | undefined) => {
+        const apiUrl = "http://localhost:8080";
+        const requestOptions = {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+        };
 
+        fetch(`${apiUrl}/reportProblem/${id}`, requestOptions)
+            .then((response) => response.json())
+            .then(
+                (res) => {
+                    if (res.data) {
+                        setSuccess(true)
+                        console.log("ยกเลิกสำเร็จ")
+                        setErrorMessage("")
+                    }
+                    else {
+                        setErrorMessage(res.error)
+                        setError(true)
+                        console.log("ยกเลิกไม่สำเร็จ")
+                    }
+                    getReportProblem();
+                }
+            )
+    }
     // const DeleteFileUpload = async (id: string | number | undefined) => {
     //     const apiUrl = "http://localhost:8080";
     //     const requestOptions = {
@@ -328,6 +355,23 @@ function ReportProblemdata() {
         //           </IconButton>
         //         );
         //       },
+        // },
+        
+        //  {
+        //     field: 'Delete',
+        //     headerName: 'ลบ',
+        //     sortable: false,
+        //     width: 150,
+        //     headerAlign: 'center',
+        //     align: 'left',
+        //     renderCell: (params: GridRenderCellParams<any>) => {
+        //         return (
+        //             <IconButton onClick={() => DeleteMedicineReceive(params.row.ID)}>
+        //                 <DeleteIcon style={{ color: 'red' }} />
+        //                 <span style={{ fontSize: 'small', color: 'red' }}>{params.row.name}</span>
+        //             </IconButton>
+        //         );
+        //     },
         // },
     ];
 

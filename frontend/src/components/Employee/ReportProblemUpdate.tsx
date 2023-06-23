@@ -634,8 +634,8 @@ export default function ReportProblemUpdate(props: any) {
                                 (!fileSelected || (fileSelected && files.length === 0)) ||
                                 !uploaded // เพิ่มเงื่อนไขที่ต้องการ
                             }
-                        // component={RouterLink}
-                        // to="/reportProblemData"
+                        component={RouterLink}
+                        to="/reportProblemData"
                         >
                             บันทึกข้อมูล
                         </Button>

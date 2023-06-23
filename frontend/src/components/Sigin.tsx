@@ -48,7 +48,7 @@ export default function Signin() {
                     localStorage.setItem("uid", res.data.user_serial);
                     localStorage.setItem("did", res.data.dep_id);
                     localStorage.setItem("userpermission", res.data.user_permission);
-                    // window.location.reload();
+                    window.location.reload();
                 } else {
                     console.log("error");
                     setError(true);
@@ -86,7 +86,7 @@ export default function Signin() {
                     </div>
                     <div className="form-page">
                         <div className="from-frame">
-                            <div style={{ fontSize: "23px", fontWeight: "bold", color: "#0b0d94", paddingTop: "0px", fontFamily: "Rahong Regular" }}>
+                            <div style={{ fontSize: "30px", fontWeight: "bold", color: "#0b0d94", paddingTop: "0px", fontFamily: "Rahong Regular" }}>
                                 ระบบแจ้งปัญหาการใช้งานSoftware
                             </div>
                             <form noValidate className="form-in">

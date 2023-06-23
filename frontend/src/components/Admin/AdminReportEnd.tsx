@@ -104,7 +104,7 @@ function AdminReportEnd() {
         // เพิ่มหัวข้อตาราง
         worksheet.columns = [
             { header: 'ID', key: 'id', width: 10 },
-            { header: 'ชื่อผู้แจ้งปัญหา', key: 'Employee', width: 20 },
+            { header: 'ชื่อผู้แจ้งปัญหา', key: 'user', width: 20 },
             { header: 'แผนก', key: 'Department', width: 20 },
             { header: 'หัวข้อ', key: 'heading', width: 20 },
             { header: 'รายละเอียด', key: 'description', width: 20 },
@@ -119,22 +119,22 @@ function AdminReportEnd() {
 
         // เพิ่มข้อมูลลงในตาราง
         reportlistRcom.forEach(row => {
-            const { ID, Employee, Department, Heading, Description, Status, FileUpload, NotificationDate, PendingDate, CompleteDate, EndDate,  } = row;
+            const { ID, Employee, Department, Heading, Description, Status, FileUpload, NotificationDate, PendingDate, CompleteDate, EndDate } = row;
             worksheet.addRow({
                 id: `${moment(NotificationDate).format('DDMMYY')}|${ID}`,
-                Employee: Employee.UserLname,
-                Department: Department.DepName,
+                user: Employee ? Employee.UserLname : '',
+                Department: Department ? Department.DepName : '',
                 heading: Heading,
                 description: Description,
                 Status: Status.StatusName,
-                FileUpload: FileUpload.name,
+                FileUpload: FileUpload ? FileUpload.name : '',
                 NotificationDate: moment(NotificationDate).format("HH:mm | DD/MM/YY"),
-                PendingDate: moment(PendingDate).format("HH:mm | DD/MM/YY"),
-                CompleteDate: moment(CompleteDate).format("HH:mm | DD/MM/YY"),
-                EndDate: moment(EndDate).format("HH:mm | DD/MM/YY"),
-                emp: emp?.UserLname
+                PendingDate: PendingDate ? moment(PendingDate).format("HH:mm | DD/MM/YY") : '',
+                CompleteDate: CompleteDate ? moment(CompleteDate).format("HH:mm | DD/MM/YY") : '',
+                EndDate: EndDate ? moment(EndDate).format("HH:mm | DD/MM/YY") : '',
+                emp: emp ? emp.UserLname : ''
             });
-        });
+        });        
 
         // สร้างไฟล์ Excel
         workbook.xlsx.writeBuffer()
