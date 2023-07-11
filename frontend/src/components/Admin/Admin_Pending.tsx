@@ -91,9 +91,9 @@ export default function Admin_Pending(props: any) {
             console.log(params)
             let res = await UpdateReportproblem(data);
             setSuccess(true);
-            // setTimeout(() => {
-            //     window.location.reload();
-            // }, 800);
+            setTimeout(() => {
+                window.location.reload();
+            }, 800);
             //mail();
         } catch (err) {
             setError(true);
