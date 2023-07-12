@@ -6,8 +6,8 @@
     "sqlite3": "^5.1.6"
   },
   "scripts": {
-    "dev": "nodemon indesx.js",
-    "build": "npm i"
+    "dev": "go run main.go",
+    "build": "go build main.go"
 
   }
 }
